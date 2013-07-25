@@ -25,6 +25,9 @@ Anything else?
 * supervisord
 * upstart
 * systemd
+* smf (solaris)
+* launchd (osx)
+* windows services
 
 ### "init" systems
 
