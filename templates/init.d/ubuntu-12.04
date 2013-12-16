@@ -1,23 +1,23 @@
 #! /bin/sh
 ### BEGIN INIT INFO
-# Provides:          <%= @name %>
+# Provides:          {{{ name }}}
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: <%= @description.split("\n").first %>
-# Description:       <%= @description.split("\n").first %>
+# Short-Description: {{{ one_line_description }}}
+# Description:       {{{ description }}}
 #                    
 ### END INIT INFO
 
-# Author: <%= @author %>
+# Author: {{{ author }}} 
 
 # PATH should only include /usr/* if it runs after the mountnfs.sh script
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
-DESC="<%= @description.split("\n").first %>"
-NAME="<%= @name %>"
-COMMAND=<%= Shellwords.shellescape(@command) %>"
-ARGS="<%= @args.collect { |a| Shellwords.shellescape(a) }.join(" ") %>"
+DESC={{#escaped}}{{{ description }}}{{/escaped}}
+NAME={{#escaped}}{{#safe_filename}}{{{ name }}}{{/safe_filename}}{{/escaped}}
+COMMAND={{#escaped}}{{{ command }}}{{/escaped}}
+ARGS={{{ escaped_args }}}
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 
@@ -44,7 +44,7 @@ do_start()
 
   # Actually start it now.
   start-stop-daemon --start --quiet --make-pidfile --background \
-    --pidfile $PIDFILE --exec /bin/sh -- -c "$COMMAND $ARGS" - || return 2
+    --pidfile $PIDFILE --exec /bin/sh -- -c "exec $COMMAND $ARGS" - || return 2
 
   code=$?
 
@@ -70,8 +70,9 @@ do_stop()
   # that waits for the process to drop all resources that could be
   # needed by services started subsequently.  A last resort is to
   # sleep for some time.
-  start-stop-daemon --stop --quiet --oknodo --retry=0/30/KILL/5 --exec /bin/sh
-  [ "$?" = 2 ] && return 2
+  start-stop-daemon --stop --quiet --oknodo --retry=0/30/KILL/5 --pidfile $PIDFILE --exec /bin/sh
+  RETVAL=$?
+  [ "$RETVAL" = 2 ] && return 2
   # Many daemons don't delete their pidfiles when they exit.
   rm -f $PIDFILE
   return "$RETVAL"
@@ -100,7 +101,7 @@ case "$1" in
     esac
     ;;
   status)
-     status_of_proc "$DAEMON" "$NAME" && exit 0 || exit $?
+     status_of_proc -p "$PIDFILE" "$COMMAND" "$NAME" && exit 0 || exit $?
      ;;
   restart)
     do_stop

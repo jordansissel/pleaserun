@@ -20,12 +20,12 @@ Anything else?
 
 ## Platforms
 
-* runit
-* daemontools
-* supervisord
-* upstart
-* systemd
-* smf (solaris)
+* runit (multiple files/directories)
+* daemontools (same as runit)
+* supervisord (one single config file)
+* upstart (one file)
+* systemd (???)
+* smf/solaris (one file?)
 * launchd (osx)
 * windows services
 
@@ -34,4 +34,5 @@ Anything else?
 * freebsd
 * rhel
 * debian
+* ubuntu?
 * others?
