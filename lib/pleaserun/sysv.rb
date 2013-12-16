@@ -15,6 +15,7 @@ class Please::Run::SYSVInit < Please::Run::Base
 
   def build
     puts Mustache.render(File.read(template), self)
+    # TODO(sissel): build should permit creating multiple files
   end
 
   def escaped_args
