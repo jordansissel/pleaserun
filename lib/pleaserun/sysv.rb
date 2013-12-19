@@ -1,6 +1,7 @@
-require "mustache"
-require "insist"
-require "shellwords"
+require "mustache"  # gem 
+require "insist" # gem
+require "shellwords" # stdlib
+require "pleaserun/base"
 
 module Please; module Run; end; end
 class Please::Run::SYSVInit < Please::Run::Base

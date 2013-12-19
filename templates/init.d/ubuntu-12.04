@@ -43,16 +43,12 @@ do_start()
   start-stop-daemon --start --quiet --pidfile $PIDFILE --exec /bin/sh --test > /dev/null || return 1
 
   # Actually start it now.
-  start-stop-daemon --start --quiet --make-pidfile --background \
-    --pidfile $PIDFILE --exec /bin/sh -- -c "exec $COMMAND $ARGS" - || return 2
-
-  code=$?
-
-  case "$code" in
-    0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
-    2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
-  esac
-  return $code
+  start-stop-daemon --start --quiet --background \
+    --chuid {{user}}:{{group}} \
+    --make-pidfile --pidfile $PIDFILE \
+    --exec /bin/sh -- -c "exec $COMMAND $ARGS" - \
+  || return 2
+  return $?
 }
 
 #
