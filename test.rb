@@ -1,10 +1,15 @@
+$: << "./lib"
+require "pleaserun/sysv"
 pr = Please::Run::SYSVInit.new("ubuntu-12.04")
 pr.name = "test fancy"
 pr.command = "sleep"
+pr.user = "fancy"
 #pr.args = [ "-t", "sometag", "hello world" ]
 pr.args = [ "3600" ]
 
-puts pr.build
+pr.files.each do |path, content|
+  puts path => content.bytes.size
+end
 #* identity (user, group)
 #* limits (ulimit, etc)
 #* environment variables
