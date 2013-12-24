@@ -1,38 +1,26 @@
 require "insist"
+require "pleaserun/namespace"
 
-module Please; module Run; end; end
-class Please::Run::Base
-  attr_accessor :name
-  attr_accessor :command, :args
-  attr_accessor :user, :group
-
-  attr_reader :target_version
+class PleaseRun::Base
+  include PleaseRun::Settings
 
   def initialize(target_version)
     insist { target_version }.is_a?(String)
     @target_version = target_version
-    @user = "root"
-    @group = "root"
-  end
+    default_settings
+  end # def initialize
 
-  def command=(command)
-    insist { command }.is_a?(String)
-    @command = command
-  end
+  def platform
+    # The platform name is simply the lowercased class name.
+    return self.class.name.split(/::/)[-1].downcase
+  end # def platform
 
-  def args=(args)
-    insist { args }.is_a?(Array)
-    args.each { |a| insist { a }.is_a?(String) }
-    @args = args
-  end
+  def render_template(name)
+    # return a default if not possible? Error if no existing?
+    platform = self.class.name
 
-  def user=(user)
-    insist { user }.is_a?(String)
-    @user = user
-  end
-
-  def group=(group)
-    insist { group }.is_a?(String)
-    @group = group
-  end
+    path = File.join("templates", platform, target_version, name)
+    if !(File.readable?(path) && File.file?(path))
+    end
+  end # def render_template
 end

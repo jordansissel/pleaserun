@@ -1,20 +1,8 @@
-require "mustache"  # gem 
-require "insist" # gem
 require "shellwords" # stdlib
 require "pleaserun/base"
+require "pleaserun/namespace"
 
-module Please; module Run; end; end
-
-class Please::Run::SYSVInit < Please::Run::Base
-  def initialize(*args)
-    super
-    insist { File.readable?(template) }
-  end
-
-  def template(name)
-    # return a default if not possible? Error if no existing?
-    return "templates/sysv/#{name}/#{target_version}"
-  end
+class PleaseRun::SysVInit < Please::Run::Base
 
   # Returns which an enumerable will yield [path, content] for any files
   # necessary to implement this runner.
@@ -29,8 +17,8 @@ class Please::Run::SYSVInit < Please::Run::Base
   # end
   def files
     return Enumerator::Generator.new do |out|
-      out.yield ["/etc/init.d/#{name}", Mustache.render(File.read(template("init.d")), self)]
-      #out.yield ["/etc/default/#{name}", Mustache.render(File.read(template("default")), self)]
+      out.yield [ "/etc/init.d/#{name}", render_template("init.d") ]
+      out.yield [ "/etc/default/#{name}", render_template("default") ]
     end
   end
 
