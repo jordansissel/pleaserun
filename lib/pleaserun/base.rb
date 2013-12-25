@@ -1,5 +1,7 @@
 require "insist"
+require "mustache"
 require "pleaserun/namespace"
+require "pleaserun/settings"
 
 class PleaseRun::Base
   include PleaseRun::Settings
@@ -17,10 +19,9 @@ class PleaseRun::Base
 
   def render_template(name)
     # return a default if not possible? Error if no existing?
-    platform = self.class.name
-
     path = File.join("templates", platform, target_version, name)
-    if !(File.readable?(path) && File.file?(path))
-    end
+    raise "Invalid template #{path}!" if !(File.readable?(path) && File.file?(path))
+    tmpl = File.read(path)
+    return Mustache.render(tmpl, self)
   end # def render_template
 end

@@ -2,7 +2,7 @@ require "shellwords" # stdlib
 require "pleaserun/base"
 require "pleaserun/namespace"
 
-class PleaseRun::SysVInit < Please::Run::Base
+class PleaseRun::SysVInit < PleaseRun::Base
 
   # Returns which an enumerable will yield [path, content] for any files
   # necessary to implement this runner.
