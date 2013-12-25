@@ -17,8 +17,8 @@ class PleaseRun::SysVInit < PleaseRun::Base
   # end
   def files
     return Enumerator::Generator.new do |out|
-      out.yield [ "/etc/init.d/#{name}", render_template("init.d") ]
-      out.yield [ "/etc/default/#{name}", render_template("default") ]
+      out.yield [ safe_filename("/etc/init.d/{{ name }}"), render_template("init.d") ]
+      out.yield [ safe_filename("/etc/default/{{ name }}"), render_template("default") ]
     end
   end
 
