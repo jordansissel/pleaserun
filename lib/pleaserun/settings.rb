@@ -2,6 +2,8 @@ require "pleaserun/namespace"
 require "insist"
 
 module PleaseRun::Settings
+  include PleaseRun::Configurable
+
   attr_reader :target_version
   attr_accessor :name
   attr_accessor :command, :args
