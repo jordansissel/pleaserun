@@ -1,4 +1,3 @@
-require "shellwords" # stdlib
 require "pleaserun/base"
 require "pleaserun/namespace"
 
@@ -20,18 +19,6 @@ class PleaseRun::SysVInit < PleaseRun::Base
       out.yield [ safe_filename("/etc/init.d/{{ name }}"), render_template("init.d") ]
       out.yield [ safe_filename("/etc/default/{{ name }}"), render_template("default") ]
     end
-  end
-
-  def escaped_args
-    return Shellwords.shellescape(Shellwords.shelljoin(@args))
-  end
-
-  def escaped(str)
-    return Shellwords.shellescape(Mustache.render(str, self))
-  end
-
-  def safe_filename(str)
-    return Mustache.render(str, self).gsub(" ","_")
   end
 end
 
