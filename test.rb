@@ -1,6 +1,6 @@
 $: << "./lib"
 require "pleaserun/sysv"
-pr = Please::Run::SYSVInit.new("ubuntu-12.04")
+pr = PleaseRun::SysVInit.new("ubuntu-12.04")
 pr.name = "test fancy"
 pr.command = "sleep"
 pr.user = "fancy"
