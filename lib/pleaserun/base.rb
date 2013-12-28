@@ -73,4 +73,31 @@ class PleaseRun::Base
   def escaped(str)
     return Shellwords.shellescape(Mustache.render(str, self))
   end # def escaped
+
+  def shell_args
+    return if args.nil?
+    return args.collect { |a| shell_quote(a) }.join(" ")
+  end
+
+  def shell_quote(str)
+    # interpreted from POSIX 1003.1 2004 section 2.2.3 (Double-Quotes)
+
+    # $ is has meaning, escape it.
+    value = str.gsub(/(?<![\\])\$/, "\\$")
+    # ` is has meaning, escape it.
+    value = value.gsub(/`/) { "\\`" }
+
+    # Backslash means escape a literal unless followed by one of $`"\
+    value = value.gsub(/\\[^$`"\\]/) { |v| "\\#{v}" }    
+
+    return "\"" + value + "\""
+  end
+
+  def shell_continuation(str)
+    return render(str).split("\n").reject { |l| l =~ /^\s*$/ }.join(" \\\n")
+  end
+
+  def quoted(str)
+    return shell_quote(render(str))
+  end
 end
