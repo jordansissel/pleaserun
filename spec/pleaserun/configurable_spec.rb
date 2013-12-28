@@ -46,6 +46,24 @@ describe PleaseRun::Configurable do
       insist { count } == 1
     end
   end
+  
+  context "#set?" do
+    it "returns false if value isn't set" do
+      facet = subject.new(:name, "description")
+      reject { facet }.set?
+    end
+    it "returns false if value isn't set and we have a default" do
+      facet = subject.new(:name, "description", :default => 100)
+      reject { facet }.set?
+      insist { facet.value } == 100
+    end
+    it "returns true if value is set" do
+      facet = subject.new(:name, "description")
+      reject { facet }.set?
+      facet.value = "hello"
+      insist { facet }.set?
+    end
+  end
 
   context "with :default => ..." do
     it "uses default when no value is set" do
@@ -71,25 +89,36 @@ describe PleaseRun::Configurable do
   end
 
   context "attribute" do
-    context "basics" do
-      subject do
-        next Class.new do
-          include PleaseRun::Configurable::Mixin
-          attribute :whatever, "whatever"
-        end
+    subject do
+      next Class.new do
+        include PleaseRun::Configurable::Mixin
+        attribute :whatever, "whatever"
       end
+    end
 
-      it "creates accessor methods" do
+    it "creates accessor methods" do
+      foo = subject.new
+      insist { foo }.respond_to?(:whatever)
+      insist { foo }.respond_to?(:whatever=)
+      insist { foo }.respond_to?(:whatever?)
+    end
+
+    it "doesn't share values with other instances" do
+      foo1 = subject.new
+      foo2 = subject.new
+      foo1.whatever = "fancy"
+      insist { foo1.whatever } != foo2.whatever
+    end
+
+    context "#<attribute>?" do
+      it "returns false if the value isn't set" do
+        reject { subject.new }.whatever?
+      end
+      it "returns true if the value is set" do
         foo = subject.new
-        insist { foo }.respond_to?(:whatever)
-        insist { foo }.respond_to?(:whatever=)
-      end
-
-      it "doesn't share values with other instances" do
-        foo1 = subject.new
-        foo2 = subject.new
-        foo1.whatever = "fancy"
-        insist { foo1.whatever } != foo2.whatever
+        reject { foo }.whatever?
+        foo.whatever = "pants"
+        insist { foo }.whatever?
       end
     end
 

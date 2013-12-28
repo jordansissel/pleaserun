@@ -44,6 +44,11 @@ module PleaseRun::Configurable
         # object instance, not class ivar
         @attributes[name.to_sym].value = value
       end
+
+      define_method("#{name}?".to_sym) do
+        return @attributes[name.to_sym].set?
+      end
+
     end
 
     def attributes
@@ -85,6 +90,10 @@ module PleaseRun::Configurable
       return @value if @value
       return @options[:default] if @options.include?(:default)
       return nil
+    end
+
+    def set?
+      return !@value.nil?
     end
   end
 end
