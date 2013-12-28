@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Disabled</key> <false/>
+    <key>Label</key> <string>{{{ name }}}</string>
+    <key>Program</key> <string>{{{ command }}}</string>
+    <key>ProgramArguments</key> 
+      <array>
+        <string>{{{ command }}}</string>
+        {{{xml_args}}}
+      </array>
+    <key>KeepAlive</key> <true/>
+    <key>StandardOutPath</key> <string>/tmp/{{name}}.out</string>
+    <key>StandardErrorPath</key> <string>/tmp/{{name}}.err</string>
+  </dict>
+</plist>
+
