@@ -12,7 +12,7 @@ class PleaseRun::Base
     insist { name.is_a?(String) }
   end
 
-  attribute :command, "The program to execute. This can be a full path, like " \
+  attribute :program, "The program to execute. This can be a full path, like " \
     "/usr/bin/cat, or a shorter name like 'cat' if you wish to search $PATH." do |program|
     insist { program.is_a?(String) }
   end

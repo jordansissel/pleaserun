@@ -14,5 +14,5 @@ setgid {{group}}
 
 start script
   [ -f /etc/default/{{name}} ] && . /etc/default/{{name}}
-	exec {{command}} {{args}}
+	exec {{program}} {{args}}
 end script

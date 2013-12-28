@@ -4,7 +4,7 @@
   <dict>
     <key>Disabled</key> <false/>
     <key>Label</key> <string>{{{ name }}}</string>
-    <key>Program</key> <string>{{{ command }}}</string>
+    <key>Program</key> <string>{{{ program }}}</string>
     <key>ProgramArguments</key> 
       <array>
         <string>{{{ command }}}</string>
