@@ -20,13 +20,13 @@ Anything else?
 
 ## Platforms
 
-* runit (multiple files/directories)
+* ☑ runit (multiple files/directories)
 * daemontools (same as runit)
 * supervisord (one single config file)
-* upstart (one file)
+* ☑ upstart (one file)
 * systemd (???)
 * smf/solaris (one file?)
-* launchd (osx)
+* ☑ launchd (osx)
 * windows services
 
 ### "init" systems
@@ -34,13 +34,14 @@ Anything else?
 * freebsd
 * rhel
 * debian
-* ubuntu?
+* ☑ ubuntu
 * others?
 
 ### "activation" commands
 
 * chkconfig (rhel)
 * update-rc.d/family (debian)
+* launchctl load (osx)
 
 ### "Config" files
 
