@@ -36,3 +36,14 @@ Anything else?
 * debian
 * ubuntu?
 * others?
+
+### "activation" commands
+
+* chkconfig (rhel)
+* update-rc.d/family (debian)
+
+### "Config" files
+
+* /etc/default (debian)
+* /etc/sysconfig (rhel)
+

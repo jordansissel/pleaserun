@@ -1,0 +1,9 @@
+#! /bin/sh
+
+exec 2>&1
+
+COMMAND={{#escaped}}{{{command}}}{{/escaped}}
+ARGS={{{escaped_args}}}
+
+exec chpst -u {{user}}:{{group}} $COMMAND $ARGS
+

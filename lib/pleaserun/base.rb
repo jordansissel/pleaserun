@@ -1,5 +1,8 @@
+require "shellwords" # stdlib
 require "insist"
+require "mustache"
 require "pleaserun/namespace"
+require "pleaserun/settings"
 
 class PleaseRun::Base
   include PleaseRun::Settings
@@ -15,12 +18,27 @@ class PleaseRun::Base
     return self.class.name.split(/::/)[-1].downcase
   end # def platform
 
+  def template_path
+    return File.join("templates", platform, target_version)
+  end
+
   def render_template(name)
     # return a default if not possible? Error if no existing?
-    platform = self.class.name
-
-    path = File.join("templates", platform, target_version, name)
-    if !(File.readable?(path) && File.file?(path))
-    end
+    path = File.join(template_path, name)
+    raise "Invalid template #{path}!" if !(File.readable?(path) && File.file?(path))
+    tmpl = File.read(path)
+    return Mustache.render(tmpl, self)
   end # def render_template
+
+  def safe_filename(str)
+    return Mustache.render(str, self).gsub(" ","_")
+  end # def safe_filename
+
+  def escaped_args
+    return Shellwords.shellescape(Shellwords.shelljoin(@args))
+  end # def escaped_args
+
+  def escaped(str)
+    return Shellwords.shellescape(Mustache.render(str, self))
+  end # def escaped
 end
