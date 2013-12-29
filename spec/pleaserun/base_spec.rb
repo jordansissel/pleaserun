@@ -12,8 +12,8 @@ describe PleaseRun::Base do
       insist { subject.args }.nil?
     end
 
-    it "#command should be nil" do
-      insist { subject.command }.nil?
+    it "#program should be nil" do
+      insist { subject.program }.nil?
     end
 
     it "#user should be root" do
