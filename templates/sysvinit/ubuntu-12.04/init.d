@@ -32,10 +32,8 @@ start() {
     exec > /tmp/x.log
     exec 2> /tmp/x.err
     #newgrp {{group}}
-    exec flock -xn \"$pidfile\" \"$program\" \"\$@\"
-  " - $args
-  echo $?
-  pid=$!
+    exec \"$program\" \"\$@\"
+  " - $args &
   return 0
 }
 
@@ -53,12 +51,17 @@ stop() {
 }
 
 status() {
-  if ! flock -xn "$pidfile" true ; then
-    # flock failed, file is locked, check if process is up?
-    if kill -0 `cat "$pidfile"` 2> /dev/null; then
-      return 0 # process is up
+  if [ -f "$pidfile" ] ; then
+    pid=`cat "$pidfile"`
+    if kill -0 $pid > /dev/null 2> /dev/null ; then
+      # process by this pid is running.
+      # It may not be our pid, but that's what you get with just pidfiles.
+      # TODO(sissel): Check if this process seems to be the same as the one we
+      # expect. It'd be nice to use flock here, but flock uses fork, not exec,
+      # so it makes it quite awkward to use in this case.
+      return 0
     else
-      return 2 # program is dead but pid file exists and is locked
+      return 2 # program is dead but pid file exists
     fi
   else
     return 3 # program is not running
