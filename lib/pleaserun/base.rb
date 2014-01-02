@@ -7,6 +7,7 @@ require "mustache"
 
 class PleaseRun::Base
   include PleaseRun::Configurable::Mixin
+  class InvalidTemplate < ::StandardError; end
 
   attribute :name, "The name of this program." do |name|
     insist { name.is_a?(String) }
@@ -47,14 +48,22 @@ class PleaseRun::Base
   end # def platform
 
   def template_path
-    return File.join("templates", platform, target_version)
+    return File.join("templates", platform)
   end
 
   def render_template(name)
-    # return a default if not possible? Error if no existing?
-    path = File.join(template_path, name)
-    raise "Invalid template #{path}!" if !(File.readable?(path) && File.file?(path))
-    return render(File.read(path))
+    possibilities = [ 
+      File.join(template_path, target_version, name),
+      File.join(template_path, "default", name),
+      File.join(template_path, name)
+    ]
+
+    possibilities.each do |path|
+      next if !(File.readable?(path) && File.file?(path))
+      return render(File.read(path))
+    end
+
+    raise InvalidTemplate, "Could not find template file for '#{name}'. Tried all of these: #{possibilities.inspect}"
   end # def render_template
 
   def render(text)
