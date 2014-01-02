@@ -1,8 +1,7 @@
 require "pleaserun/base"
 require "pleaserun/namespace"
 
-class PleaseRun::SysVInit < PleaseRun::Base
-
+class PleaseRun::SYSV < PleaseRun::Base
   # Returns which an enumerable will yield [path, content] for any files
   # necessary to implement this runner.
   #

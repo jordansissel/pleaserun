@@ -1,14 +1,14 @@
 require "testenv"
 require "pleaserun/sysv"
 
-describe PleaseRun::SysVInit do
+describe PleaseRun::SYSV do
   it "inherits correctly" do
-    insist { PleaseRun::SysVInit.ancestors }.include?(PleaseRun::Base)
+    insist { PleaseRun::SYSV.ancestors }.include?(PleaseRun::Base)
   end
 
   context "#files" do
     subject do
-      runner = PleaseRun::SysVInit.new("ubuntu-12.04")
+      runner = PleaseRun::SYSV.new("ubuntu-12.04")
       runner.name = "fancypants"
       next runner
     end
