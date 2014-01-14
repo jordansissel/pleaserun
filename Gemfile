@@ -5,3 +5,4 @@ gem "insist"
 # For testing
 gem "rspec"
 gem "guard"
+gem "guard-rspec"
