@@ -1,15 +1,43 @@
 require "testenv"
 require "pleaserun/mustache_methods"
 
-describe PleaseRun::MustacheMethods do
-  subject do
-    Class.new
-      include PleaseRun::MustacheMethods
+class MustacheMethodTester
+  include PleaseRun::MustacheMethods
 
-      def whatever
-        return "hello world"
-      end
+  def whatever
+    return "hello world"
+  end
+
+  def render(s)
+    return s
+  end
+end
+
+describe PleaseRun::MustacheMethods do
+  subject { MustacheMethodTester.new }
+
+  context "{{shell_args}}" do
+    it "should escape multiple arguments via quoting" do
+      input = [ "hello world", "fancy pants" ]
+      insist { subject.shell_args(input) } == "\"hello world\" \"fancy pants\""
     end
   end
 
+  context "{{shell_quote}}" do
+    it "quotes with spaces correctly" do
+      insist { subject.shell_quote("hello world") } == "\"hello world\""
+    end
+    it "escapes $" do
+      insist { subject.shell_quote("$") } == "\"\\$\""
+    end
+  end
+
+  context "{{shell_continuation}}" do
+    let(:input) { "hello\nworld\nfizzle" }
+      
+    it "should render correctly" do
+      insist { subject.shell_continuation(input) } == "hello \\\nworld \\\nfizzle"
+    end
+  end
+  context "{{quoted}}"
 end
