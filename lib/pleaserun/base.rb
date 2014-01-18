@@ -29,7 +29,7 @@ class PleaseRun::Base
   end
 
   attribute :group, "The group to use for executing this program.",
-            :default => "root"do |group|
+            :default => "root" do |group|
     insist { group }.is_a?(String)
   end
 
@@ -73,4 +73,4 @@ class PleaseRun::Base
   def safe_filename(str)
     return render(str).gsub(" ","_")
   end # def safe_filename
-end
+end # class PleaseRun::Base
