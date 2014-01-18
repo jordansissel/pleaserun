@@ -7,12 +7,12 @@
     <key>Program</key> <string>{{{ program }}}</string>
     <key>ProgramArguments</key> 
       <array>
-        <string>{{{ command }}}</string>
+        <string>{{{ program }}}</string>
         {{{xml_args}}}
       </array>
     <key>KeepAlive</key> <true/>
-    <key>StandardOutPath</key> <string>/tmp/{{name}}.out</string>
-    <key>StandardErrorPath</key> <string>/tmp/{{name}}.err</string>
+    <key>StandardOutPath</key> <string>/var/log/{{name}}.out</string>
+    <key>StandardErrorPath</key> <string>/var/log/{{name}}.err</string>
   </dict>
 </plist>
 
