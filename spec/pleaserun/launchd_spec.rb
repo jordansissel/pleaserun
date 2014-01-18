@@ -33,12 +33,13 @@ describe PleaseRun::LaunchD do
   end
 
   context "deployment" do
-    it "cannot be attempted" do
+    partytime = (superuser? && platform?("darwin"))
+    it "cannot be attempted", :if => !partytime do
       pending("we are not the superuser") unless superuser?
       pending("platform is not darwin") unless platform?("darwin")
     end
 
-    context "as the super user", :if => (superuser? && platform?("darwin")) do
+    context "as the super user", :if => partytime do
       subject { PleaseRun::LaunchD.new("10.9") }
 
       before do
@@ -57,6 +58,7 @@ describe PleaseRun::LaunchD do
       end
 
       after do
+        system_quiet("launchctl stop #{subject.name}")
         system_quiet("launchctl unload /Library/LaunchDaemons/#{subject.name}.plist")
         subject.files.each do |path, content|
           File.unlink(path) if File.exist?(path)
