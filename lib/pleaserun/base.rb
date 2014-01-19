@@ -36,6 +36,11 @@ class PleaseRun::Base
   attribute :target_version, "The version of this runner platform to target." do |version|
     insist { version.is_a?(String) }
   end
+  
+  attribute :description, "The human-readable description of your program",
+            :default => "no description given" do |description|
+    insist { description }.is_a?(String)
+  end
 
   def initialize(target_version)
     configurable_setup
