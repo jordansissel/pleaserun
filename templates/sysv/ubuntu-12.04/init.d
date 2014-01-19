@@ -21,13 +21,13 @@ export PATH
 name={{#escaped}}{{#safe_filename}}{{{ name }}}{{/safe_filename}}{{/escaped}}
 program={{#escaped}}{{{ program }}}{{/escaped}}
 args={{{ escaped_args }}}
-pidfile="/var/run/$NAME.pid"
+pidfile="/var/run/$name.pid"
 
 [ -r /etc/default/$NAME ] && . /etc/default/$NAME
 [ -r /etc/sysconfig/$NAME ] && . /etc/sysconfig/$NAME
 
 start() {
-  su {{user}} -c "
+  su {{{user}}} -c "
     echo \$\$ > $pidfile
     exec > /tmp/x.log
     exec 2> /tmp/x.err
