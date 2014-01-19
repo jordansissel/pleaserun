@@ -68,9 +68,8 @@ describe PleaseRun::Upstart do
         end
 
         # Remove the logs, too.
-        [ "/var/log/#{subject.name}.out", "/var/log/#{subject.name}.err" ].each do |log|
-          File.unlink(log) if File.exist?(log)
-        end
+        log = "/var/log/upstart/example.log"
+        File.unlink(log) if File.exist?(log)
       end
 
       it "should install" do
