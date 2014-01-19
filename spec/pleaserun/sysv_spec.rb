@@ -69,7 +69,7 @@ describe PleaseRun::SYSV do
 
         system_quiet("/etc/init.d/#{subject.name} start")
 
-        system("sh -x /etc/init.d/#{subject.name} status")
+        system("/etc/init.d/#{subject.name} status")
         insist { $? }.success?
       end
 
