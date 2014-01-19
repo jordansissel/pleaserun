@@ -42,6 +42,12 @@ class PleaseRun::Base
     insist { description }.is_a?(String)
   end
 
+  # TODO(sissel): Should this be a numeric, not a string?
+  attribute :umask, "The umask to apply to this program",
+            :default => "022" do |umask|
+    insist { umask }.is_a?(String)
+  end
+
   def initialize(target_version)
     configurable_setup
     self.target_version = target_version
