@@ -12,7 +12,7 @@ module PleaseRun::MustacheMethods
     return Shellwords.shellescape(Mustache.render(str, self))
   end # def escaped
 
-  def shell_args(args)
+  def shell_args
     return if args.nil?
     return args.collect { |a| shell_quote(a) }.join(" ")
   end # def shell_args
