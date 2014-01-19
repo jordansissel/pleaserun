@@ -78,4 +78,9 @@ class PleaseRun::Base
   def safe_filename(str)
     return render(str).gsub(" ","_")
   end # def safe_filename
+
+  # The default install_actions is none
+  def install_actions
+    return []
+  end # def install_actions
 end # class PleaseRun::Base
