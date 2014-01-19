@@ -8,6 +8,10 @@ class MustacheMethodTester
     return "hello world"
   end
 
+  def args
+    [ "hello world", "fancy pants"]
+  end
+
   def render(s)
     return s
   end
@@ -18,8 +22,7 @@ describe PleaseRun::MustacheMethods do
 
   context "{{shell_args}}" do
     it "should escape multiple arguments via quoting" do
-      input = [ "hello world", "fancy pants" ]
-      insist { subject.shell_args(input) } == "\"hello world\" \"fancy pants\""
+      insist { subject.shell_args } == "\"hello world\" \"fancy pants\""
     end
   end
 
