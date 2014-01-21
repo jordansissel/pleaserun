@@ -1,6 +1,5 @@
 require "testenv"
 require "pleaserun/sysv"
-require "stud/try"
 
 describe PleaseRun::SYSV do
   it "inherits correctly" do
