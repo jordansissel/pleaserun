@@ -1,5 +1,6 @@
 require "testenv"
 require "pleaserun/sysv"
+require "stud/try"
 
 describe PleaseRun::SYSV do
   it "inherits correctly" do
@@ -35,11 +36,16 @@ describe PleaseRun::SYSV do
       before do
         subject.name = "example"
         subject.user = "root"
-        subject.program = "/bin/sh"
-        subject.args = [ "-c", "echo hello world; sleep 5" ]
+        #subject.program = "/bin/sh"
+        #subject.args = [ "-c", "echo hello world; sleep 5" ]
+        #subject.program = "/usr/bin/python"
+        #subject.args = [ "-c", "import time; print \"OK\"; time.sleep(3)" ]
+        subject.program = "/bin/ping"
+        subject.args = [ "127.0.0.1" ]
 
-        subject.files.each do |path, content|
+        subject.files.each do |path, content, mode=nil|
           File.write(path, content)
+          File.chmod(mode, path) if mode
         end
         subject.install_actions.each do |command|
           system(command)
@@ -68,8 +74,9 @@ describe PleaseRun::SYSV do
         reject { $? }.success?
 
         system_quiet("/etc/init.d/#{subject.name} start")
+        insist { $? }.success?
 
-        system("/etc/init.d/#{subject.name} status")
+        system_quiet("/etc/init.d/#{subject.name} status")
         insist { $? }.success?
       end
 
