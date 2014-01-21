@@ -28,12 +28,18 @@ pidfile="/var/run/$name.pid"
 
 start() {
   su {{{user}}} -c "
-    echo \$\$ > $pidfile
-    exec > /tmp/x.log
-    exec 2> /tmp/x.err
-    #newgrp {{group}}
-    exec \"$program\" \"\$@\"
-  " - $args &
+    #echo \$\$ > $pidfile
+    exec > /var/log/$name.log
+    exec 2> /var/log/$name.err
+    exec \"$program\" $args
+  " -- &
+
+  # Generate the pidfile from here. If we make the forked process generate it
+  # there will be a race condition between the pidfile writing and a process
+  # possibly asking for status.
+  echo $! > $pidfile
+
+  echo "$name started."
   return 0
 }
 
@@ -41,12 +47,19 @@ stop() {
   # Try a few times to kill TERM the program
   if status ; then
     pid=`cat "$pidfile"`
+    echo "Killing $name (pid $pid) with SIGTERM"
     kill -TERM $pid
     # Wait for it to exit.
     for i in 1 2 3 4 5 ; do
+      echo "Waiting $name (pid $pid) to die..."
       status || break
       sleep 1
     done
+    if status ; then
+      echo "$name stop failed; still running."
+    else
+      echo "$name stopped."
+    fi
   fi
 }
 
@@ -79,10 +92,19 @@ case "$1" in
   start) status || start ;;
   stop) stop ;;
   force-stop) force_stop ;;
-  status) status ;;
+  status) 
+    status
+    code=$?
+    if [ $code -eq 0 ] ; then
+      echo "$name is running"
+    else
+      echo "$name is not running"
+    fi
+    exit $code
+    ;;
   restart) stop && start ;;
   *)
-    echo "Usage: $SCRIPTNAME {start|stop|status|restart}" >&2
+    echo "Usage: $SCRIPTNAME {start|stop|force-stop|status|restart}" >&2
     exit 3
   ;;
 esac
