@@ -24,9 +24,10 @@ describe PleaseRun::SYSV do
   end
 
   context "deployment" do
-    partytime = superuser?
+    partytime = superuser? && File.directory?("/etc/init.d")
     it "cannot be attempted", :if => !partytime do
       pending("we are not the superuser") unless superuser?
+      pending("no /etc/init.d/ directory found") unless File.directory?("/etc/init.d")
     end
 
     context "as the super user", :if => partytime do
