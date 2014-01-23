@@ -23,17 +23,20 @@ program={{#escaped}}{{{ program }}}{{/escaped}}
 args={{{ escaped_args }}}
 pidfile="/var/run/$name.pid"
 
-[ -r /etc/default/$NAME ] && . /etc/default/$NAME
-[ -r /etc/sysconfig/$NAME ] && . /etc/sysconfig/$NAME
+[ -r /etc/default/$name ] && . /etc/default/$name
+[ -r /etc/sysconfig/$name ] && . /etc/sysconfig/$name
 
 start() {
-  #su {{{user}}} -c "
-    ##echo \$\$ > $pidfile
-    #exec > /var/log/$name.log
-    #exec 2> /var/log/$name.err
-    #exec \"$program\" $args
-  #" -- &
-  chroot --userspec {{{user}}}:{{{group}}} "$program" $args > /var/log/$name.log 2> /var/log/$name.err &
+  {{! I don't use 'su' here to run as a different user because the process 'su'
+      stays as the parent, causing our pidfile to contain the pid of 'su' not the
+      program we intended to run. Luckily, the 'chroot' program on OSX, FreeBSD, and Linux
+      all support switching users and it invokes execve immediately after chrooting.
+  }}
+  chroot --userspec {{{user}}}:{{{group}}} {{{chroot}}} sh -c "
+    {{#chdir}}cd {{{chdir}}}{{/chdir}}
+    {{#nice}}nice {{{nice}}}{{/nice}}
+    exec \"$program\" $args
+  " > /var/log/$name.log 2> /var/log/$name.err &
 
   # Generate the pidfile from here. If we make the forked process generate it
   # there will be a race condition between the pidfile writing and a process
