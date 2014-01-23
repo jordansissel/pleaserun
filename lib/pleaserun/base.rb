@@ -48,6 +48,18 @@ class PleaseRun::Base
     insist { umask }.is_a?(String)
   end
 
+  attribute :chroot, "The directory to chroot to", :default => "/" do |chroot|
+    insist { chroot }.is_a?(String)
+  end
+
+  attribute :chdir, "The directory to chdir to before running" do |chdir|
+    insist { chdir }.is_a?(String)
+  end
+
+  attribute :nice, "The nice level to add to this program before running" do |nice|
+    insist { nice }.is_a?(Fixnum)
+  end
+
   def initialize(target_version)
     configurable_setup
     self.target_version = target_version
