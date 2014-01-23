@@ -27,12 +27,13 @@ pidfile="/var/run/$name.pid"
 [ -r /etc/sysconfig/$NAME ] && . /etc/sysconfig/$NAME
 
 start() {
-  su {{{user}}} -c "
-    #echo \$\$ > $pidfile
-    exec > /var/log/$name.log
-    exec 2> /var/log/$name.err
-    exec \"$program\" $args
-  " -- &
+  #su {{{user}}} -c "
+    ##echo \$\$ > $pidfile
+    #exec > /var/log/$name.log
+    #exec 2> /var/log/$name.err
+    #exec \"$program\" $args
+  #" -- &
+  chroot --userspec {{{user}}}:{{{group}}} "$program" $args > /var/log/$name.log 2> /var/log/$name.err &
 
   # Generate the pidfile from here. If we make the forked process generate it
   # there will be a race condition between the pidfile writing and a process
