@@ -37,10 +37,12 @@ describe PleaseRun::Upstart do
   end
 
   context "deployment" do
-    partytime = (superuser? && platform?("linux"))
+    partytime = (superuser? && platform?("linux") && program?("initctl") && File.directory?("/etc/init"))
     it "cannot be attempted", :if => !partytime do
       pending("we are not the superuser") unless superuser?
       pending("platform is not linux") unless platform?("linux")
+      pending("no 'initctl' program found") unless program?("initctl")
+      pending("missing /etc/init/ directory") unless File.directory?("/etc/init")
     end
 
     context "as the super user", :if => partytime do
