@@ -12,3 +12,12 @@ end
 def system_quiet(command)
   system("#{command} > /dev/null 2>&1")
 end
+
+def program?(name)
+  ENV["PATH"].split(":").each do |path|
+    file = File.join(path, name)
+    return true if File.executable?(file)
+  end
+  return false
+end
+
