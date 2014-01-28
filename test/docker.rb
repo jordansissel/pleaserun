@@ -2,68 +2,38 @@ require "insist"
 require "net/ssh"
 require "json"
 require "stud/try"
+require "stud/temporary"
+require "peach"
 
-def sshrun(host, command, &block)
-  if !block_given?
-    block = proc do |fd, data|
-      case fd
-        when :stdout; $stdout.write(data)
-        when :stderr; $stderr.write(data)
-      end
-    end
-  end
-
-  status = 0
-  Net::SSH.start(host, "root", :password => "docker.io") do |ssh|
-    ssh.open_channel do |channel|
-      channel.exec(command) do |channel, success|
-        channel.on_data do |c, data|
-          block.call(:stdout, data)
-        end
-        channel.on_extended_data do |c, type, data|
-          block.call(:stderr, data)
-        end
-        channel.on_request("exit-status") do |c, data|
-          status = data.read_long
-        end
-      end
-      channel.wait
-    end
-  end
-
-  return status
-end # def sshrun
+require_relative "helpers"
+Thread.abort_on_exception = true
 
 raise "What tags to run?" if ARGV.empty?
-success = true
+
+start = Time.now
+queue = Queue.new
+
 ARGV.each do |tag|
-  name = "pleaserun-testing-container-#{tag}"
-  base = File.expand_path("../", File.dirname(__FILE__))
-
-  system("docker start #{name}")
-
-  # If there is no container by this name, let's run one.
-  if !$?.success?
-    system("docker run -d -name \"#{name}\" -i -t -v \"#{base}:/pleaserun\" jordansissel/system:#{tag} /sbin/init")
+  Thread.new do
+    out = Stud::Temporary.pathname
+    err = Stud::Temporary.pathname
+    status = test_in_container(tag, [
+      "(. /etc/profile; cd /pleaserun; bundle install --quiet) > #{out} 2> #{err}",
+      "(. /etc/profile; cd /pleaserun; rspec) >> #{out} 2>> #{err}"
+    ])
+    queue << [tag, status, out, err]
   end
-  insist { $? }.success?
-
-  begin
-    container = JSON.parse(`docker inspect "#{name}"`).first
-    vmip = container["NetworkSettings"]["IPAddress"]
-
-    # Wait for ssh to be up
-    Stud::try(10.times) { sshrun(vmip, "true") }
-    status = sshrun(vmip, ". /etc/profile; cd /pleaserun; bundle install --quiet")
-    insist { status } == 0
-
-    status = sshrun(vmip, ". /etc/profile; cd /pleaserun; rspec")
-    insist { status } == 0
-  ensure
-    system("docker kill #{name} > /dev/null 2>&1")
-  end
-  puts "#{tag}: #{status}"
-  success = (status == 0) && success
 end
 
-exit(success ? 0 : 1)
+results = ARGV.collect { tag, success, out, err = queue.pop }
+successes = results.count { |tag, success, out, err| success }
+failures = results.count { |tag, success, out, err| !success }
+duration = Time.now - start
+
+puts "Success: #{successes}, Failure: #{failures}, Duration: #{sprintf("%0.3f", duration)} seconds"
+
+results.each do |tag, success, out, err|
+  next if success
+  puts File.read(err).gsub(/^/, "#{tag}/stdout: ")
+  puts File.read(out).gsub(/^/, "#{tag}/stderr: ")
+end
