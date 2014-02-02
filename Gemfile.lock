@@ -24,6 +24,8 @@ GEM
     lumberjack (1.0.4)
     method_source (0.8.2)
     mustache (0.99.5)
+    net-ssh (2.8.0)
+    peach (0.5.1)
     pry (0.9.12.4)
       coderay (~> 1.0)
       method_source (~> 0.8)
@@ -51,4 +53,6 @@ DEPENDENCIES
   guard-rspec
   insist
   mustache
+  net-ssh
+  peach
   rspec
