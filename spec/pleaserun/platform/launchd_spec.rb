@@ -1,14 +1,14 @@
 require "testenv"
-require "pleaserun/launchd"
+require "pleaserun/platform/launchd"
 
-describe PleaseRun::LaunchD do
+describe PleaseRun::Platform::LaunchD do
   it "inherits correctly" do
-    insist { PleaseRun::LaunchD.ancestors }.include?(PleaseRun::Base)
+    insist { PleaseRun::Platform::LaunchD.ancestors }.include?(PleaseRun::Platform::Base)
   end
 
   context "#files" do
     subject do
-      runner = PleaseRun::LaunchD.new("10.9")
+      runner = PleaseRun::Platform::LaunchD.new("10.9")
       runner.name = "fancypants"
       next runner
     end
@@ -22,7 +22,7 @@ describe PleaseRun::LaunchD do
 
   context "#install_actions" do
     subject do
-      runner = PleaseRun::LaunchD.new("10.9")
+      runner = PleaseRun::Platform::LaunchD.new("10.9")
       runner.name = "fancypants"
       next runner
     end
@@ -40,7 +40,7 @@ describe PleaseRun::LaunchD do
     end
 
     context "as the super user", :if => partytime do
-      subject { PleaseRun::LaunchD.new("10.9") }
+      subject { PleaseRun::Platform::LaunchD.new("10.9") }
 
       before do
         subject.name = "example"

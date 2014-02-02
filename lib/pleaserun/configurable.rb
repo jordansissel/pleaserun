@@ -1,6 +1,26 @@
 require "pleaserun/namespace"
 require "insist"
 
+# A mixin class that provides 'attribute' to a class.
+# The main use for such attributes is to provide validation for mutators.
+#
+# Example:
+#
+#     class Person
+#       include PleaseRun::Configurable
+#
+#       attribute :greeting, "A simple greeting" do |greeting|
+#         # do any validation here.
+#         raise "Greeting must be a string!" unless greeting.is_a?(String)
+#       end
+#     end
+#
+#     person = Person.new
+#     person.greeting = 1234 # Fails!
+#     person.greeting = "Hello, world!"
+#
+#     puts person.greeting
+#     # "Hello, world!"
 module PleaseRun::Configurable
   class ConfigurationError < ::StandardError; end
   class ValidationError < ConfigurationError; end
@@ -14,20 +34,18 @@ module PleaseRun::Configurable
         m.call(*args, &block) if m
         configurable_setup
       end
-    end
+    end # def self.included
 
     def configurable_setup
       @attributes = {}
       self.class.ancestors.each do |ancestor|
-        #if ancestor.respond_to?(:attributes)
-        if ancestor.include?(PleaseRun::Configurable::Mixin)
-          ancestor.attributes.each do |facet|
-            @attributes[facet.name] = facet.clone
-          end
+        next unless ancestor.include?(PleaseRun::Configurable::Mixin)
+        ancestor.attributes.each do |facet|
+          @attributes[facet.name] = facet.clone
         end
       end
-    end
-  end
+    end # def configurable_setup
+  end # module Mixin
 
   module ClassMixin
     def attribute(name, description, options={}, &validator)
@@ -48,13 +66,12 @@ module PleaseRun::Configurable
       define_method("#{name}?".to_sym) do
         return @attributes[name.to_sym].set?
       end
-
-    end
+    end # def attribute
 
     def attributes
       return (@attributes ||= [])
-    end
-  end
+    end # def attributes
+  end # def ClassMixin
 
   class Facet
     attr_reader :name
@@ -73,27 +90,27 @@ module PleaseRun::Configurable
       if @options[:default]
         validate(@options[:default])
       end
-    end
+    end # def initialize
 
     def value=(v)
       validate(v)
       @value = v
-    end
+    end # def value=
 
     def validate(v)
       return @validator.call(v) if @validator
     rescue
       raise ValidationError, "Invalid value '#{v.inspect}' for attribute '#{name}'"
-    end
+    end # def validate
 
     def value
       return @value if @value
       return @options[:default] if @options.include?(:default)
       return nil
-    end
+    end # def value
 
     def set?
       return !@value.nil?
-    end
-  end
-end
+    end # def set?
+  end # class Facet
+end # module PleaseRun::Configurable

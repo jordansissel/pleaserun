@@ -1,14 +1,14 @@
 require "testenv"
-require "pleaserun/upstart"
+require "pleaserun/platform/upstart"
 
-describe PleaseRun::Upstart do
+describe PleaseRun::Platform::Upstart do
   it "inherits correctly" do
-    insist { PleaseRun::Upstart.ancestors }.include?(PleaseRun::Base)
+    insist { PleaseRun::Platform::Upstart.ancestors }.include?(PleaseRun::Platform::Base)
   end
 
   context "#files" do
     subject do
-      runner = PleaseRun::Upstart.new("1.10")
+      runner = PleaseRun::Platform::Upstart.new("1.10")
       runner.name = "fancypants"
       next runner
     end
@@ -26,7 +26,7 @@ describe PleaseRun::Upstart do
 
   context "#install_actions" do
     subject do
-      runner = PleaseRun::Upstart.new("1.10")
+      runner = PleaseRun::Platform::Upstart.new("1.10")
       runner.name = "fancypants"
       next runner
     end
@@ -46,7 +46,7 @@ describe PleaseRun::Upstart do
     end
 
     context "as the super user", :if => partytime do
-      subject { PleaseRun::Upstart.new("1.10") }
+      subject { PleaseRun::Platform::Upstart.new("1.10") }
 
       before do
         subject.name = "example"

@@ -1,7 +1,7 @@
 require 'pleaserun/namespace'
-require 'pleaserun/base'
+require "pleaserun/platform/base"
 
-class PleaseRun::Runit < PleaseRun::Base
+class PleaseRun::Platform::Runit < PleaseRun::Platform::Base
   attribute :service_path, "The path runit service directory",
             :default => "/service" do |path|
     insist { path }.is_a?(String)

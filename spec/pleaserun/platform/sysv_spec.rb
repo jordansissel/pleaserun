@@ -1,14 +1,14 @@
 require "testenv"
-require "pleaserun/sysv"
+require "pleaserun/platform/sysv"
 
-describe PleaseRun::SYSV do
+describe PleaseRun::Platform::SYSV do
   it "inherits correctly" do
-    insist { PleaseRun::SYSV.ancestors }.include?(PleaseRun::Base)
+    insist { PleaseRun::Platform::SYSV.ancestors }.include?(PleaseRun::Platform::Base)
   end
 
   context "#files" do
     subject do
-      runner = PleaseRun::SYSV.new("ubuntu-12.04")
+      runner = PleaseRun::Platform::SYSV.new("ubuntu-12.04")
       runner.name = "fancypants"
       next runner
     end
@@ -31,7 +31,7 @@ describe PleaseRun::SYSV do
     end
 
     context "as the super user", :if => partytime do
-      subject { PleaseRun::SYSV.new("ubuntu-12.04") }
+      subject { PleaseRun::Platform::SYSV.new("ubuntu-12.04") }
 
       before do
         subject.name = "example"

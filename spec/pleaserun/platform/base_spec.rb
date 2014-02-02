@@ -1,9 +1,9 @@
 require "testenv"
-require "pleaserun/base"
+require "pleaserun/platform/base"
 
-describe PleaseRun::Base do
+describe PleaseRun::Platform::Base do
   context "default" do
-    subject { PleaseRun::Base.new("example") }
+    subject { PleaseRun::Platform::Base.new("example") }
     it "#name should be nil" do
       insist { subject.name }.nil?
     end

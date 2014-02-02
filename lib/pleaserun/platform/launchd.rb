@@ -1,7 +1,7 @@
-require "pleaserun/base"
+require "pleaserun/platform/base"
 require "pleaserun/namespace"
 
-class PleaseRun::LaunchD < PleaseRun::Base
+class PleaseRun::Platform::LaunchD < PleaseRun::Platform::Base
   def daemons_path
     return safe_filename("/Library/LaunchDaemons/{{ name }}.plist")
   end
