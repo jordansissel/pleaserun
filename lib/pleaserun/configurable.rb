@@ -69,7 +69,11 @@ module PleaseRun::Configurable
     end # def attribute
 
     def attributes
-      return (@attributes ||= [])
+      return @attributes ||= []
+    end
+
+    def all_attributes
+      return ancestors.select { |a| a.respond_to?(:attributes) }.collect{ |a| a.attributes }.flatten
     end # def attributes
   end # def ClassMixin
 
