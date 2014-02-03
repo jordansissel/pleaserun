@@ -2,6 +2,11 @@ require "testenv"
 require "pleaserun/platform/sysv"
 
 describe PleaseRun::Platform::SYSV do
+  let(:start) { "/etc/init.d/#{subject.name} start" }
+  let(:stop) { "/etc/init.d/#{subject.name} stop" }
+  let(:status) { "/etc/init.d/#{subject.name} status" }
+  let(:restart) { "/etc/init.d/#{subject.name} restart" }
+
   it "inherits correctly" do
     insist { PleaseRun::Platform::SYSV.ancestors }.include?(PleaseRun::Platform::Base)
   end
@@ -59,25 +64,14 @@ describe PleaseRun::Platform::SYSV do
 
       it "should start" do
         # Status should fail before starting
-        system_quiet("/etc/init.d/#{subject.name} status")
-        reject { $? }.success?
-
-        system_quiet("/etc/init.d/#{subject.name} start")
-        insist { $? }.success?
-
-        system_quiet("/etc/init.d/#{subject.name} status")
-        insist { $? }.success?
+        status_stopped
+        starts
       end
 
       it "should stop" do
-        system_quiet("/etc/init.d/#{subject.name} start")
-        insist { $? }.success?
-
-        system_quiet("/etc/init.d/#{subject.name} stop")
-        insist { $? }.success?
-
-        system_quiet("/etc/init.d/#{subject.name} status")
-        reject { $? }.success?
+        status_stopped
+        starts
+        stops
       end
 
       context "with failing prestart" do
@@ -87,35 +81,30 @@ describe PleaseRun::Platform::SYSV do
         end
 
         it "should fail to start" do
-          system_quiet("/etc/init.d/#{subject.name} start")
-          reject { $? }.success?
+          insist { starts }.fails
         end
 
-        it "should start if PRESTART=no" do
-          system_quiet("env PRESTART=no /etc/init.d/#{subject.name} start")
-          insist { $? }.success?
+        context "with PRESTART=no" do
+          before { ENV["PRESTART"] = "no" }
+          after { ENV["PRESTART"] = nil }
+          it "should start" do
+            starts
+          end
         end
 
         it "should stop" do
-          system_quiet("env PRESTART=no /etc/init.d/#{subject.name} start")
-          insist { $? }.success?
-
-          system_quiet("/etc/init.d/#{subject.name} status")
-          insist { $? }.success?
-
-          system_quiet("/etc/init.d/#{subject.name} stop")
-          insist { $? }.success?
-
-          system_quiet("/etc/init.d/#{subject.name} status")
-          reject { $? }.success?
+          # Force a start
+          ENV["PRESTART"] = "no"
+          starts
+          ENV["PRESTART"] = nil
+          stops
         end
 
         it "should fail to restart" do
-          system_quiet("env PRESTART=no /etc/init.d/#{subject.name} start")
-          insist { $? }.success?
-
-          system_quiet("/etc/init.d/#{subject.name} restart")
-          reject { $? }.success?
+          ENV["PRESTART"] = "no"
+          starts
+          ENV["PRESTART"] = nil
+          insist { restarts }.fails
         end
       end
 
@@ -126,22 +115,17 @@ describe PleaseRun::Platform::SYSV do
         end
 
         it "should start" do
-          system_quiet("/etc/init.d/#{subject.name} start")
-          insist { $? }.success?
+          starts
         end
 
         it "should restart" do
-          system_quiet("env PRESTART=no /etc/init.d/#{subject.name} start")
-          insist { $? }.success?
+          # Force start
+          ENV["PRESTART"] = "no"
+          starts
+          ENV["PRESTART"] = nil
 
-          system_quiet("/etc/init.d/#{subject.name} status")
-          insist { $? }.success?
-
-          system_quiet("/etc/init.d/#{subject.name} restart")
-          insist { $? }.success?
-
-          system_quiet("/etc/init.d/#{subject.name} status")
-          insist { $? }.success?
+          # Restart should succeed
+          restarts
         end
       end
     end # as the super user
