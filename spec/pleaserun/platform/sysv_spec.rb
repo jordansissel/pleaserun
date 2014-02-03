@@ -36,21 +36,10 @@ describe PleaseRun::Platform::SYSV do
       before do
         subject.name = "example"
         subject.user = "root"
-        #subject.program = "/bin/sh"
-        #subject.args = [ "-c", "echo hello world; sleep 5" ]
-        #subject.program = "/usr/bin/python"
-        #subject.args = [ "-c", "import time; print \"OK\"; time.sleep(3)" ]
         subject.program = "/bin/ping"
         subject.args = [ "127.0.0.1" ]
 
-        subject.files.each do |path, content, mode=nil|
-          File.write(path, content)
-          File.chmod(mode, path) if mode
-        end
-        subject.install_actions.each do |command|
-          system(command)
-          raise "Command failed: #{command}" unless $?.success?
-        end
+        activate(subject)
       end
 
       after do
@@ -90,6 +79,71 @@ describe PleaseRun::Platform::SYSV do
         system_quiet("/etc/init.d/#{subject.name} status")
         reject { $? }.success?
       end
-    end
+
+      context "with failing prestart" do
+        before do
+          subject.prestart = "false"
+          activate(subject)
+        end
+
+        it "should fail to start" do
+          system_quiet("/etc/init.d/#{subject.name} start")
+          reject { $? }.success?
+        end
+
+        it "should start if PRESTART=no" do
+          system_quiet("env PRESTART=no /etc/init.d/#{subject.name} start")
+          insist { $? }.success?
+        end
+
+        it "should stop" do
+          system_quiet("env PRESTART=no /etc/init.d/#{subject.name} start")
+          insist { $? }.success?
+
+          system_quiet("/etc/init.d/#{subject.name} status")
+          insist { $? }.success?
+
+          system_quiet("/etc/init.d/#{subject.name} stop")
+          insist { $? }.success?
+
+          system_quiet("/etc/init.d/#{subject.name} status")
+          reject { $? }.success?
+        end
+
+        it "should fail to restart" do
+          system_quiet("env PRESTART=no /etc/init.d/#{subject.name} start")
+          insist { $? }.success?
+
+          system_quiet("/etc/init.d/#{subject.name} restart")
+          reject { $? }.success?
+        end
+      end
+
+      context "with a successful prestart" do
+        before do
+          subject.prestart = "echo hello world"
+          activate(subject)
+        end
+
+        it "should start" do
+          system_quiet("/etc/init.d/#{subject.name} start")
+          insist { $? }.success?
+        end
+
+        it "should restart" do
+          system_quiet("env PRESTART=no /etc/init.d/#{subject.name} start")
+          insist { $? }.success?
+
+          system_quiet("/etc/init.d/#{subject.name} status")
+          insist { $? }.success?
+
+          system_quiet("/etc/init.d/#{subject.name} restart")
+          insist { $? }.success?
+
+          system_quiet("/etc/init.d/#{subject.name} status")
+          insist { $? }.success?
+        end
+      end
+    end # as the super user
   end # real tests
 end

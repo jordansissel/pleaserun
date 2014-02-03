@@ -32,15 +32,24 @@ start() {
       program we intended to run. Luckily, the 'chroot' program on OSX, FreeBSD, and Linux
       all support switching users and it invokes execve immediately after chrooting.
   }}
+
+  {{#prestart}}
+  if [ "$PRESTART" != "no" ] ; then
+    # If prestart fails, abort start.
+    prestart || return $?
+  fi
+  {{/prestart}}
+
+  # Run the program!
   chroot --userspec {{{user}}}:{{{group}}} {{{chroot}}} sh -c "
     {{#chdir}}cd {{{chdir}}}{{/chdir}}
     {{#nice}}nice {{{nice}}}{{/nice}}
     exec \"$program\" $args
   " > /var/log/$name.log 2> /var/log/$name.err &
 
-  # Generate the pidfile from here. If we make the forked process generate it
-  # there will be a race condition between the pidfile writing and a process
-  # possibly asking for status.
+  # Generate the pidfile from here. If we instead made the forked process
+  # generate it there will be a race condition between the pidfile writing
+  # and a process possibly asking for status.
   echo $! > $pidfile
 
   echo "$name started."
@@ -92,6 +101,19 @@ force_stop() {
   fi
 }
 
+{{#prestart}}
+prestart() {
+  {{{ prestart }}}
+
+  status=$?
+
+  if [ $status -gt 0 ] ; then
+    echo "Prestart command failed with code $status. If you wish to skip the prestart command, set PRESTART=no in your environment."
+  fi
+  return $status
+}
+{{/prestart}}
+
 case "$1" in
   start) status || start ;;
   stop) stop ;;
@@ -106,11 +128,14 @@ case "$1" in
     fi
     exit $code
     ;;
-  restart) stop && start ;;
+  restart) 
+    {{#prestart}}prestart || exit $?{{/prestart}}
+    stop && start 
+    ;;
   *)
     echo "Usage: $SCRIPTNAME {start|stop|force-stop|status|restart}" >&2
     exit 3
   ;;
 esac
 
-:
+exit $?

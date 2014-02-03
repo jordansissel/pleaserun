@@ -21,3 +21,14 @@ def program?(name)
   return false
 end
 
+
+def activate(pleaserun)
+  pleaserun.files.each do |path, content, mode=nil|
+    File.write(path, content)
+    File.chmod(mode, path) if mode
+  end
+  pleaserun.install_actions.each do |command|
+    system(command)
+    raise "Command failed: #{command}" unless $?.success?
+  end
+end

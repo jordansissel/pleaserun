@@ -61,6 +61,8 @@ class PleaseRun::Platform::Base
     insist { nice }.is_a?(Fixnum)
   end
 
+  attribute :prestart, "A command to execute before starting and restarting. A failure of this command will cause the start/restart to abort. This is useful for health checks, config tests, or similar operations."
+
   def initialize(target_version)
     configurable_setup
     self.target_version = target_version
