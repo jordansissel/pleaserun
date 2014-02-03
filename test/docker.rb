@@ -17,10 +17,14 @@ ARGV.each do |tag|
   Thread.new do
     out = Stud::Temporary.pathname
     err = Stud::Temporary.pathname
-    status = test_in_container(tag, [
-      "(. /etc/profile; cd /pleaserun; bundle install --quiet) > #{out} 2> #{err}",
-      "(. /etc/profile; cd /pleaserun; rspec) >> #{out} 2>> #{err}"
-    ])
+    begin
+      status = test_in_container(tag, [
+        "(. /etc/profile; cd /pleaserun; bundle install --quiet)",
+        "(. /etc/profile; cd /pleaserun; rspec)"
+      ], out, err)
+    rescue Insist::Failure
+      status = false
+    end
     queue << [tag, status, out, err]
   end
 end
@@ -33,7 +37,13 @@ duration = Time.now - start
 puts "Success: #{successes}, Failure: #{failures}, Duration: #{sprintf("%0.3f", duration)} seconds"
 
 results.each do |tag, success, out, err|
-  next if success
-  puts File.read(err).gsub(/^/, "#{tag}/stdout: ")
-  puts File.read(out).gsub(/^/, "#{tag}/stderr: ")
+  # print only on failure *or* if only one container is run
+  if !success || results.size == 1
+    puts File.read(err).gsub(/^/, "#{tag}/stdout: ")
+    puts File.read(out).gsub(/^/, "#{tag}/stderr: ")
+  end
+  File.delete(err)
+  File.delete(out)
 end
+
+exit(results.any? { |t,s,*args| !s } ? 1 : 0)

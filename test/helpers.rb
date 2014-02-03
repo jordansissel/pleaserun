@@ -34,9 +34,11 @@ def sshrun(host, command, &block)
   return status
 end # def sshrun
 
-def test_in_container(tag, commands)
+def test_in_container(tag, commands, outfile, errfile)
   name = "pleaserun-testing-container-#{tag}"
   base = File.expand_path("../", File.dirname(__FILE__))
+  out = File.new(outfile, "w+")
+  err = File.new(errfile, "w+")
 
   # Try to start the container
   system("docker start #{name} > /dev/null")
@@ -55,11 +57,19 @@ def test_in_container(tag, commands)
     Stud::try(10.times) { sshrun(vmip, "true") }
 
     commands.each do |command|
-      status = sshrun(vmip, command)
+      status = sshrun(vmip, command) do |channel, data|
+        case channel
+          when :stdout; out.write(data)
+          when :stderr; out.write(data)
+        end
+      end
       insist { status } == 0
     end
   ensure
     system("docker kill #{name} > /dev/null 2>&1")
   end
   return $?.success?
+ensure
+  out.close unless out.nil?
+  err.close unless err.nil?
 end
