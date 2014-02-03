@@ -91,7 +91,7 @@ describe PleaseRun::Configurable do
   context "attribute" do
     subject do
       next Class.new do
-        include PleaseRun::Configurable::Mixin
+        include PleaseRun::Configurable
         attribute :whatever, "whatever"
       end
     end
@@ -125,7 +125,7 @@ describe PleaseRun::Configurable do
     context "via configurable_setup" do
       subject do
         next Class.new do
-          include PleaseRun::Configurable::Mixin
+          include PleaseRun::Configurable
           attribute :whatever, "whatever", :default => "Hello"
 
           def initialize(something)
@@ -146,7 +146,7 @@ describe PleaseRun::Configurable do
     context "validation" do
       subject do
         next Class.new do
-          include PleaseRun::Configurable::Mixin
+          include PleaseRun::Configurable
           attribute :number, "something" do |v|
             insist { v }.is_a?(Numeric)
           end

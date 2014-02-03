@@ -25,27 +25,25 @@ module PleaseRun::Configurable
   class ConfigurationError < ::StandardError; end
   class ValidationError < ConfigurationError; end
 
-  module Mixin
-    def self.included(klass)
-      klass.extend(ClassMixin)
+  def self.included(klass)
+    klass.extend(ClassMixin)
 
-      m = respond_to?(:initialize) ? method(:initialize) : nil
-      define_method(:initialize) do |*args, &block|
-        m.call(*args, &block) if m
-        configurable_setup
-      end
-    end # def self.included
+    m = respond_to?(:initialize) ? method(:initialize) : nil
+    define_method(:initialize) do |*args, &block|
+      m.call(*args, &block) if m
+      configurable_setup
+    end
+  end # def self.included
 
-    def configurable_setup
-      @attributes = {}
-      self.class.ancestors.each do |ancestor|
-        next unless ancestor.include?(PleaseRun::Configurable::Mixin)
-        ancestor.attributes.each do |facet|
-          @attributes[facet.name] = facet.clone
-        end
+  def configurable_setup
+    @attributes = {}
+    self.class.ancestors.each do |ancestor|
+      next unless ancestor.include?(PleaseRun::Configurable)
+      ancestor.attributes.each do |facet|
+        @attributes[facet.name] = facet.clone
       end
-    end # def configurable_setup
-  end # module Mixin
+    end
+  end # def configurable_setup
 
   module ClassMixin
     def attribute(name, description, options={}, &validator)

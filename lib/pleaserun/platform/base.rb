@@ -5,7 +5,7 @@ require "pleaserun/mustache_methods"
 require "insist" # gem 'insist'
 
 class PleaseRun::Platform::Base
-  include PleaseRun::Configurable::Mixin
+  include PleaseRun::Configurable
   include PleaseRun::MustacheMethods
 
   class InvalidTemplate < ::StandardError; end
