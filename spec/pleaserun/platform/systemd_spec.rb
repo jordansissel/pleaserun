@@ -56,6 +56,12 @@ describe PleaseRun::Platform::Systemd do
         subject.program = "/bin/sh"
         subject.args = [ "-c", "echo hello world; sleep 5" ]
         activate(subject)
+        
+        # monkeypatch StartLimitInterval=0 into the .service file to avoid
+        # being throttled by systemd during these tests.
+        # Fixes https://github.com/jordansissel/pleaserun/issues/11
+        path = "/lib/systemd/system/#{subject.name}.service"
+        File.write(path, File.read(path).sub(/^\[Service\]$/, "[Service]\nStartLimitInterval=0"))
       end
 
       after do
