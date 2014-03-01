@@ -33,8 +33,8 @@ describe PleaseRun::Platform::Systemd do
       next runner
     end
 
-    it "has no install actions" do
-      insist { subject.install_actions }.empty?
+    it "invokes systemctl to reload" do
+      insist { subject.install_actions }.include?("systemctl --system daemon-reload")
     end
   end
 
