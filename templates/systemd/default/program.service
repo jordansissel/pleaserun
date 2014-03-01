@@ -1,0 +1,17 @@
+[Unit]
+{{#description}}
+Description={{{ description }}}
+{{/description}}
+ 
+[Service]
+Type=simple
+User={{{ user }}}
+Group={{{ group }}}
+ExecStart={{{program}}} {{{shell_args}}}
+{{#prestart}}
+ExecPreStart=/lib/systemd/system/{{{name}}}-prestart.sh
+{{/prestart}}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
