@@ -90,10 +90,26 @@ describe PleaseRun::Platform::Systemd do
         stops
       end
 
+      it "should start and stop" do
+        5.times do
+          starts
+          stops
+        end
+      end
+
       context "with failing prestart" do
         before do
-          subject.prestart = "false"
+          subject.prestart = "#!/bin/sh\nfalse\n"
           activate(subject)
+        end
+
+        it "should fail to start" do
+          puts File.read("/lib/systemd/system/example.service")
+          system ("ls -l /lib/systemd/system/example-prestart.sh")
+          system ("/lib/systemd/system/example-prestart.sh")
+          p :prestart => $?
+          p File.read("/lib/systemd/system/example-prestart.sh")
+          insist { starts }.fails
         end
       end
 
