@@ -17,4 +17,8 @@ class PleaseRun::Platform::Systemd < PleaseRun::Platform::Base
       end
     end
   end # def files
+
+  def install_actions
+    return [ "systemctl --system daemon-reload" ]
+  end
 end # class PleaseRun::Platform::Systemd
