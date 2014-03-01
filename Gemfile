@@ -1,4 +1,7 @@
 source 'https://rubygems.org'
+gem "clamp"
+gem "cabin"
+gem "stud"
 gem "mustache"
 gem "insist"
 
