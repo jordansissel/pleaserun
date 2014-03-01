@@ -2,6 +2,7 @@
 require "pleaserun/namespace"
 require "clamp"
 require "cabin"
+require "stud/temporary"
 
 require "pleaserun/platform/base"
 
@@ -11,6 +12,8 @@ class PleaseRun::CLI < Clamp::Command
   class PlatformLoadError < Error; end
 
   option ["-p", "--platform"], "PLATFORM", "The name of the platform to target, such as sysv, upstart, etc", :required => true
+
+  option "--install", :flag, "Install it"
 
   PleaseRun::Platform::Base.attributes.each do |facet|
     # Skip program and args
@@ -44,6 +47,19 @@ class PleaseRun::CLI < Clamp::Command
       # Set the value in the runner we've selected
       # This is akin to `obj.someattribute = value`
       runner.send("#{facet.name}=", value)
+    end
+
+    tmp = Stud::Temporary.directory
+    runner.files.each do |path, content, perms|
+      if install?
+        fullpath = path
+      else
+        fullpath = File.join(tmp, path)
+      end
+      FileUtils.mkdir_p(File.dirname(fullpath))
+      File.write(fullpath, content)
+      File.chmod(perms, fullpath) if perms
+      @logger.info("Writing file", :destination => fullpath, :mode => perms)
     end
 
     return 0
