@@ -33,6 +33,8 @@ class PleaseRun::Detector
   def self.detect_ohai
     require "ohai/system"
     ohai = Ohai::System.new
+    # TODO(sissel): Loading all plugins takes a long time (seconds). 
+    # TODO(sissel): Figure out how to load just the platform plugin correctly.
     ohai.all_plugins
 
     platform = ohai["platform"]
