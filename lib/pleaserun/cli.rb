@@ -11,7 +11,8 @@ class PleaseRun::CLI < Clamp::Command
   class ConfigurationError < Error; end
   class PlatformLoadError < Error; end
 
-  option ["-p", "--platform"], "PLATFORM", "The name of the platform to target, such as sysv, upstart, etc", :required => true
+  option ["-p", "--platform"], "PLATFORM", "The name of the platform to target, such as sysv, upstart, etc"
+  option ["-v", "--version"], "VERSION", "The version of the platform to target, such as 'lsb-3.1' for sysv or '1.5' for upstart"
 
   option "--install", :flag, "Install it"
 
@@ -34,9 +35,20 @@ class PleaseRun::CLI < Clamp::Command
 
   def execute
     setup_logger
+
+    if platform.nil?
+      require "pleaserun/detector"
+      self.platform, self.version = PleaseRun::Detector.detect
+      @logger.warn("No platform selected. Autodetecting one.", :platform => platform, :version => self.version)
+    end
     platform_klass = load_platform(platform)
 
-    runner = platform_klass.new("default")
+    if name.nil?
+      self.name = File.basename(program)
+      @logger.warn("No name given, setting reasonable default", :name => self.name)
+    end
+
+    runner = platform_klass.new(version)
     platform_klass.all_attributes.each do |facet|
       # Get the value of this attribute
       # This is akin to simply calling `someattribute` method.
@@ -56,10 +68,10 @@ class PleaseRun::CLI < Clamp::Command
       else
         fullpath = File.join(tmp, path)
       end
+      @logger.log("Writing file", :destination => fullpath, :mode => perms)
       FileUtils.mkdir_p(File.dirname(fullpath))
       File.write(fullpath, content)
       File.chmod(perms, fullpath) if perms
-      @logger.info("Writing file", :destination => fullpath, :mode => perms)
     end
 
     return 0
@@ -71,7 +83,7 @@ class PleaseRun::CLI < Clamp::Command
   def setup_logger
     @logger = Cabin::Channel.new
     @logger.subscribe(STDOUT)
-    @logger.level = :debug
+    @logger.level = :warn
   end
 
   def load_platform(v)
