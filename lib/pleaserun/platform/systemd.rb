@@ -7,7 +7,7 @@ class PleaseRun::Platform::Systemd < PleaseRun::Platform::Base
       # TODO(sissel): Make it easy for subclasses to extend validation on attributes.
       insist { program } =~ /^\//
     rescue Insist::Failure
-      raise PleaseRun::Configurable::ValidationError, "In systemd, the program must be a full path. You gave '#{program}'"
+      raise PleaseRun::Configurable::ValidationError, "In systemd, the program must be a full path. You gave '#{program}'."
     end
 
     return Enumerator::Generator.new do |enum|
