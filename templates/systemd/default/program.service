@@ -9,7 +9,7 @@ User={{{ user }}}
 Group={{{ group }}}
 ExecStart={{{program}}} {{{shell_args}}}
 {{#prestart}}
-ExecPreStart=/lib/systemd/system/{{{name}}}-prestart.sh
+ExecStartPre=/lib/systemd/system/{{{name}}}-prestart.sh
 {{/prestart}}
 Restart=always
 
