@@ -13,7 +13,7 @@ class PleaseRun::Platform::Systemd < PleaseRun::Platform::Base
     return Enumerator::Generator.new do |enum|
       enum.yield [ safe_filename("/lib/systemd/system/{{{ name }}}.service"), render_template("program.service") ]
       if prestart
-        enum.yield [ safe_filename("/lib/systemd/system/{{{ name }}}-prestart.sh"), prestart, 0755 ]
+        enum.yield [ safe_filename("/lib/systemd/system/{{{ name }}}-prestart.sh"), render_template("prestart.sh"), 0755 ]
       end
     end
   end # def files
