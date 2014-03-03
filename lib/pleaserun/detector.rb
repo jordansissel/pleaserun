@@ -1,3 +1,4 @@
+require "cabin"
 class PleaseRun::Detector
   class UnknownSystem < StandardError; end
 
@@ -10,10 +11,11 @@ class PleaseRun::Detector
     ["debian", "6"] => [ "sysv", "lsb-3.1"],
     ["fedora", "18"] => [ "systemd", "default"],
     ["fedora", "19"] => [ "systemd", "default"],
-    ["fedora", "120"] => [ "systemd", "default"]
+    ["fedora", "20"] => [ "systemd", "default"]
   }
 
   def self.detect
+    @logger ||= Cabin::Channel.get
     begin
       platform, version = detect_ohai
     rescue LoadError => e
