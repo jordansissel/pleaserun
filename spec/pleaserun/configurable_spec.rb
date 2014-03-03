@@ -1,6 +1,7 @@
 require "testenv"
 require "pleaserun/configurable"
-describe PleaseRun::Configurable do
+
+describe PleaseRun::Configurable::Facet do
   subject { PleaseRun::Configurable::Facet  }
 
   it "should have nil value by default" do
@@ -35,15 +36,58 @@ describe PleaseRun::Configurable do
 
     it "invokes the validation block when value is set" do
       count = 0
-      facet = subject.new(:name, "description") do |v|
-        count += 1
-        insist { v } == 3
+      facet = subject.new(:name, "description") do
+        validate do |v| 
+          count += 1
+          insist { v } == 3
+        end
       end
       insist { count } == 0
       insist { facet.value }.nil?
       facet.value = 3
       insist { facet.value } == 3
       insist { count } == 1
+    end
+
+    it "invokes the munger" do
+      count = 0
+      facet = subject.new(:name, "description") do
+        munge do |v|
+          count += 1
+          next v.to_s
+        end
+      end
+
+      insist { count } == 0
+      facet.value = 1000
+      insist { facet.value } == "1000"
+      facet.value = "hello"
+      insist { facet.value } == "hello"
+      facet.value = { "foo" => "bar" }
+      insist { facet.value } == '{"foo"=>"bar"}'
+      insist { count } == 3
+    end
+
+    it "invokes munger prior to validation" do
+      order = []
+      facet = subject.new(:name, "description") do
+        validate do |v|
+          order << :validate
+          insist { v.is_a?(Array) }
+        end
+        munge do |v|
+          order << :munge
+          if !v.is_a?(Array)
+            next [v]
+          else
+            v
+          end
+        end
+      end
+
+      facet.value = "hello"
+      insist { facet.value } == [ "hello" ]
+      insist { order } == [ :munge, :validate ]
     end
   end
   
@@ -75,15 +119,19 @@ describe PleaseRun::Configurable do
 
     it "fails if default is invalid" do
       insist do
-        facet = subject.new(:name, "description", :default => 4) do |v|
-          insist { v } != 4
+        facet = subject.new(:name, "description", :default => 4) do
+          validate do |v|
+            insist { v } != 4
+          end
         end
       end.raises(PleaseRun::Configurable::ValidationError)
     end
     
     it "succeeds if default is valid" do
-      facet = subject.new(:name, "description", :default => 4) do |v|
-        insist { v } == 4
+      facet = subject.new(:name, "description", :default => 4) do
+        validate do |v|
+          insist { v } == 4
+        end
       end
     end
   end
@@ -147,8 +195,10 @@ describe PleaseRun::Configurable do
       subject do
         next Class.new do
           include PleaseRun::Configurable
-          attribute :number, "something" do |v|
-            insist { v }.is_a?(Numeric)
+          attribute :number, "something" do
+            validate do |v|
+              insist { v }.is_a?(Numeric)
+            end
           end
         end
       end

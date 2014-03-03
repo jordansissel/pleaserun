@@ -46,6 +46,7 @@ module PleaseRun::Configurable
   end # def configurable_setup
 
   module ClassMixin
+    # Define an attribute on this class.
     def attribute(name, description, options={}, &validator)
       facet = Facet.new(name, description, options, &validator)
       attributes << facet
@@ -75,6 +76,20 @@ module PleaseRun::Configurable
     end # def attributes
   end # def ClassMixin
 
+  class FacetBuilder
+    def initialize(facet, &block)
+      @facet = facet
+      instance_eval(&block)
+    end
+
+    def validate(&block)
+      @facet.validator = block
+    end
+    def munge(&block)
+      @facet.munger = block
+    end
+  end
+
   class Facet
     attr_reader :name
     attr_reader :description
@@ -87,22 +102,32 @@ module PleaseRun::Configurable
       @name = name
       @description = description
       @options = options
-      @validator = validator if block_given?
+
+      FacetBuilder.new(self, &validator) if block_given?
 
       if @options[:default]
         validate(@options[:default])
       end
     end # def initialize
 
+    def validator=(callback)
+      @validator = callback
+    end # def validator=
+
+    def munger=(callback)
+      @munger = callback
+    end # def munger=
+
     def value=(v)
+      v = @munger.call(v) if @munger
       validate(v)
       @value = v
     end # def value=
 
     def validate(v)
       return @validator.call(v) if @validator
-    rescue
-      raise ValidationError, "Invalid value '#{v.inspect}' for attribute '#{name}'"
+    rescue => e
+      raise ValidationError, "Invalid value '#{v.inspect}' for attribute '#{name}' (#{e})"
     end # def validate
 
     def value
