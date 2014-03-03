@@ -1,0 +1,40 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  root = File.expand_path("../../", File.dirname(__FILE__))
+  config.vm.synced_folder root, "/pleaserun"
+
+  # Ubuntu
+  %w(12.04 12.10 13.04 13.10).each do |version|
+    config.vm.define "ubuntu-#{version}" do |c|
+      c.vm.box = "dummy"
+      c.vm.box_url = "http://bit.ly/vagrant-docker-dummy"
+      c.vm.provider :docker do |docker|
+        docker.image = "jordansissel/system:ubuntu-#{version}"
+      end
+    end
+  end
+
+  # Debian
+  %w(7.3 6.0.8).each do |version|
+    config.vm.define "debian-#{version}" do |c|
+      c.vm.box = "dummy"
+      c.vm.box_url = "http://bit.ly/vagrant-docker-dummy"
+      c.vm.provider :docker do |docker|
+        docker.image = "jordansissel/system:debian-#{version}"
+      end
+    end
+  end
+
+  # Fedora
+  config.vm.define "fedora-18" do |c|
+    c.vm.box = "fedora-18"
+    c.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/fedora-18-x64-vbox4210-nocm.box"
+    c.vm.provider "virtualbox"
+    c.vm.provision "shell", :path => "fedora-18/provision.sh"
+  end
+end
