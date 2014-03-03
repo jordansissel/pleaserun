@@ -51,7 +51,7 @@ describe PleaseRun::Platform::Systemd do
       subject { PleaseRun::Platform::Systemd.new("default") }
 
       before do
-        subject.name = "example"
+        subject.name = "hurray"
         subject.user = "root"
         subject.program = "/bin/sh"
         subject.args = [ "-c", "echo hello world; sleep 5" ]
@@ -69,10 +69,6 @@ describe PleaseRun::Platform::Systemd do
         subject.files.each do |path, content|
           File.unlink(path) if File.exist?(path)
         end
-
-        # Remove the logs, too.
-        log = "/var/log/upstart/example.log"
-        File.unlink(log) if File.exist?(log)
       end
 
       #it "should install" do
@@ -104,11 +100,6 @@ describe PleaseRun::Platform::Systemd do
         end
 
         it "should fail to start" do
-          puts File.read("/lib/systemd/system/example.service")
-          system ("ls -l /lib/systemd/system/example-prestart.sh")
-          system ("/lib/systemd/system/example-prestart.sh")
-          p :prestart => $?
-          p File.read("/lib/systemd/system/example-prestart.sh")
           insist { starts }.fails
         end
       end
