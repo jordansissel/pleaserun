@@ -4,7 +4,9 @@ require "pleaserun/platform/base"
 class PleaseRun::Platform::Runit < PleaseRun::Platform::Base
   attribute :service_path, "The path runit service directory",
             :default => "/service" do |path|
-    insist { path }.is_a?(String)
+    validate do
+      insist { path }.is_a?(String)
+    end
   end
 
   def files

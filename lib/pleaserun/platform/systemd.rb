@@ -2,9 +2,9 @@ require 'pleaserun/namespace'
 require "pleaserun/platform/base"
 
 class PleaseRun::Platform::Systemd < PleaseRun::Platform::Base
-
   def files
     begin
+      # TODO(sissel): Make it easy for subclasses to extend validation on attributes.
       insist { program } =~ /^\//
     rescue Insist::Failure
       raise PleaseRun::Configurable::ValidationError, "In systemd, the program must be a full path. You gave '#{program}'"

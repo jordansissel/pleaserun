@@ -2,24 +2,22 @@ require "pleaserun/platform/base"
 require "pleaserun/namespace"
 
 class PleaseRun::Platform::LaunchD < PleaseRun::Platform::Base
+  # Returns the file path to write this launchd config
   def daemons_path
+    # Quoting launchctl(1):      
+    #    "/Library/LaunchDaemons         System wide daemons provided by the administrator."
     return safe_filename("/Library/LaunchDaemons/{{ name }}.plist")
-  end
+  end # def daemons_path
 
   def files
     return Enumerator::Generator.new do |out|
-      # Quoting launchctl(1):      
-      #    "/Library/LaunchDaemons         System wide daemons provided by the administrator."
       out.yield [ daemons_path, render_template("program.plist") ]
     end
-  end
+  end # def files
 
   def install_actions
-    return [ 
-      "launchctl load #{daemons_path}",
-      #render("launchctl start {{name}}"),
-    ]
-  end
+    return [ "launchctl load #{daemons_path}", ]
+  end # def install_actions
 
   def xml_args
     return if args.nil?
