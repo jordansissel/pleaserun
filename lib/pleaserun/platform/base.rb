@@ -101,7 +101,7 @@ class PleaseRun::Platform::Base
 
   # Get the template path for this platform.
   def template_path
-    return File.join("templates", platform)
+    return File.join(File.dirname(__FILE__), "../../../templates", platform)
   end # def template_path
 
   def render_template(name)
