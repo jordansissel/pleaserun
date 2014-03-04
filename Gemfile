@@ -4,6 +4,7 @@ gem "cabin"
 gem "stud"
 gem "mustache"
 gem "insist"
+gem "ohai"
 
 # For testing
 gem "rspec"
