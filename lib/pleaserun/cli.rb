@@ -36,6 +36,7 @@ class PleaseRun::CLI < Clamp::Command
   
   # TODO(sissel): Make options based on other platforms
 
+  # Make program and args attributes into parameters
   base = PleaseRun::Platform::Base
 
   # Load the 'program' attribute from the Base class and use it as the first
@@ -50,6 +51,47 @@ class PleaseRun::CLI < Clamp::Command
   raise "Something is wrong; Base missing 'args' attribute" if program.nil?
 
   parameter "[ARGS] ...", args.description, :attribute_name => args.name
+
+  def help
+    return <<-HELP
+Welcome to pleaserun!
+
+This program aims to help you generate 'init' scripts/configs for various
+platforms. The simplest example takes only the command you wish to run.
+For example, let's run elasticsearch:
+
+    % pleaserun /opt/elasticsearch/bin/elasticsearch
+
+The above will automatically detect what platform you are running on
+and try to use the most sensible init system. For Ubuntu, this means
+Upstart. For Debian, this means sysv init scripts. For Fedora, this
+means systemd. 
+
+You can the running environment and settings for your runner with various
+flags. By way of example, let's make our elasticsearch service run as the
+'elasticsearch' user! 
+
+    % pleaserun --user elasticsearch /opt/elasticsearch/bin/elasticsearch
+
+If you don't want the platform autodetected, you can always specify the
+exact process launcher to target:
+
+    # Generate a sysv (/etc/init.d) script for LSB 3.1 (Debian uses this)
+    % pleaserun -p sysv -v lsb-3.1 /opt/elasticsearch/bin/elasticsearch
+
+Let's do another example. How about running nagios in systemd, but we
+want to abort if the nagios config is invalid?
+
+    % pleaserun -t systemd \
+      --prestart "/usr/sbin/nagios -v /etc/nagios/nagios.cfg" \
+      /usr/sbin/nagios /etc/nagios/nagios.cfg
+
+The above makes 'nagios -v ...' run before any start/restart attempts
+are made. If it fails, nagios will not start. Yay!
+
+#{super}
+    HELP
+  end
 
   def execute
     setup_logger
