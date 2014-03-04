@@ -2,7 +2,7 @@ Gem::Specification.new do |spec|
   files = %x{git ls-files}.split("\n")
 
   spec.name = "pleaserun"
-  spec.version = "0.0.1"
+  spec.version = "0.0.2"
   spec.summary = "pleaserun"
   spec.description = "pleaserun"
   spec.license = "Apache 2.0"
@@ -14,6 +14,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "stud"
   spec.add_dependency "mustache"
   spec.add_dependency "insist"
+  spec.add_dependency "ohai", "~> 6.20" # used for host detection
 
   spec.files = files
   spec.require_paths << "lib"
