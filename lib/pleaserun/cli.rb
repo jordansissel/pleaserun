@@ -16,12 +16,16 @@ class PleaseRun::CLI < Clamp::Command
   option ["-v", "--version"], "VERSION", "The version of the platform to target, such as 'lsb-3.1' for sysv or '1.5' for upstart",
     :default => "default", :attribute_name => :target_version
 
-  option "--install", :flag, "Install the service"
+  option "--log", "LOGFILE", "The path to use for writing pleaserun logs."
+  option "--json", :flag, "Output a result in JSON. Intended to be consumed by other programs. This will emit the file contents and install actions as a JSON object."
+
+  option "--install", :flag, "Install the program on this system. This will write files to the correct location and execute any actions to make the program available to the system."
 
   PleaseRun::Platform::Base.attributes.each do |facet|
-    # Skip program and args
+    # Skip program and args which we don't want to make into flags.
     next if [:program, :args, :target_version].include?(facet.name)
 
+    # Turn the attribute name into a flag.
     option "--#{facet.name}", facet.name.to_s.upcase, facet.description,
       :attribute_name => facet.name
   end
@@ -73,8 +77,40 @@ class PleaseRun::CLI < Clamp::Command
       runner.send("#{facet.name}=", value)
     end
 
+    if json?
+      return run_json(runner)
+    else
+      return run_human(runner)
+    end
+    return 0
+  rescue Error => e
+    @logger.error("An error occurred: #{e}")
+    return 1
+  end # def execute
+
+  def run_json(runner)
+    require "json"
+
+    result = {}
+    result["files"] = []
+    runner.files.each do |path, content, perms|
+      result["files"] << {
+        "path" => path,
+        "content" => content,
+        "perms" => perms
+      }
+    end
+
+    result["install_actions"] = runner.install_actions
+
+    puts JSON.dump(result)
+    return 0
+  end # def run_json
+
+  def run_human(runner)
     tmp = Stud::Temporary.directory
     errors = []
+
     runner.files.each do |path, content, perms|
       #perms ||= (0666 ^ File.umask)
       fullpath = install? ? path : File.join(tmp, path)
@@ -92,23 +128,21 @@ class PleaseRun::CLI < Clamp::Command
         runner.install_actions.each do |action|
           @logger.info("Running install action", :action => action)
           system(action)
-        end
+          if !$?.success?
+            @logger.warn("Install action failed", :action => action, :code => $?.exitstatus)
+          end
+        end # each install action
       else
         path = File.join(tmp, "install_actions.sh")
         @logger.log("Writing install actions. You will want to run this script to properly activate your service on the target host", :path => path)
-        fd = File.new(path, "w")
-        runner.install_actions.each do |action|
-          fd.puts(action)
+        File.open(path, "w") do |fd|
+          runner.install_actions.each do |action|
+            fd.puts(action)
+          end
         end
-        fd.close
       end
     end # if runner.install_actions.any?
-
-    return 0
-  rescue Error => e
-    @logger.error("An error occurred: #{e}")
-    return 1
-  end # def execute
+  end # def run_human
 
   def write(fullpath, content, perms)
     @logger.log("Writing file", :destination => fullpath)
@@ -124,7 +158,7 @@ class PleaseRun::CLI < Clamp::Command
 
   def setup_logger
     @logger = Cabin::Channel.new
-    @logger.subscribe(STDOUT)
+    @logger.subscribe(STDERR)
     @logger.level = :warn
   end # def setup_logger
 
