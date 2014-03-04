@@ -21,6 +21,10 @@ class PleaseRun::CLI < Clamp::Command
 
   option "--install", :flag, "Install the program on this system. This will write files to the correct location and execute any actions to make the program available to the system."
 
+  option "--verbose", :flag, "More verbose logging"
+  option "--debug", :flag, "Debug-level logging"
+  option "--quiet", :flag, "Only errors or worse will be logged"
+
   PleaseRun::Platform::Base.attributes.each do |facet|
     # Skip program and args which we don't want to make into flags.
     next if [:program, :args, :target_version].include?(facet.name)
@@ -50,12 +54,12 @@ class PleaseRun::CLI < Clamp::Command
   def execute
     setup_logger
 
+    # Provide any dynamic defaults if necessary
     if platform.nil?
       require "pleaserun/detector"
       self.platform, self.target_version = PleaseRun::Detector.detect
       @logger.warn("No platform selected. Autodetecting...", :platform => platform, :version => target_version)
     end
-    platform_klass = load_platform(platform)
 
     if name.nil?
       self.name = File.basename(program)
@@ -63,6 +67,7 @@ class PleaseRun::CLI < Clamp::Command
     end
 
     # Load the platform implementation
+    platform_klass = load_platform(platform)
     runner = platform_klass.new(target_version)
 
     platform_klass.all_attributes.each do |facet|
@@ -158,8 +163,23 @@ class PleaseRun::CLI < Clamp::Command
 
   def setup_logger
     @logger = Cabin::Channel.new
-    @logger.subscribe(STDERR)
-    @logger.level = :warn
+    if quiet?
+      @logger.level = :error
+    elsif verbose?
+      @logger.level = :info
+    elsif debug?
+      @logger.level = :debug
+    else
+      @logger.level = :warn
+    end
+
+    if log
+      logfile = File.new(logfile, "a")
+      @logger.subscribe(logfile)
+      STDERR.puts "Sending all logs to #{log}" if STDERR.tty?
+    else
+      @logger.subscribe(STDERR)
+    end
   end # def setup_logger
 
   def load_platform(v)
