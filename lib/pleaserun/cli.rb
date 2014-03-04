@@ -1,4 +1,3 @@
-
 require "pleaserun/namespace"
 require "clamp"
 require "cabin"
@@ -67,7 +66,7 @@ and try to use the most sensible init system. For Ubuntu, this means
 Upstart. For Debian, this means sysv init scripts. For Fedora, this
 means systemd. 
 
-You can the running environment and settings for your runner with various
+You can tune the running environment and settings for your runner with various
 flags. By way of example, let's make our elasticsearch service run as the
 'elasticsearch' user! 
 
