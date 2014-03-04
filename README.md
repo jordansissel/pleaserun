@@ -7,6 +7,18 @@ Ideally, you should be able to specify a configuration of how to run a given
 service command (like apache, syslog-ng, whatever), and this tool should
 be able to spit out a script or config file for your target platform.
 
+## What's going on here?
+
+With pleaserun, you can generate the following launchers/scripts/whatever:
+
+* launchd
+* upstart
+* systemd
+* runit
+* sysv init
+
+Want more? It's easy to add things. [File an issue](issues/) and ask away!
+
 ## Installation
 
 ```
