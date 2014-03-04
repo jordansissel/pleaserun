@@ -1,4 +1,3 @@
-
 require "pleaserun/namespace"
 require "clamp"
 require "cabin"
@@ -82,7 +81,7 @@ exact process launcher to target:
 Let's do another example. How about running nagios in systemd, but we
 want to abort if the nagios config is invalid?
 
-    % pleaserun -t systemd \
+    % pleaserun -p systemd \
       --prestart "/usr/sbin/nagios -v /etc/nagios/nagios.cfg" \
       /usr/sbin/nagios /etc/nagios/nagios.cfg
 
