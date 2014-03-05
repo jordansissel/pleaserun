@@ -9,7 +9,7 @@ require "pleaserun/platform/base"
 # The CLI interface to pleaserun.
 #
 # This is invoked by `bin/pleaserun`.
-class PleaseRun::CLI < Clamp::Command
+class PleaseRun::CLI < Clamp::Command # rubocop:disable ClassLength
   class Error < StandardError; end
   class ConfigurationError < Error; end
   class PlatformLoadError < Error; end
