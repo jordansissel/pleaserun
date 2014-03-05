@@ -1,0 +1,8 @@
+= Pleaserun Changes and Releases
+
+== 0.0.4 (March 5, 2014)
+  * cli: Autodetect OSX and use launchd 
+
+== Prior versions?
+
+prior versions and changes not tracked. Sorry!
