@@ -114,7 +114,7 @@ are made. If it fails, nagios will not start. Yay!
 
     if name.nil?
       self.name = File.basename(program)
-      @logger.warn("No name given, setting reasonable default", :name => name)
+      @logger.warn("No name given, setting reasonable default based on the executable", :name => name)
     end
 
     # Load the platform implementation
