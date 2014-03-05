@@ -35,9 +35,17 @@ end
 results = ARGV.collect { tag, success, out, err = queue.pop }
 successes = results.count { |tag, success, out, err| success }
 failures = results.count { |tag, success, out, err| !success }
-total_tests = 0
 tests = results.collect { |tag, success, out, err| 
-  JSON.parse(File.read(out).split("\n").last[/{.*$/])["examples"].each { |r| r["tag"] = tag }
+  #require "pry"
+  #binding.pry
+  begin
+    JSON.parse(File.read(out).split("\n").last[/{.*$/])["examples"].each { |r| r["tag"] = tag }
+  rescue TypeError
+    puts "Failed to parse json"
+    puts :out => File.read(out)
+    puts :err => File.read(err)
+    raise
+  end
 }.flatten
 
 duration = Time.now - start
@@ -45,14 +53,25 @@ duration = Time.now - start
 test_successes = tests.count { |t| t["status"] == "passed" }
 test_failures = tests.count { |t| t["status"] == "failed" }
 
+#require "pry"
+#tests.pry
+tests.each do |result|
+  next if result["status"] == "passed"
+
+  case result["status"]
+    when "failed"
+      puts "#{result["tag"]}: #{result["full_description"]}"
+      exception = result["exception"]
+      puts "  #{exception["class"]}: #{exception["message"]}"
+    when "pending"
+      puts "#{result["tag"]}: PENDING: #{result["full_description"]}"
+  end
+  puts "  #{result["file_path"]}:#{result["line_number"]}"
+end
+
 puts "Tests: #{test_successes} ok, #{test_failures} failures; Platforms: #{successes} ok, #{failures} failures;, Duration: #{sprintf("%0.3f", duration)} seconds"
 
 results.each do |tag, success, out, err|
-  # print only on failure *or* if only one container is run
-  if !success || results.size == 1
-    puts File.read(err).gsub(/^/, "#{tag}/stderr: ")
-    puts File.read(out).gsub(/^/, "#{tag}/stdout: ")
-  end
   File.delete(err)
   File.delete(out)
 end
