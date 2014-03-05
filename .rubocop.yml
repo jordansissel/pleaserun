@@ -29,6 +29,7 @@ LineLength:
 WordArray:
   MinSize: 5
 
+# A 20-line method isn't too bad.
 MethodLength:
   Max: 20
 
