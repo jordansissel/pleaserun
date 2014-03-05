@@ -57,7 +57,7 @@ describe PleaseRun::Platform::Upstart do
         subject.name = "example"
         subject.user = "root"
         subject.program = "/bin/sh"
-        subject.args = [ "-c", "echo hello world; sleep 5" ]
+        subject.args = ["-c", "echo hello world; sleep 5"]
         activate(subject)
       end
 
@@ -71,11 +71,6 @@ describe PleaseRun::Platform::Upstart do
         log = "/var/log/upstart/example.log"
         File.unlink(log) if File.exist?(log)
       end
-
-      #it "should install" do
-        #system("initctl status #{subject.name}")
-        #status_stopped
-      #end
 
       it "should start" do
         starts

@@ -1,3 +1,4 @@
+require "English" # for $CHILD_STATUS
 require "pleaserun/namespace"
 require "clamp"
 require "cabin"
@@ -5,6 +6,9 @@ require "stud/temporary"
 
 require "pleaserun/platform/base"
 
+# The CLI interface to pleaserun.
+#
+# This is invoked by `bin/pleaserun`.
 class PleaseRun::CLI < Clamp::Command
   class Error < StandardError; end
   class ConfigurationError < Error; end
@@ -13,7 +17,7 @@ class PleaseRun::CLI < Clamp::Command
 
   option ["-p", "--platform"], "PLATFORM", "The name of the platform to target, such as sysv, upstart, etc"
   option ["-v", "--version"], "VERSION", "The version of the platform to target, such as 'lsb-3.1' for sysv or '1.5' for upstart",
-    :default => "default", :attribute_name => :target_version
+         :default => "default", :attribute_name => :target_version
 
   option "--log", "LOGFILE", "The path to use for writing pleaserun logs."
   option "--json", :flag, "Output a result in JSON. Intended to be consumed by other programs. This will emit the file contents and install actions as a JSON object."
@@ -24,20 +28,25 @@ class PleaseRun::CLI < Clamp::Command
   option "--debug", :flag, "Debug-level logging"
   option "--quiet", :flag, "Only errors or worse will be logged"
 
-  PleaseRun::Platform::Base.attributes.each do |facet|
-    # Skip program and args which we don't want to make into flags.
-    next if [:program, :args, :target_version].include?(facet.name)
-
-    # Turn the attribute name into a flag.
-    option "--#{facet.name}", facet.name.to_s.upcase, facet.description,
-      :attribute_name => facet.name
-  end
-  
   # TODO(sissel): Make options based on other platforms
 
   # Make program and args attributes into parameters
   base = PleaseRun::Platform::Base
 
+  # Get the Base platform's attributes and make them available as flags
+  # through clamp.
+  #
+  # This has the effect of any 'attribute :foo, ...' becoming 'option "--foo",
+  # ...' in the CLI.
+  base.attributes.each do |facet|
+    # Skip program and args which we don't want to make into flags.
+    next if [:program, :args, :target_version].include?(facet.name)
+
+    # Turn the attribute name into a flag.
+    option "--#{facet.name}", facet.name.to_s.upcase, facet.description,
+           :attribute_name => facet.name
+  end
+  
   # Load the 'program' attribute from the Base class and use it as the first
   # cli parameter.
   program = base.attributes.find { |f| f.name == :program }
@@ -51,7 +60,7 @@ class PleaseRun::CLI < Clamp::Command
 
   parameter "[ARGS] ...", args.description, :attribute_name => args.name
 
-  def help
+  def help # rubocop:disable MethodLength
     return <<-HELP
 Welcome to pleaserun!
 
@@ -90,6 +99,7 @@ are made. If it fails, nagios will not start. Yay!
 
 #{super}
     HELP
+    # rubocop:enable MethodLength
   end
 
   def execute
@@ -104,7 +114,7 @@ are made. If it fails, nagios will not start. Yay!
 
     if name.nil?
       self.name = File.basename(program)
-      @logger.warn("No name given, setting reasonable default", :name => self.name)
+      @logger.warn("No name given, setting reasonable default", :name => name)
     end
 
     # Load the platform implementation
@@ -158,15 +168,14 @@ are made. If it fails, nagios will not start. Yay!
     errors = []
 
     runner.files.each do |path, content, perms|
-      #perms ||= (0666 ^ File.umask)
+      # TODO(sissel): Force-set default file permissions if not provided?
+      # perms ||= (0666 ^ File.umask)
       fullpath = install? ? path : File.join(tmp, path)
       success = write(fullpath, content, perms)
       errors << fullpath unless success
     end
 
-    if errors.any?
-      raise FileWritingFailure, "Errors occurred while writing files"
-    end
+    raise FileWritingFailure, "Errors occurred while writing files" if errors.any?
 
     # TODO(sissel): Refactor this to be less lines of code or put into methods.
     if runner.install_actions.any?
@@ -174,9 +183,7 @@ are made. If it fails, nagios will not start. Yay!
         runner.install_actions.each do |action|
           @logger.info("Running install action", :action => action)
           system(action)
-          if !$?.success?
-            @logger.warn("Install action failed", :action => action, :code => $?.exitstatus)
-          end
+          @logger.warn("Install action failed", :action => action, :code => $CHILD_STATUS.exitstatus) unless $CHILD_STATUS.success?
         end # each install action
       else
         path = File.join(tmp, "install_actions.sh")
@@ -188,6 +195,7 @@ are made. If it fails, nagios will not start. Yay!
         end
       end
     end # if runner.install_actions.any?
+    return 0
   end # def run_human
 
   def write(fullpath, content, perms)
@@ -229,9 +237,7 @@ are made. If it fails, nagios will not start. Yay!
     require(platform_lib)
 
     const = PleaseRun::Platform.constants.find { |c| c.to_s.downcase == v.downcase }
-    if const.nil?
-      raise PlatformLoadError, "Could not find platform named '#{v}' after loading library '#{platform_lib}'. This is probably a bug."
-    end
+    raise PlatformLoadError, "Could not find platform named '#{v}' after loading library '#{platform_lib}'. This is probably a bug." if const.nil?
 
     return PleaseRun::Platform.const_get(const)
   rescue LoadError => e

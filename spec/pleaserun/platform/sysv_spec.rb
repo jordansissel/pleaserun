@@ -42,7 +42,7 @@ describe PleaseRun::Platform::SYSV do
         subject.name = "example"
         subject.user = "root"
         subject.program = "/bin/ping"
-        subject.args = [ "127.0.0.1" ]
+        subject.args = ["127.0.0.1"]
 
         activate(subject)
       end
@@ -54,8 +54,6 @@ describe PleaseRun::Platform::SYSV do
         end
 
         # TODO(sissel): Remove the logs, too.
-        #log = "/var/log/example.log"
-        #File.unlink(log) if File.exist?(log)
       end
 
       it "should install" do

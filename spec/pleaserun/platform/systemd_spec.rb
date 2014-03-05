@@ -54,7 +54,7 @@ describe PleaseRun::Platform::Systemd do
         subject.name = "hurray"
         subject.user = "root"
         subject.program = "/bin/sh"
-        subject.args = [ "-c", "echo hello world; sleep 5" ]
+        subject.args = ["-c", "echo hello world; sleep 5"]
         activate(subject)
         
         # monkeypatch StartLimitInterval=0 into the .service file to avoid
@@ -70,11 +70,6 @@ describe PleaseRun::Platform::Systemd do
           File.unlink(path) if File.exist?(path)
         end
       end
-
-      #it "should install" do
-        #system("systemctl status #{subject.name}")
-        #status_stopped
-      #end
 
       it "should start" do
         starts

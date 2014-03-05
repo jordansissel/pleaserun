@@ -1,6 +1,7 @@
 require "testenv"
 require "pleaserun/mustache_methods"
 
+# Fixture for use in testing PleaseRun::MustacheMethods
 class MustacheMethodTester
   include PleaseRun::MustacheMethods
 
@@ -9,7 +10,7 @@ class MustacheMethodTester
   end
 
   def args
-    [ "hello world", "fancy pants"]
+    ["hello world", "fancy pants"]
   end
 
   def render(s)

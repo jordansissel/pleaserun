@@ -1,6 +1,10 @@
 require "testenv"
 require "pleaserun/configurable"
 
+# rubocop complains that 'insist { ... } == ...' is Void. It's wrong, in this
+# case, so let's disable that check.
+# rubocop:disable Void
+
 describe PleaseRun::Configurable::Facet do
   subject { PleaseRun::Configurable::Facet  }
 
@@ -86,8 +90,8 @@ describe PleaseRun::Configurable::Facet do
       end
 
       facet.value = "hello"
-      insist { facet.value } == [ "hello" ]
-      insist { order } == [ :munge, :validate ]
+      insist { facet.value } == ["hello"]
+      insist { order } == [:munge, :validate]
     end
   end
   
@@ -119,7 +123,7 @@ describe PleaseRun::Configurable::Facet do
 
     it "fails if default is invalid" do
       insist do
-        facet = subject.new(:name, "description", :default => 4) do
+        subject.new(:name, "description", :default => 4) do
           validate do |v|
             insist { v } != 4
           end
@@ -128,7 +132,7 @@ describe PleaseRun::Configurable::Facet do
     end
     
     it "succeeds if default is valid" do
-      facet = subject.new(:name, "description", :default => 4) do
+      subject.new(:name, "description", :default => 4) do
         validate do |v|
           insist { v } == 4
         end

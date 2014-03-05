@@ -2,6 +2,7 @@ require "pleaserun/namespace"
 require "shellwords" # stdlib
 require "mustache" # gem 'mustache'
 
+# Methods for use within mustache render() calls.
 module PleaseRun::MustacheMethods
   def escaped_args
     return if args.nil?

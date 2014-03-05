@@ -1,3 +1,4 @@
+require "English" # for $CHILD_STATUS
 require "pleaserun/namespace"
 require "insist"
 
@@ -15,7 +16,7 @@ end
 
 def sh(command)
   system_quiet(command)
-  return $?
+  return $CHILD_STATUS
 end
 
 def program?(name)
@@ -27,39 +28,44 @@ def program?(name)
 end
 
 def activate(pleaserun)
-  pleaserun.files.each do |path, content, mode=nil|
+  pleaserun.files.each do |path, content, mode = nil|
     File.write(path, content)
     File.chmod(mode, path) if mode
   end
   pleaserun.install_actions.each do |command|
     system(command)
-    raise "Command failed: #{command}" unless $?.success?
+    raise "Command failed: #{command}" unless $CHILD_STATUS.success?
   end
 end
 
+# Helper methods to provide during rspec tests.
 module Helpers
   def starts
-    system_quiet(start); insist { $? }.success?
+    system_quiet(start)
+    insist { $CHILD_STATUS }.success?
     status_running
   end
 
   def stops
-    system_quiet(stop); insist { $? }.success?
+    system_quiet(stop)
+    insist { $CHILD_STATUS }.success?
     status_stopped
   end
 
   def status_running
-    system_quiet(status); insist { $? }.success?
+    system_quiet(status)
+    insist { $CHILD_STATUS }.success?
   end
 
   def status_stopped
-    system_quiet(status); reject { $? }.success?
+    system_quiet(status)
+    reject { $CHILD_STATUS }.success?
   end
 
   def restarts
     starts
     system_quiet(restart)
-    insist { $? }.success?
+    insist { $CHILD_STATUS }.success?
     status_running
   end
 end

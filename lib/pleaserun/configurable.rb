@@ -45,9 +45,17 @@ module PleaseRun::Configurable
     end
   end # def configurable_setup
 
+  # A mixin to extend a class with whenever a class includes
+  # PleaseRun::Configurable.
+  #
+  # This class provides class-level 'attribute' method intended for use in
+  # defining attributes as well as a class-level 'attributes' method for
+  # listing attributes defined in this class. Finally, a helper
+  # 'all_attributes' method is provided to get all attributes defined by this
+  # class and any ancestors.
   module ClassMixin
     # Define an attribute on this class.
-    def attribute(name, description, options={}, &validator)
+    def attribute(name, description, options = {}, &validator)
       facet = Facet.new(name, description, options, &validator)
       attributes << facet
 
@@ -72,11 +80,35 @@ module PleaseRun::Configurable
     end
 
     def all_attributes
-      return ancestors.select { |a| a.respond_to?(:attributes) }.collect{ |a| a.attributes }.flatten
+      return ancestors.select { |a| a.respond_to?(:attributes) }.collect { |a| a.attributes }.flatten
     end # def attributes
   end # def ClassMixin
 
-  class FacetBuilder
+  # A DSL for describing a facet.
+  # 
+  # For example:
+  #
+  #     Facet.new(:temperature, "The temperature value") do
+  #       validate do |v|
+  #         fail "Temperature must be a number" unless v.is_a?(Numeric)
+  #       end
+  #       munge do |v|
+  #         Float(v)
+  #       end
+  #     end
+  #
+  # Both validation and munge blocks are optional.
+  #
+  # The 'validate' block is expcted to fail if the value given to the
+  # facet is not valid.
+  #
+  # The 'munge' block is intended to help you coerce a value.  For example, if
+  # you take "1234" from the user input (for example, as a command line flag
+  # value), you could use 'munge' to convert it to a number, as above.
+  #
+  # Munge is invoked *before* validation. Munge can fail if an invalid
+  # value is given.
+  class FacetDSL
     def initialize(facet, &block)
       @facet = facet
       instance_eval(&block)
@@ -85,16 +117,25 @@ module PleaseRun::Configurable
     def validate(&block)
       @facet.validator = block
     end
+
     def munge(&block)
       @facet.munger = block
     end
   end
 
+  # A generalized facet/property/container for a single value.
+  #
+  # Supports naming and text descriptions of this thing.
+  #
+  # Also supports value validation and munging on assignment to help
+  # you more easily accept user input from a variety of sources and
+  # keep the validation and value munging concerns near the value itself.
   class Facet
     attr_reader :name
     attr_reader :description
+    attr_writer :validator, :munger
 
-    def initialize(name, description, options={}, &validator)
+    def initialize(name, description, options = {}, &facet_dsl)
       insist { name }.is_a?(Symbol)
       insist { description }.is_a?(String)
       insist { options }.is_a?(Hash)
@@ -103,20 +144,10 @@ module PleaseRun::Configurable
       @description = description
       @options = options
 
-      FacetBuilder.new(self, &validator) if block_given?
+      FacetDSL.new(self, &facet_dsl) if block_given?
 
-      if @options[:default]
-        validate(@options[:default])
-      end
+      validate(@options[:default]) if @options[:default]
     end # def initialize
-
-    def validator=(callback)
-      @validator = callback
-    end # def validator=
-
-    def munger=(callback)
-      @munger = callback
-    end # def munger=
 
     def value=(v)
       v = @munger.call(v) if @munger

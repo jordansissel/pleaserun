@@ -4,6 +4,14 @@ require "pleaserun/mustache_methods"
 
 require "insist" # gem 'insist'
 
+# Base class for all platforms.
+#
+# This class provides all the general attributes common
+# among all process runners.
+#
+# For example, pretty much every runner (upstart, runit, sysv, etc) has
+# concepts for the 'name' of a thing, what program it runs, what user
+# to run as, etc.
 class PleaseRun::Platform::Base
   include PleaseRun::Configurable
   include PleaseRun::MustacheMethods
@@ -112,7 +120,7 @@ class PleaseRun::Platform::Base
     ]
 
     possibilities.each do |path|
-      next if !(File.readable?(path) && File.file?(path))
+      next unless File.readable?(path) && File.file?(path)
       return render(File.read(path))
     end
 
@@ -128,7 +136,7 @@ class PleaseRun::Platform::Base
   #
   # This renders `str` through Mustache and replaces spaces with underscores.
   def safe_filename(str)
-    return render(str).gsub(" ","_")
+    return render(str).gsub(" ", "_")
   end # def safe_filename
 
   # The default install_actions is none.
