@@ -16,7 +16,8 @@ class PleaseRun::Detector
     ["debian", "6"] => ["sysv", "lsb-3.1"],
     ["fedora", "18"] => ["systemd", "default"],
     ["fedora", "19"] => ["systemd", "default"],
-    ["fedora", "20"] => ["systemd", "default"]
+    ["fedora", "20"] => ["systemd", "default"],
+    ["mac_os_x", "10.9"] => [ "launchd", "10.9"]
   }
 
   def self.detect
@@ -60,6 +61,8 @@ class PleaseRun::Detector
       # changes in a minor release
       when "debian" 
         return version[/^[0-9]+/]
+      when "mac_os_x"
+        return version[/^[0-9]+\.[0-9]+/]
       # TODO(sissel): Any other edge cases?
     end
     return version
