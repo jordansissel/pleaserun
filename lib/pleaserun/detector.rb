@@ -55,6 +55,14 @@ class PleaseRun::Detector
     return platform, normalize_version(platform, version)
   end # def detect_ohai
 
+  def self.detect_facter
+    require "facter"
+
+    platform = Facter.fact["operatingsystem"]
+    version = Facter.fact["operatingsystemrelease"]
+    return platform, normalize_version(platform, version)
+  end # def detect_facter
+
   def self.normalize_version(platform, version)
     case platform
       # Take '6.0.8' and make it just '6' since debian never makes major
