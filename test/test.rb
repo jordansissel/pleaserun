@@ -36,11 +36,9 @@ results = ARGV.collect { tag, success, out, err = queue.pop }
 successes = results.count { |tag, success, out, err| success }
 failures = results.count { |tag, success, out, err| !success }
 tests = results.collect { |tag, success, out, err| 
-  #require "pry"
-  #binding.pry
   begin
     JSON.parse(File.read(out).split("\n").last[/{.*$/])["examples"].each { |r| r["tag"] = tag }
-  rescue TypeError
+  rescue TypeError, NoMethodError
     puts "Failed to parse json"
     puts :out => File.read(out)
     puts :err => File.read(err)
