@@ -181,7 +181,7 @@ are made. If it fails, nagios will not start. Yay!
   end # def run_human
 
   def setup_logger
-    @logger = Cabin::Channel.new
+    @logger = Cabin::Channel.get
     if quiet?
       @logger.level = :error
     elsif verbose?
