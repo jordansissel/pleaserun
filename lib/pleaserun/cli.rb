@@ -5,6 +5,7 @@ require "cabin"
 require "stud/temporary"
 
 require "pleaserun/platform/base"
+require "pleaserun/installer"
 
 # The CLI interface to pleaserun.
 #
@@ -104,18 +105,7 @@ are made. If it fails, nagios will not start. Yay!
 
   def execute
     setup_logger
-
-    # Provide any dynamic defaults if necessary
-    if platform.nil?
-      require "pleaserun/detector"
-      self.platform, self.target_version = PleaseRun::Detector.detect
-      @logger.warn("No platform selected. Autodetecting...", :platform => platform, :version => target_version)
-    end
-
-    if name.nil?
-      self.name = File.basename(program)
-      @logger.warn("No name given, setting reasonable default based on the executable", :name => name)
-    end
+    setup_defaults
 
     # Load the platform implementation
     platform_klass = load_platform(platform)
@@ -144,6 +134,20 @@ are made. If it fails, nagios will not start. Yay!
     return 1
   end # def execute
 
+  def setup_defaults
+    # Provide any dynamic defaults if necessary
+    if platform.nil?
+      require "pleaserun/detector"
+      self.platform, self.target_version = PleaseRun::Detector.detect
+      @logger.warn("No platform selected. Autodetecting...", :platform => platform, :version => target_version)
+    end
+
+    if name.nil?
+      self.name = File.basename(program)
+      @logger.warn("No name given, setting reasonable default based on the executable", :name => name)
+    end
+  end # def setup_defaults
+
   def run_json(runner)
     require "json"
 
@@ -164,51 +168,17 @@ are made. If it fails, nagios will not start. Yay!
   end # def run_json
 
   def run_human(runner)
-    tmp = Stud::Temporary.directory
-    errors = []
-
-    runner.files.each do |path, content, perms|
-      # TODO(sissel): Force-set default file permissions if not provided?
-      # perms ||= (0666 ^ File.umask)
-      fullpath = install? ? path : File.join(tmp, path)
-      success = write(fullpath, content, perms)
-      errors << fullpath unless success
+    if install?
+      PleaseRun::Installer.install_files(runner)
+      PleaseRun::Installer.install_actions(runner)
+    else
+      tmp = Stud::Temporary.directory
+      actions_script = File.join(tmp, "install_actions.sh")
+      PleaseRun::Installer.install_files(runner, tmp)
+      PleaseRun::Installer.write_actions(runner, actions_script)
     end
-
-    raise FileWritingFailure, "Errors occurred while writing files" if errors.any?
-
-    # TODO(sissel): Refactor this to be less lines of code or put into methods.
-    if runner.install_actions.any?
-      if install?
-        runner.install_actions.each do |action|
-          @logger.info("Running install action", :action => action)
-          system(action)
-          @logger.warn("Install action failed", :action => action, :code => $CHILD_STATUS.exitstatus) unless $CHILD_STATUS.success?
-        end # each install action
-      else
-        path = File.join(tmp, "install_actions.sh")
-        @logger.log("Writing install actions. You will want to run this script to properly activate your service on the target host", :path => path)
-        File.open(path, "w") do |fd|
-          runner.install_actions.each do |action|
-            fd.puts(action)
-          end
-        end
-      end
-    end # if runner.install_actions.any?
     return 0
   end # def run_human
-
-  def write(fullpath, content, perms)
-    @logger.log("Writing file", :destination => fullpath)
-    FileUtils.mkdir_p(File.dirname(fullpath))
-    File.write(fullpath, content)
-    @logger.debug("Setting permissions", :destination => fullpath, :perms => perms)
-    File.chmod(perms, fullpath) if perms
-    return true
-  rescue Errno::EACCES
-    @logger.error("Access denied in writing a file. Maybe we need to be root?", :path => fullpath)
-    return false
-  end
 
   def setup_logger
     @logger = Cabin::Channel.new
