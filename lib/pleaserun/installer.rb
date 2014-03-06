@@ -33,6 +33,7 @@ module PleaseRun::Installer
   end
 
   def install_actions(runner)
+    return if runner.install_actions.empty?
     # TODO(sissel): Refactor this to be less lines of code or put into methods.
     runner.install_actions.each do |action|
       logger.info("Running install action", :action => action)
@@ -42,6 +43,7 @@ module PleaseRun::Installer
   end
 
   def write_actions(runner, path)
+    return if runner.install_actions.empty?
     logger.log("Writing install actions. You will want to run this script to properly activate your service on the target host", :path => path)
     File.open(path, "w") do |fd|
       runner.install_actions.each do |action|
