@@ -37,4 +37,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     c.vm.provider "virtualbox"
     c.vm.provision "shell", :path => "fedora-18/provision.sh"
   end
+
+  # Centos
+  config.vm.define "centos-6.4" do |c|
+    c.vm.box = "dummy"
+    c.vm.box_url = "http://bit.ly/vagrant-docker-dummy"
+    c.vm.provision "shell", :inline => "sed -i -e '/requiretty/d' /etc/sudoers"
+    c.vm.provider :docker do |docker|
+      docker.image = "jordansissel/system:centos-6.4"
+    end
+  end
 end
