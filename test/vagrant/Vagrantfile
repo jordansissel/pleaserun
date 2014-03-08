@@ -47,4 +47,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       docker.image = "jordansissel/system:centos-6.4"
     end
   end
+
+  # Solaris/Illumos/OmniOS
+  config.vm.define "omnios" do |c|
+    c.vm.box = "omnios"
+    c.vm.box_url = "http://omnios.omniti.com/media/omnios-latest.box"
+    c.vm.provider "virtualbox"
+    #c.vm.provision "shell", :path => "fedora-18/provision.sh"
+  end
 end
