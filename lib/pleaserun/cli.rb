@@ -193,7 +193,7 @@ are made. If it fails, nagios will not start. Yay!
     end
 
     if log
-      logfile = File.new(logfile, "a")
+      logfile = File.new(log, "a")
       @logger.subscribe(logfile)
       STDERR.puts "Sending all logs to #{log}" if STDERR.tty?
     else
