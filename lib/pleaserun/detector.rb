@@ -18,6 +18,7 @@ class PleaseRun::Detector
     ["fedora", "19"] => ["systemd", "default"],
     ["fedora", "20"] => ["systemd", "default"],
     ["mac_os_x", "10.9"] => ["launchd", "10.9"]
+    ["arch", "rolling"] => ["systemd", "default"],
   }
 
   def self.detect
@@ -71,6 +72,8 @@ class PleaseRun::Detector
         return version[/^[0-9]+/]
       when "mac_os_x"
         return version[/^[0-9]+\.[0-9]+/]
+      when "arch"
+        return "rolling"
       # TODO(sissel): Any other edge cases?
     end
     return version
