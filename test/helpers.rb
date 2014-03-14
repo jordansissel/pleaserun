@@ -9,7 +9,11 @@ def test_in_container(tag, commands, outfile, errfile)
   insist { $? }.success?
 
   commands.each do |command|
-    IO.popen("cd #{chdir}; vagrant ssh #{tag} -- sudo bash -l >> #{outfile} 2>> #{errfile}", "w") do |io|
+    cmd = "cd #{chdir}; vagrant ssh #{tag} -- bash -l >> #{outfile} 2>> #{errfile}"
+    IO.popen(cmd, "w") do |io|
+      io.puts(". /etc/profile")
+      io.puts(". ./.bashrc")
+      io.puts(". ./.bash_profile")
       io.puts(command)
       io.puts("exit $?")
       io.close_write
