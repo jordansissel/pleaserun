@@ -72,10 +72,10 @@ class PleaseRun::Detector
     case platform
       # Take '6.0.8' and make it just '6' since debian never makes major
       # changes in a minor release
-      when "debian" 
-        return version[/^[0-9]+/]
+      when "debian", "centos"
+        return version[/^[0-9]+/] # First digit is the 'major' version
       when "mac_os_x"
-        return version[/^[0-9]+\.[0-9]+/]
+        return version[/^[0-9]+\.[0-9]+/] # 10.x
       when "arch"
         return "rolling"
       # TODO(sissel): Any other edge cases?
