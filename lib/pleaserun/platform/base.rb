@@ -79,7 +79,7 @@ class PleaseRun::Platform::Base
     end
   end
 
-  attribute :chdir, "The directory to chdir to before running" do
+  attribute :chdir, "The directory to chdir to before running", :default => "/" do
     validate do |chdir|
       insist { chdir }.is_a?(String)
     end
