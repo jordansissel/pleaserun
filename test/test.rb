@@ -22,8 +22,12 @@ ARGV.each do |tag|
     err = Stud::Temporary.pathname
     begin
       status = test_in_container(tag, [
-        ". /etc/profile; cd /pleaserun; rvm use 1.9.3; bundle install --quiet",
-        ". /etc/profile; cd /pleaserun; rvm use 1.9.3; rspec --format json"
+        # TODO(sissel): Test other ruby versions
+        "cd /pleaserun; rvm use 1.9.3; bundle install",
+
+        # Run rspec as root to make pleaserun's real deployment tests run.
+        "cd /pleaserun; rvm use 1.9.3; sudo -E `which ruby` `which rspec` --format json",
+        #"cd /pleaserun; rvm use 1.9.3; rspec --format json",
       ], out, err)
     rescue Insist::Failure
       status = false
