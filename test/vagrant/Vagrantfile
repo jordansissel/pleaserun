@@ -39,13 +39,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # Centos
-  config.vm.define "centos-6.4" do |c|
-    c.vm.box = "dummy"
-    c.vm.box_url = "http://bit.ly/vagrant-docker-dummy"
-    c.vm.provision "shell", :inline => "sed -i -e '/requiretty/d' /etc/sudoers"
-    c.vm.provider :docker do |docker|
-      docker.image = "jordansissel/system:centos-6.4"
-    end
+  # I would use docker, but I can't figure out how to get centos 6 w/ upstart working and there
+  # are plenty of quality CentOS vagrant boxes around :)
+  config.vm.define "centos-6.5" do |c|
+    c.vm.box = "centos-6.5"
+    c.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/centos-65-x64-virtualbox-puppet.box"
+    c.vm.provider "virtualbox"
+    c.vm.provision "shell", :path => "fedora-18/provision.sh"
   end
 
   # Solaris/Illumos/OmniOS
@@ -53,6 +53,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     c.vm.box = "omnios"
     c.vm.box_url = "http://omnios.omniti.com/media/omnios-latest.box"
     c.vm.provider "virtualbox"
-    #c.vm.provision "shell", :path => "fedora-18/provision.sh"
   end
 end
