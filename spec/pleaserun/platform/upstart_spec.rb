@@ -1,7 +1,11 @@
 require "testenv"
 require "pleaserun/platform/upstart"
 
+require "pleaserun/detector"
+
 describe PleaseRun::Platform::Upstart do
+  let(:platform) { PleaseRun::Detector.detect[0] }
+  let(:version) { PleaseRun::Detector.detect[1] }
   let(:start) { "initctl start #{subject.name}" }
   let(:stop) { "initctl stop #{subject.name}" }
   let(:status) { "initctl status #{subject.name} | egrep -v '#{subject.name} stop/'" }
@@ -13,7 +17,7 @@ describe PleaseRun::Platform::Upstart do
 
   context "#files" do
     subject do
-      runner = PleaseRun::Platform::Upstart.new("1.10")
+      runner = PleaseRun::Platform::Upstart.new(version)
       runner.name = "fancypants"
       next runner
     end
@@ -31,7 +35,7 @@ describe PleaseRun::Platform::Upstart do
 
   context "#install_actions" do
     subject do
-      runner = PleaseRun::Platform::Upstart.new("1.10")
+      runner = PleaseRun::Platform::Upstart.new(version)
       runner.name = "fancypants"
       next runner
     end
@@ -51,7 +55,7 @@ describe PleaseRun::Platform::Upstart do
     end
 
     context "as the super user", :if => partytime do
-      subject { PleaseRun::Platform::Upstart.new("1.10") }
+      subject { PleaseRun::Platform::Upstart.new(version) }
 
       before do
         subject.name = "example"
