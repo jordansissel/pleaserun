@@ -8,17 +8,21 @@ class PleaseRun::Detector
 
   # A mapping of of [os, version] => [runner, version]
   MAPPING = {
-    ["ubuntu", "12.04"] => ["upstart", "1.5"],
-    ["ubuntu", "12.10"] => ["upstart", "1.5"],
-    ["ubuntu", "13.04"] => ["upstart", "1.5"],
-    ["ubuntu", "13.10"] => ["upstart", "1.5"],
-    ["debian", "7"] => ["sysv", "lsb-3.1"],
+    ["arch", "rolling"] => ["systemd", "default"],
+    ["centos", "5"] => ["sysv", "lsb-3.1"],
+    ["centos", "6"] => ["upstart", "0.6.5"],
+    ["centos", "7"] => ["systemd", "default"],
     ["debian", "6"] => ["sysv", "lsb-3.1"],
+    ["debian", "7"] => ["sysv", "lsb-3.1"],
     ["fedora", "18"] => ["systemd", "default"],
     ["fedora", "19"] => ["systemd", "default"],
     ["fedora", "20"] => ["systemd", "default"],
     ["mac_os_x", "10.9"] => ["launchd", "10.9"]
-    ["arch", "rolling"] => ["systemd", "default"],
+    ["mac_os_x", "10.9"] => ["launchd", "10.9"],
+    ["ubuntu", "12.04"] => ["upstart", "1.5"],
+    ["ubuntu", "12.10"] => ["upstart", "1.5"],
+    ["ubuntu", "13.04"] => ["upstart", "1.5"],
+    ["ubuntu", "13.10"] => ["upstart", "1.5"]
   }
 
   def self.detect
@@ -68,10 +72,10 @@ class PleaseRun::Detector
     case platform
       # Take '6.0.8' and make it just '6' since debian never makes major
       # changes in a minor release
-      when "debian" 
-        return version[/^[0-9]+/]
+      when "debian", "centos"
+        return version[/^[0-9]+/] # First digit is the 'major' version
       when "mac_os_x"
-        return version[/^[0-9]+\.[0-9]+/]
+        return version[/^[0-9]+\.[0-9]+/] # 10.x
       when "arch"
         return "rolling"
       # TODO(sissel): Any other edge cases?
