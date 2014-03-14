@@ -60,6 +60,7 @@ describe PleaseRun::Platform::Upstart do
       before do
         subject.name = "example"
         subject.user = "root"
+        subject.group = "root"
         subject.program = "/bin/sh"
         subject.args = ["-c", "echo hello world; sleep 5"]
         activate(subject)
