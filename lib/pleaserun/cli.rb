@@ -6,20 +6,18 @@ require "stud/temporary"
 
 require "pleaserun/platform/base"
 require "pleaserun/installer"
+require "pleaserun/errors"
 
 # The CLI interface to pleaserun.
 #
 # This is invoked by `bin/pleaserun`.
 class PleaseRun::CLI < Clamp::Command # rubocop:disable ClassLength
-  class Error < StandardError; end
-  class ConfigurationError < Error; end
-  class PlatformLoadError < Error; end
-  class FileWritingFailure < Error; end
 
   option ["-p", "--platform"], "PLATFORM", "The name of the platform to target, such as sysv, upstart, etc"
   option ["-v", "--version"], "VERSION", "The version of the platform to target, such as 'lsb-3.1' for sysv or '1.5' for upstart",
          :default => "default", :attribute_name => :target_version
 
+  option "--overwrite", :flag, "Overwrite any files that already exist when installing."
   option "--log", "LOGFILE", "The path to use for writing pleaserun logs."
   option "--json", :flag, "Output a result in JSON. Intended to be consumed by other programs. This will emit the file contents and install actions as a JSON object."
 
@@ -129,7 +127,7 @@ are made. If it fails, nagios will not start. Yay!
       return run_human(runner)
     end
     return 0
-  rescue Error => e
+  rescue PleaseRun::Error => e
     @logger.error("An error occurred: #{e}")
     return 1
   end # def execute
@@ -169,7 +167,7 @@ are made. If it fails, nagios will not start. Yay!
 
   def run_human(runner)
     if install?
-      PleaseRun::Installer.install_files(runner)
+      PleaseRun::Installer.install_files(runner, "/", overwrite?)
       PleaseRun::Installer.install_actions(runner)
     else
       tmp = Stud::Temporary.directory
