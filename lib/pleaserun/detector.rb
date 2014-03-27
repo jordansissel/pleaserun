@@ -26,6 +26,8 @@ class PleaseRun::Detector
   }
 
   def self.detect
+    return @system unless @system.nil?
+
     @logger ||= Cabin::Channel.get
     begin
       platform, version = detect_ohai
@@ -38,9 +40,9 @@ class PleaseRun::Detector
       end
     end
 
-    system = lookup([platform, version])
-    raise UnknownSystem if system.nil?
-    return system
+    @system = lookup([platform, version])
+    raise UnknownSystem if @system.nil?
+    return @system
   end # def self.detect
 
   def self.lookup(platform_and_version)
