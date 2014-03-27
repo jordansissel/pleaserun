@@ -5,7 +5,16 @@ end
 
 def test_in_container(tag, commands, outfile, errfile)
   chdir = File.join(File.dirname(__FILE__), "vagrant")
-  system("cd #{chdir}; vagrant up #{tag} > #{outfile} 2> #{errfile}")
+
+  # hacks for now because I don't know how to make vagrant smartly
+  # choose the right provider.
+  provider = case tag
+    when /^fedora-/, /^centos-/
+      "virtualbox"
+    else
+      "docker"
+  end
+  system("cd #{chdir}; vagrant up --provider=#{provider} #{tag} > #{outfile} 2> #{errfile}")
   insist { $? }.success?
 
   commands.each do |command|
