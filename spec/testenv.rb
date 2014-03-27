@@ -1,6 +1,7 @@
 require "English" # for $CHILD_STATUS
 require "pleaserun/namespace"
 require "insist"
+require "shared_examples"
 
 def superuser?
   return Process::UID.eid == 0
@@ -70,6 +71,20 @@ module Helpers
   end
 end
 
-RSpec.configure do |c|
-  c.include Helpers
+RSpec.configure do |config|
+  config.include Helpers
+
+  config.filter_run_excluding(
+    :systemd => !(superuser? && platform?("linux") && program?("systemctl") && File.directory?("/lib/systemd")),
+    :upstart => !(superuser? && platform?("linux") && program?("initctl") && File.directory?("/etc/init")),
+    :launchd => !(superuser? && platform?("darwin"))
+  )
+
+  if !config.exclusion_filter[:launchd]
+    # Skip prestart tests because launchd doesn't have such a feature.
+    config.filter_run_excluding(:prestart => true)
+    # Skip flapper tests because launchd's minimum restart-throttle is 5 seconds.
+    # I'm not waiting for that crap.
+    config.filter_run_excluding(:flapper => true)
+  end
 end

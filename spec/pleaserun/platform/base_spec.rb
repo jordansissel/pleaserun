@@ -4,6 +4,7 @@ require "pleaserun/platform/base"
 describe PleaseRun::Platform::Base do
   context "default" do
     subject { PleaseRun::Platform::Base.new("example") }
+
     it "#name should be nil" do
       insist { subject.name }.nil?
     end
@@ -25,3 +26,4 @@ describe PleaseRun::Platform::Base do
     end
   end
 end
+

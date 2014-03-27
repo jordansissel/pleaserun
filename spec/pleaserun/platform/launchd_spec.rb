@@ -1,10 +1,20 @@
 require "English" # for $CHILD_STATUS
 require "testenv"
 require "pleaserun/platform/launchd"
+require "pleaserun/detector"
 
 describe PleaseRun::Platform::Launchd do
-  it "inherits correctly" do
-    insist { PleaseRun::Platform::Launchd.ancestors }.include?(PleaseRun::Platform::Base)
+  let(:platform) { PleaseRun::Detector.detect[0] }
+  let(:version) { PleaseRun::Detector.detect[1] }
+
+  context "deployment", :launchd => true do
+    it_behaves_like PleaseRun::Platform do
+      let(:start) { "launchctl start #{subject.name}" }
+      let(:stop) { "launchctl stop #{subject.name}" }
+      let(:status) { "launchctl list | awk '$3 == \"#{subject.name}\" { exit($1 == \"-\") }'" }
+      let(:restart) { "launchctl restart #{subject.name}" }
+    end
+
   end
 
   context "#files" do
@@ -32,63 +42,4 @@ describe PleaseRun::Platform::Launchd do
       insist { subject.install_actions }.include?("launchctl load /Library/LaunchDaemons/fancypants.plist")
     end
   end
-
-  context "deployment" do
-    partytime = (superuser? && platform?("darwin"))
-    it "cannot be attempted", :if => !partytime do
-      pending("we are not the superuser") unless superuser?
-      pending("platform is not darwin") unless platform?("darwin")
-    end
-
-    context "as the super user", :if => partytime do
-      subject { PleaseRun::Platform::Launchd.new("10.9") }
-
-      before do
-        subject.name = "example"
-        subject.user = "root"
-        subject.program = "/bin/sh"
-        subject.args = ["-c", "echo hello world; sleep 5"]
-
-        subject.files.each do |path, content|
-          File.write(path, content)
-        end
-        subject.install_actions.each do |command|
-          system(command)
-          raise "Command failed: #{command}" unless $CHILD_STATUS.success?
-        end
-      end
-
-      after do
-        system_quiet("launchctl stop #{subject.name}")
-        system_quiet("launchctl unload /Library/LaunchDaemons/#{subject.name}.plist")
-        subject.files.each do |path, content|
-          File.unlink(path) if File.exist?(path)
-        end
-
-        # Remove the logs, too.
-        ["/var/log/#{subject.name}.out", "/var/log/#{subject.name}.err"].each do |log|
-          File.unlink(log) if File.exist?(log)
-        end
-      end
-
-      it "should install" do
-        system_quiet("launchctl list #{subject.name}")
-        insist { $CHILD_STATUS }.success?
-      end
-
-      it "should start" do
-        system_quiet("launchctl start #{subject.name}")
-        insist { $CHILD_STATUS }.success?
-        system_quiet("launchctl list #{subject.name}")
-        insist { $CHILD_STATUS }.success?
-      end
-
-      it "should stop" do
-        system_quiet("launchctl start #{subject.name}")
-        insist { $CHILD_STATUS }.success?
-        system_quiet("launchctl stop #{subject.name}")
-        insist { $CHILD_STATUS }.success?
-      end
-    end
-  end # real tests
 end
