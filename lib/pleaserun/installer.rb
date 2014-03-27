@@ -1,3 +1,5 @@
+require "pleaserun/namespace"
+require "pleaserun/errors"
 
 # Some helpful methods for installing a runner.
 module PleaseRun::Installer
@@ -8,16 +10,20 @@ module PleaseRun::Installer
     install_actions(runner)
   end
 
-  def install_files(runner, root = "/")
+  # Install files provided by a runner.
+  #
+  # If overwrite is false and any file already exists, then this method will fail.
+  def install_files(runner, root = "/", overwrite = false)
     errors = 0
     runner.files.each do |path, content, perms|
       # TODO(sissel): Force-set default file permissions if not provided?
       # perms ||= (0666 ^ File.umask)
       fullpath = File.join(root, path)
+      raise PleaseRun::FileWritingFailure, "File already exists: #{fullpath}" if !overwrite && File.file?(fullpath)
       success = write(fullpath, content, perms)
       errors += 1 unless success
     end
-    raise FileWritingFailure, "Errors occurred while writing files" if errors > 0
+    raise PleaseRun::FileWritingFailure, "Errors occurred while writing files" if errors > 0
   end
 
   def write(fullpath, content, perms)
