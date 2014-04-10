@@ -115,7 +115,16 @@ prestart() {
 {{/prestart}}
 
 case "$1" in
-  start) status || start ;;
+  start)
+    status
+    code=$?
+    if [ $code -eq 0 ]; then
+      echo "$name is already running"
+    else
+      start
+    fi
+    exit $code
+    ;;
   stop) stop ;;
   force-stop) force_stop ;;
   status) 
