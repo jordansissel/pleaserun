@@ -42,8 +42,8 @@ first let's get redis and build it.
 
 Assuming the above succeeds (it did for me!), we now have redis installed to `/tmp/redis`:
 
-  % ls /tmp/redis/bin
-  redis-benchmark  redis-check-aof  redis-check-dump  redis-cli  redis-server
+    % ls /tmp/redis/bin
+    redis-benchmark redis-check-aof redis-check-dump redis-cli redis-server
 
 You might be thinking - why /tmp? This is just a demo! That's why! :)
 
