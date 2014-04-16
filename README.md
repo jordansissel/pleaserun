@@ -17,7 +17,7 @@ With pleaserun, you can generate the following launchers/scripts/whatever:
 * runit
 * sysv init
 
-Want more? It's easy to add things. [File an issue](issues/) and ask away!
+Want more? It's easy to add things. [File an issue](../../issues/) and ask away!
 
 ## Installation
 
