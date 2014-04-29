@@ -122,6 +122,7 @@ case "$1" in
       echo "$name is already running"
     else
       start
+      code=$?
     fi
     exit $code
     ;;
