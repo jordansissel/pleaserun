@@ -94,6 +94,43 @@ class PleaseRun::Platform::Base
     end
   end
 
+  attribute :limit_coredump, "Largest size (in blocks) of a core file that can be created. (setrlimit RLIMIT_CORE)" do
+    validate { |v| v == "ulimited" || v.to_i > 0 }
+  end
+
+  attribute :limit_cputime, "Maximum amount of cpu time (in seconds) a program may use. (setrlimit RLIMIT_CPU)" do
+    validate { |v| v == "ulimited" || v.to_i > 0 }
+  end
+
+  attribute :limit_data, "Maximum data segment size (setrlimit RLIMIT_DATA)" do
+    validate { |v| v == "ulimited" || v.to_i > 0 }
+  end
+
+  attribute :limit_file_size, "Maximum size (in blocks) of a file receiving writes (setrlimit RLIMIT_FSIZE)" do
+    validate { |v| v == "ulimited" || v.to_i > 0 }
+  end
+
+  attribute :limit_locked_memory, "Maximum amount of memory (in bytes) lockable with mlock(2) (setrlimit RLIMIT_MEMLOCK)" do
+    validate { |v| v == "ulimited" || v.to_i > 0 }
+  end
+
+  attribute :limit_open_files, "Maximum number of open files, sockets, etc. (setrlimit RLIMIT_NOFILE)" do
+    validate { |v| v == "ulimited" || v.to_i > 0 }
+  end
+
+  attribute :limit_user_processes, "Maximum number of running processes (or threads!) for this user id. Not recommended because this setting applies to the user, not the process group. (setrlimit RLIMIT_NPROC)" do
+    validate { |v| v == "ulimited" || v.to_i > 0 }
+  end
+
+  attribute :limit_physical_memory, "Maximum resident set size (in bytes); the amount of physical memory used by a process. (setrlimit RLIMIT_RSS)" do
+    validate { |v| v == "ulimited" || v.to_i > 0 }
+  end
+
+  attribute :limit_stack_size, "Maximum size (in bytes) of a stack segment (setrlimit RLIMIT_STACK)" do
+    validate { |v| v == "ulimited" || v.to_i > 0 }
+  end
+
+
   attribute :prestart, "A command to execute before starting and restarting. A failure of this command will cause the start/restart to abort. This is useful for health checks, config tests, or similar operations."
 
   def initialize(target_version)

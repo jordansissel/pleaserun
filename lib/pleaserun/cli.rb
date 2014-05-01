@@ -42,7 +42,7 @@ class PleaseRun::CLI < Clamp::Command # rubocop:disable ClassLength
     next if [:program, :args, :target_version].include?(facet.name)
 
     # Turn the attribute name into a flag.
-    option "--#{facet.name}", facet.name.to_s.upcase, facet.description,
+    option "--#{facet.name.to_s.gsub("_", "-")}", facet.name.to_s.upcase, facet.description,
            :attribute_name => facet.name
   end
   

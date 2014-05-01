@@ -28,9 +28,11 @@ describe PleaseRun::Platform::Upstart do
       insist { files }.include?("/etc/init/fancypants.conf")
     end
 
-    it "emits a file in /etc/init.d/" do
-      insist { files }.include?("/etc/init.d/fancypants")
-    end
+    # This was removed. I don't think we need to provide an /etc/init.d shim anymore.
+    # Please let me know if you disagree :)
+    #it "emits a file in /etc/init.d/" do
+      #insist { files }.include?("/etc/init.d/fancypants")
+    #end
   end
 
   context "#install_actions" do
