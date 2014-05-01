@@ -26,12 +26,20 @@ pidfile="/var/run/$name.pid"
 [ -r /etc/default/$name ] && . /etc/default/$name
 [ -r /etc/sysconfig/$name ] && . /etc/sysconfig/$name
 
+trace() {
+  logger -t "/etc/init.d/{{{name}}}" "$@"
+}
+
+emit() {
+  trace "$@"
+  echo "$@"
+}
+
 start() {
   {{! I don't use 'su' here to run as a different user because the process 'su'
       stays as the parent, causing our pidfile to contain the pid of 'su' not the
       program we intended to run. Luckily, the 'chroot' program on OSX, FreeBSD, and Linux
-      all support switching users and it invokes execve immediately after chrooting.
-  }}
+      all support switching users and it invokes execve immediately after chrooting. }}
 
   {{#prestart}}
   if [ "$PRESTART" != "no" ] ; then
@@ -40,10 +48,14 @@ start() {
   fi
   {{/prestart}}
 
+  # Setup any environmental stuff beforehand
+  {{{ulimit_shell}}}
+
   # Run the program!
-  chroot --userspec {{{user}}}:{{{group}}} {{{chroot}}} sh -c "
-    {{#chdir}}cd {{{chdir}}}{{/chdir}}
-    {{#nice}}nice {{{nice}}}{{/nice}}
+  {{#nice}}nice -n "$nice" \{{/nice}}
+  chroot --userspec "$user":"$group" "$chroot" sh -c "
+    {{{ulimit_shell}}}
+    cd \"$chdir\"
     exec \"$program\" $args
   " > /var/log/$name.log 2> /var/log/$name.err &
 
@@ -52,7 +64,7 @@ start() {
   # and a process possibly asking for status.
   echo $! > $pidfile
 
-  echo "$name started."
+  emit "$name started"
   return 0
 }
 
@@ -60,18 +72,18 @@ stop() {
   # Try a few times to kill TERM the program
   if status ; then
     pid=`cat "$pidfile"`
-    echo "Killing $name (pid $pid) with SIGTERM"
+    trace "Killing $name (pid $pid) with SIGTERM"
     kill -TERM $pid
     # Wait for it to exit.
     for i in 1 2 3 4 5 ; do
-      echo "Waiting $name (pid $pid) to die..."
+      trace "Waiting $name (pid $pid) to die..."
       status || break
       sleep 1
     done
     if status ; then
-      echo "$name stop failed; still running."
+      emit "$name stop failed; still running."
     else
-      echo "$name stopped."
+      emit "$name stopped."
     fi
   fi
 }
@@ -79,7 +91,7 @@ stop() {
 status() {
   if [ -f "$pidfile" ] ; then
     pid=`cat "$pidfile"`
-    if kill -0 $pid > /dev/null 2> /dev/null ; then
+    if ps -p $pid > /dev/null 2> /dev/null ; then
       # process by this pid is running.
       # It may not be our pid, but that's what you get with just pidfiles.
       # TODO(sissel): Check if this process seems to be the same as the one we
@@ -108,22 +120,33 @@ prestart() {
   status=$?
 
   if [ $status -gt 0 ] ; then
-    echo "Prestart command failed with code $status. If you wish to skip the prestart command, set PRESTART=no in your environment."
+    emit "Prestart command failed with code $status. If you wish to skip the prestart command, set PRESTART=no in your environment."
   fi
   return $status
 }
 {{/prestart}}
 
 case "$1" in
+  force-start|start|stop|force-stop|restart)
+    trace "Attempting '$1' on {{{name}}}"
+    ;;
+esac
+
+case "$1" in
+  force-start)
+    PRESTART=no
+    exec "$0" start
+    ;;
   start)
     status
     code=$?
     if [ $code -eq 0 ]; then
-      echo "$name is already running"
+      emit "$name is already running"
+      exit $code
     else
       start
+      exit $?
     fi
-    exit $code
     ;;
   stop) stop ;;
   force-stop) force_stop ;;
@@ -131,18 +154,20 @@ case "$1" in
     status
     code=$?
     if [ $code -eq 0 ] ; then
-      echo "$name is running"
+      emit "$name is running"
     else
-      echo "$name is not running"
+      emit "$name is not running"
     fi
     exit $code
     ;;
   restart) 
-    {{#prestart}}prestart || exit $?{{/prestart}}
+    {{#prestart}}if [ "$PRESTART" != "no" ] ; then
+      prestart || exit $?
+    fi{{/prestart}}
     stop && start 
     ;;
   *)
-    echo "Usage: $SCRIPTNAME {start|stop|force-stop|status|restart}" >&2
+    echo "Usage: $SCRIPTNAME {start|force-start|stop|force-start|force-stop|status|restart}" >&2
     exit 3
   ;;
 esac

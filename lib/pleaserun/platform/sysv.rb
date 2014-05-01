@@ -11,4 +11,22 @@ class PleaseRun::Platform::SYSV < PleaseRun::Platform::Base
       out.yield(safe_filename("/etc/default/{{ name }}"), render_template("default"))
     end
   end
+
+  def ulimit_setup
+    ulimits = []
+    ulimits << "-c ${limit_coredump}" if limit_coredump
+    ulimits << "-t ${limit_cputime}" if limit_cputime
+    ulimits << "-d ${limit_data}" if limit_data
+    ulimits << "-f ${limit_file_size}" if limit_file_size
+    ulimits << "-l ${limit_locked_memory}" if limit_locked_memory
+    ulimits << "-n ${limit_open_files}" if limit_open_files
+    ulimits << "-u ${limit_user_processes}" if limit_user_processes
+    ulimits << "-m ${limit_physical_memory}" if limit_physical_memory
+    ulimits << "-s ${limit_stack_size}" if limit_stack_size
+    return ulimits
+  end
+
+  def ulimit_shell
+    return ulimit_setup.collect { |args| "ulimit #{args}" }.join("\n")
+  end
 end
