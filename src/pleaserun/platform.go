@@ -1,63 +1,42 @@
 package pleaserun
 
 import (
-  "strings"
   "errors"
-  "fmt"
 )
 
-type Program struct {
-	Name        string
-	Program     string
-	Args        []string
-	Description string
-	Credential  Credential
-	Environment Environment
-	PreStart    string
+type Platform interface {
+  Name() string
+  Version() string
+
+  Files(program Program) map[string][]byte
+  Activation(program Program) []string
 }
 
-func NewProgram() Program {
-  return Program{Credential: Credential{User: "root", Group: "root"}}
+type PlatformInfo struct {
+  Name string
+  Version string
 }
 
-type Credential struct {
-	User string
-	Group string
+type PlatformCreator func(string, string) Platform
+
+var PLATFORMS map[string]PlatformCreator = make(map[string]PlatformCreator)
+
+func registerPlatform(name string, version string, creator PlatformCreator) {
+  PLATFORMS[name] = creator
 }
 
-func (c *Credential) UnmarshalFlag(value string) error {
-  if value == "" {
-    return errors.New("Expected `user:group` or just `user`")
+func NewPlatform(name string, version string) (p Platform, err error) {
+  creator, ok := PLATFORMS[name]
+  if !ok {
+    return nil, errors.New("Unknown thing")
   }
 
-  parts := strings.Split(value, ":")
-  if len(parts) > 2 || len(parts) == 0 {
-    return errors.New("Expected `user:group` or just `user`")
-  }
-
-  c.User = parts[0]
-
-  if len(parts) == 2 {
-    c.Group = parts[1]
-  }
-
-  return nil
-} // Credential#UnmarshalFlag
-
-func (c Credential) String() string {
-  return fmt.Sprintf("%s:%s", c.User, c.Group)
+  return creator(name, version), nil
 }
 
-type Environment interface {
-	Variables() map[string]string
-	WorkingDirectory() string
-} // Environment
-
-type PosixEnvironment struct {
-	Umask  int
-	Chroot string
-	Nice   int
-} // PosixEnvironment
-
-type WindowsEnvironment struct {
-} // WindowsEnvironment
+// pleaserun.Files(sysv, myprogram)
+// Each file from platform.Files(program), apply templating.
+func Files(platform Platform, program Program) { }
+// pleaserun.ActivationInstructions(sysv, myprogram)
+// Each command from platform.ActivationInstructions(program) , apply templating.
+func ActivationInstructions(platform Platform, program Program) { }
