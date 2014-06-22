@@ -3,21 +3,22 @@
 <plist version="1.0">
   <dict>
     <key>Disabled</key><false/>
-    <key>Label</key><string>{{{ name }}}</string>
-    <key>Program</key><string>{{{ program }}}</string>
+    <key>Label</key><string>{{.Name }}</string>
+    <key>Program</key><string>{{.Program }}</string>
     <key>ProgramArguments</key><array>
-      <string>{{{ program }}}</string>
-      {{{xml_args}}}
+      <string>{{.Program }}</string>
+      {{range .Args}}<string>{{.}}</string>
+      {{end}}
     </array>
     <key>KeepAlive</key> <true/>
-    <key>StandardOutPath</key> <string>/var/log/{{name}}.out</string>
-    <key>StandardErrorPath</key> <string>/var/log/{{name}}.err</string>
+    <key>StandardOutPath</key> <string>/var/log/{{.Name}}.out</string>
+    <key>StandardErrorPath</key> <string>/var/log/{{.Program}}.err</string>
     <!-- Things to implement eventually.
-    <key>UserName</key><string>{{{ user }}}</string>
-    <key>GroupName</key><string>{{{ group }}}</string>
-    <key>Umask</key><integer>{{{ umask }}}</integer>
-    <key>RootDirectory</key><string>{{{ chroot }}}</string>
-    <key>WorkingDirectory</key><string>{{{ chdir }}}</string>
+    <key>UserName</key><string>{{/*user*/}}</string>
+    <key>GroupName</key><string>{{/*group*/}}</string>
+    <key>Umask</key><integer>{{/*umask*/}}</integer>
+    <key>RootDirectory</key><string>{{/*chroot*/}}</string>
+    <key>WorkingDirectory</key><string>{{/*chdir*/}}</string>
     <key>Nice</key><integer>0</integer>
     <key>SoftResourceLimits</key><dict>
       <key>Core</key><integer></integer>

@@ -1,0 +1,10 @@
+{
+  "files": {
+    "/Library/LaunchDaemons/{{.Name}}.plist": {
+      "template": "program.plist"
+    }
+  },
+  "install_action": [
+    [ "launchctl", "load", "/Library/LaunchDaemons/{{.Name}}.plist" ]
+  ]
+}
