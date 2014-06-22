@@ -7,5 +7,5 @@ import (
 var log = logrus.New()
 
 func SetLogger(l *logrus.Logger) {
-  log = l
+	log = l
 }

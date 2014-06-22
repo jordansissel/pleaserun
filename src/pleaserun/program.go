@@ -1,18 +1,17 @@
 package pleaserun
 
-import (
-)
+import ()
 
 type Program struct {
 	Name        string
 	Description string
-  Author      string
+	Author      string
 
-	Program     string
-	Args        []string
+	Program string
+	Args    []string
 	//Credential  Credential
 
 	//Environment Environment
-  Nice uint8
-	PreStart    string
+	Nice     uint8
+	PreStart string
 }

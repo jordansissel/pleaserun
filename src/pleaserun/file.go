@@ -1,11 +1,11 @@
 package pleaserun
 
 import (
-  "os"
+	"os"
 )
 
 type File struct {
-  Path string
-  Mode os.FileMode
-  Content []byte
+	Path    string
+	Mode    os.FileMode
+	Content []byte
 }
