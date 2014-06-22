@@ -20,7 +20,6 @@ func Files(program Program, platform Platform) ([]File, error) {
     log := log.WithFields(logrus.Fields{"template": pf.Template})
     outfile := File{}
     outfile.Mode = pf.Mode
-    outfile.Path = path
     outbuf := bytes.Buffer{}
 
     fd, err := os.Open(pf.Template)
@@ -37,17 +36,25 @@ func Files(program Program, platform Platform) ([]File, error) {
     }
 
     t, err := template.New("").Parse(string(buf[:n]))
-    //t, err := template.ParseFiles(pf.Template)
     if err != nil {
       log.Errorf("Failed to parse template (cause: %s)", err)
       return nil, err
     }
     err = t.Execute(&outbuf, program)
     if err != nil {
-      log.Errorf("Failed executing template (cause: %s)", err)
+      log.Errorf("Failed executing content template (cause: %s)", err)
       return nil, err
     }
     outfile.Content = outbuf.Bytes()
+
+    var pathname bytes.Buffer
+    t, err = template.New("").Parse(path)
+    err = t.Execute(&pathname, program)
+    if err != nil {
+      log.Errorf("Failed executing path name template (cause: %s)", err)
+      return nil, err
+    }
+    outfile.Path = string(pathname.Bytes())
 
     files = append(files, outfile)
   } /* for f := range platform.Files */
