@@ -1,0 +1,7 @@
+{
+  "files": {
+    "/etc/init.d/{{.Name}}": {
+      "template": "program.sh"
+    }
+  }
+}

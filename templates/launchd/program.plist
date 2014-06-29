@@ -3,11 +3,11 @@
 <plist version="1.0">
   <dict>
     <key>Disabled</key><false/>
-    <key>Label</key><string>{{.Name }}</string>
-    <key>Program</key><string>{{.Program }}</string>
+    <key>Label</key><string>{{.Name}}</string>
+    <key>Program</key><string>{{.Program}}</string>
     <key>ProgramArguments</key><array>
-      <string>{{.Program }}</string>
-      {{range .Args}}<string>{{.}}</string>
+      <string>{{.Program}}</string>
+      {{range .Args}}<string>{{. | xml_escape }}</string>
       {{end}}
     </array>
     <key>KeepAlive</key> <true/>

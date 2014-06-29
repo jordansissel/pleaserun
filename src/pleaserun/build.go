@@ -14,6 +14,12 @@ type File struct {
   // Owner? Group? Other?
 }
 
+var template_funcs template.FuncMap = template.FuncMap{
+  "xml_escape": xml_escape,
+  "shell_quote": shell_quote,
+  "shell_args_escape": shell_args_escape,
+}
+
 func Files(program Program, platform Platform) ([]File, error) {
   files := make([]File, 0)
   for path, pf := range platform.Files {
@@ -35,7 +41,7 @@ func Files(program Program, platform Platform) ([]File, error) {
       return nil, err
     }
 
-    t, err := template.New("").Parse(string(buf[:n]))
+    t, err := template.New(pf.Template).Funcs(template_funcs).Parse(string(buf[:n]))
     if err != nil {
       log.Errorf("Failed to parse template (cause: %s)", err)
       return nil, err
@@ -48,7 +54,11 @@ func Files(program Program, platform Platform) ([]File, error) {
     outfile.Content = outbuf.Bytes()
 
     var pathname bytes.Buffer
-    t, err = template.New("").Parse(path)
+    t, err = template.New("path-name").Parse(path)
+    if err != nil {
+      log.Errorf("Failed parsing path template %v (cause; %s)", path, err)
+      return nil, err
+    }
     err = t.Execute(&pathname, program)
     if err != nil {
       log.Errorf("Failed executing path name template (cause: %s)", err)
@@ -61,3 +71,4 @@ func Files(program Program, platform Platform) ([]File, error) {
 
   return files, nil
 } /* Files */
+

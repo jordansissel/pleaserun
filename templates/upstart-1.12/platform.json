@@ -1,0 +1,7 @@
+{
+  "files": {
+    "/etc/init/{{.Name}}.conf": {
+      "template": "program.conf"
+    }
+  }
+}

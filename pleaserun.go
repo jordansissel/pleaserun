@@ -11,12 +11,12 @@ import (
 var log = logrus.New()
 
 type Settings struct {
-	Name        string `long:"name" description:"The name of this program"`
-	Description string `long:"description" description:"The human-readable description of your program"`
-	Debug       bool   `long:"debug" description:"Debug-level logging"`
+	pleaserun.Program
 
-	//Credential  pleaserun.Credential `long:"credential" description:"The credentials to run this program with; user[:group]"`
-	//PreStart    string               `long:"prestart" description:"A command to execute before starting and restarting. A failure of this command will cause the start/restart to abort. This is useful for health checks, config tests, or similar operations."`
+	Platform string `long:"platform" description:"The platform to target, such as upstart-1.12. Optional. If not specified, pleaserun will attempt to detect the os and choose the best platform."`
+	OS       string `long:"os" description:"The OS to target, such as ubuntu-14.04. Optional."`
+	Debug    bool   `long:"debug" description:"Debug-level logging"`
+	Force    bool   `long:"force" description:"Force file overwritng"`
 }
 
 func init() {
@@ -25,38 +25,56 @@ func init() {
 }
 
 func main() {
-	//log := log.WithFields(logrus.Fields{"hello": "world"})
 	var settings Settings
+	settings.Program.Defaults()
 	parser := flags.NewParser(&settings, flags.Default|flags.PassAfterNonOption)
+	parser.Usage = "[OPTIONS] program [args ...]\n\nExample:\n  pleaserun --name ssh /usr/sbin/sshd -D"
 	params, err := parser.Parse()
 	if err != nil {
 		log.Error(err)
+		parser.WriteHelp(os.Stdout)
 		os.Exit(1)
 	}
 
 	if settings.Debug {
 		log.Level = logrus.Debug
+	} else {
+		log.Level = logrus.Warn
 	}
 
 	if len(params) == 0 {
-		log.Error("Missing program to run!")
+		log.Error("No program to run. I need more information :)")
+		parser.WriteHelp(os.Stdout)
 		os.Exit(1)
 	}
 
-	if len(settings.Name) == 0 {
-		_, settings.Name = path.Split(params[0])
-		log := log.WithFields(logrus.Fields{"default": settings.Name})
+	if len(settings.Program.Name) == 0 {
+		_, settings.Program.Name = path.Split(params[0])
+		log := log.WithFields(logrus.Fields{"default": settings.Program.Name})
 		log.Info("No program name given, picking a default.")
 	}
-	program := pleaserun.Program{}
-	program.Name = settings.Name
+
+	if len(settings.Platform) == 0 {
+		os, err := pleaserun.DetectOS()
+		if err != nil {
+			log.Fatal("Cannot detect OS")
+		}
+		settings.Platform, err = pleaserun.DetectPlatform(os)
+		log := log.WithFields(logrus.Fields{"platform": settings.Platform})
+		if err != nil {
+			log.Fatal("Cannot detect platform and none was given, I don't know what to do.")
+		}
+		log.Info("No platform given. Detecting platform.")
+	}
+
+	program := settings.Program
 	program.Program = params[0]
 	program.Args = params[1:]
 
 	search_path := []string{pleaserun.DefaultSearchPath()}
-	platform, err := pleaserun.Search("launchd", search_path)
+	platform, err := pleaserun.Search(settings.Platform, search_path)
 	if err != nil {
-		log := log.WithFields(logrus.Fields{"cause": err})
+		log := log.WithFields(logrus.Fields{"cause": err, "platform": platform})
 		log.Fatal("Failed to load platform")
 	}
 
@@ -67,6 +85,23 @@ func main() {
 	}
 
 	for _, f := range files {
-		os.Stdout.Write(f.Content)
+		log := log.WithFields(logrus.Fields{"path": f.Path})
+		if _, err := os.Stat(f.Path); err == nil && !settings.Force {
+			log.Fatal("File already exists, aborting.")
+		}
+		var fd *os.File
+		if f.Mode == 0 {
+			fd, err = os.Create(f.Path)
+		} else {
+			fd, err = os.OpenFile(f.Path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode)
+		}
+		defer fd.Close()
+		if err != nil {
+			log := log.WithFields(logrus.Fields{"err": err})
+			log.Fatal("Failed to open file")
+			return
+		}
+		fd.Write(f.Content)
+		log.Info("Wrote file")
 	}
 }
