@@ -16,7 +16,7 @@ type Settings struct {
 	Platform string `long:"platform" description:"The platform to target, such as upstart-1.12. Optional. If not specified, pleaserun will attempt to detect the os and choose the best platform."`
 	OS       string `long:"os" description:"The OS to target, such as ubuntu-14.04. Optional."`
 	Debug    bool   `long:"debug" description:"Debug-level logging"`
-	Force    bool   `long:"force" description:"Force file overwritng"`
+	Overwrite    bool   `long:"overwrite" description:"Overwrite any files"`
 }
 
 func init() {
@@ -86,7 +86,7 @@ func main() {
 
 	for _, f := range files {
 		log := log.WithFields(logrus.Fields{"path": f.Path})
-		if _, err := os.Stat(f.Path); err == nil && !settings.Force {
+		if _, err := os.Stat(f.Path); err == nil && !settings.Overwrite {
 			log.Fatal("File already exists, aborting.")
 		}
 		var fd *os.File
