@@ -62,13 +62,13 @@ func loadPlatformJSON(name string, path string) (platform *Platform, err error) 
 		return nil, fmt.Errorf("failed parsing json from platform.json (cause: %s)", err)
 	}
 
-  // Prefix all file template paths with the root where this platform.json is located
-  // For "/path/to/platform.json", "init.sh" becomes "/path/to/init.sh"
-  root := filepath.Dir(path)
-  for name, file := range platform.Files {
-    file.Template = filepath.Join(root, file.Template)
-    // Overwrite because 'range' gives us a copy of the TemplateFile
-    platform.Files[name] = file
-  }
+	// Prefix all file template paths with the root where this platform.json is located
+	// For "/path/to/platform.json", "init.sh" becomes "/path/to/init.sh"
+	root := filepath.Dir(path)
+	for name, file := range platform.Files {
+		file.Template = filepath.Join(root, file.Template)
+		// Overwrite because 'range' gives us a copy of the TemplateFile
+		platform.Files[name] = file
+	}
 	return platform, nil
 } /* loadPlatformJSON */

@@ -13,10 +13,10 @@ var log = logrus.New()
 type Settings struct {
 	pleaserun.Program
 
-	Platform string `long:"platform" description:"The platform to target, such as upstart-1.12. Optional. If not specified, pleaserun will attempt to detect the os and choose the best platform."`
-	OS       string `long:"os" description:"The OS to target, such as ubuntu-14.04. Optional."`
-	Debug    bool   `long:"debug" description:"Debug-level logging"`
-	Overwrite    bool   `long:"overwrite" description:"Overwrite any files"`
+	Platform  string `long:"platform" description:"The platform to target, such as upstart-1.12. Optional. If not specified, pleaserun will attempt to detect the os and choose the best platform."`
+	OS        string `long:"os" description:"The OS to target, such as ubuntu-14.04. Optional."`
+	Debug     bool   `long:"debug" description:"Debug-level logging"`
+	Overwrite bool   `long:"overwrite" description:"Overwrite any files"`
 }
 
 func init() {
