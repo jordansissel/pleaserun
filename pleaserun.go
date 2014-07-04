@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/Sirupsen/logrus"
 	"github.com/jessevdk/go-flags"
 	"os"
@@ -17,6 +18,7 @@ type Settings struct {
 	OS        string `long:"os" description:"The OS to target, such as ubuntu-14.04. Optional."`
 	Debug     bool   `long:"debug" description:"Debug-level logging"`
 	Overwrite bool   `long:"overwrite" description:"Overwrite any files"`
+	JSON      bool   `long:"json" description:"Write file and install action data to stdout as JSON. When set, no files are written and no install actions are run. This is intended to be used with other tools."`
 }
 
 func init() {
@@ -84,10 +86,38 @@ func main() {
 		log.Fatal("Failed to generate files")
 	}
 
-	for _, f := range files {
+	runner := Runner{Files: files, InstallActions: platform.InstallActions}
+
+	if settings.JSON {
+		err = print(runner)
+	} else {
+		err = install(runner, settings.Overwrite)
+	}
+	if err != nil {
+		log.Fatal(err)
+	}
+} // main
+
+type Runner struct {
+	Files          []pleaserun.File         `json:"files"`
+	InstallActions pleaserun.InstallActions `json:"install_actions"`
+}
+
+func print(runner Runner) (err error) {
+	blob, err := json.Marshal(runner)
+	if err != nil {
+		return
+	}
+	os.Stdout.Write(blob)
+	return
+}
+
+func install(runner Runner, overwrite bool) (err error) {
+	for _, f := range runner.Files {
 		log := log.WithFields(logrus.Fields{"path": f.Path})
-		if _, err := os.Stat(f.Path); err == nil && !settings.Overwrite {
-			log.Fatal("File already exists, aborting.")
+		if _, err = os.Stat(f.Path); err == nil && !overwrite {
+			log.Error("File already exists, aborting.")
+			return
 		}
 		var fd *os.File
 		if f.Mode == 0 {
@@ -98,10 +128,11 @@ func main() {
 		defer fd.Close()
 		if err != nil {
 			log := log.WithFields(logrus.Fields{"err": err})
-			log.Fatal("Failed to open file")
+			log.Error("Failed to open file")
 			return
 		}
 		fd.Write(f.Content)
 		log.Info("Wrote file")
 	}
+	return
 }
