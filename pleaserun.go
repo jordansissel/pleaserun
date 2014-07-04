@@ -60,7 +60,7 @@ func main() {
 			log.Fatal("Cannot detect OS")
 		}
 		settings.Platform, err = pleaserun.DetectPlatform(os)
-		log := log.WithFields(logrus.Fields{"platform": settings.Platform})
+		log := log.WithFields(logrus.Fields{"platform": settings.Platform, "os": os})
 		if err != nil {
 			log.Fatal("Cannot detect platform and none was given, I don't know what to do.")
 		}
