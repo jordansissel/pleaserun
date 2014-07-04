@@ -8,9 +8,9 @@ import (
 )
 
 type File struct {
-	Path    string      // The path on the filesystem where the file should be written
-	Mode    os.FileMode // The file mode for this file
-	Content []byte      // The file content
+	Path    string      `json:"path"`    // The path on the filesystem where the file should be written
+	Mode    os.FileMode `json:"mode"`    // The file mode for this file
+	Content []byte      `json:"content,string"` // The file content
 	// Owner? Group? Other?
 }
 
