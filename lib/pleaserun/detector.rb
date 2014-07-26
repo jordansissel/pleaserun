@@ -22,7 +22,8 @@ class PleaseRun::Detector
     ["ubuntu", "12.04"] => ["upstart", "1.5"],
     ["ubuntu", "12.10"] => ["upstart", "1.5"],
     ["ubuntu", "13.04"] => ["upstart", "1.5"],
-    ["ubuntu", "13.10"] => ["upstart", "1.5"]
+    ["ubuntu", "13.10"] => ["upstart", "1.5"],
+    ["ubuntu", "14.04"] => ["upstart", "1.5"]
   }
 
   def self.detect
