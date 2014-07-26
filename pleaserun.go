@@ -100,7 +100,7 @@ func main() {
 
 type Runner struct {
 	Files          []pleaserun.File         `json:"files"`
-	InstallActions pleaserun.InstallActions `json:"install_actions"`
+	InstallActions [][]string `json:"install_actions"`
 }
 
 func print(runner Runner) (err error) {
