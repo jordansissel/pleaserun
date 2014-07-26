@@ -42,7 +42,7 @@ class PleaseRun::Detector
     end
 
     @system = lookup([platform, version])
-    raise UnknownSystem if @system.nil?
+    raise UnknownSystem, "#{platform} #{version}" if @system.nil?
     return @system
   end # def self.detect
 
