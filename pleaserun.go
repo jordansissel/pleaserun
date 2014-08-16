@@ -33,8 +33,6 @@ func main() {
 	parser.Usage = "[OPTIONS] program [args ...]\n\nExample:\n  pleaserun --name ssh /usr/sbin/sshd -D"
 	params, err := parser.Parse()
 	if err != nil {
-		log.Error(err)
-		parser.WriteHelp(os.Stdout)
 		os.Exit(1)
 	}
 
@@ -57,6 +55,7 @@ func main() {
 	}
 
 	if len(settings.Platform) == 0 {
+		log.Info("No platform given. Detecting platform.")
 		os, err := pleaserun.DetectOS()
 		if err != nil {
 			log.Fatal("Cannot detect OS")
@@ -66,15 +65,14 @@ func main() {
 		if err != nil {
 			log.Fatal("Cannot detect platform and none was given, I don't know what to do.")
 		}
-		log.Info("No platform given. Detecting platform.")
 	}
 
 	program := settings.Program
 	program.Program = params[0]
 	program.Args = params[1:]
 
-	search_path := []string{pleaserun.DefaultSearchPath()}
-	platform, err := pleaserun.Search(settings.Platform, search_path)
+	search_path := []string{pleaserun.DefaultSearchPath(), "./platforms"}
+	platform, err := pleaserun.FindPlatform(settings.Platform, search_path)
 	if err != nil {
 		log := log.WithFields(logrus.Fields{"cause": err, "platform": platform})
 		log.Fatal("Failed to load platform")
@@ -99,8 +97,8 @@ func main() {
 } // main
 
 type Runner struct {
-	Files          []pleaserun.File         `json:"files"`
-	InstallActions [][]string `json:"install_actions"`
+	Files          []pleaserun.File `json:"files"`
+	InstallActions [][]string       `json:"install_actions"`
 }
 
 func print(runner Runner) (err error) {

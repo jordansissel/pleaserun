@@ -7,8 +7,8 @@ import (
 )
 
 type Credential struct {
-	User  string
-	Group string
+	User  string `json:"user,omitempty"`
+	Group string `json:"group,omitempty"`
 }
 
 func (c *Credential) UnmarshalFlag(value string) error {

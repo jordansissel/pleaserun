@@ -8,9 +8,9 @@ import (
 )
 
 type File struct {
-	Path    string      `json:"path"`           // The path on the filesystem where the file should be written
-	Mode    os.FileMode `json:"mode"`           // The file mode for this file
-	Content []byte      `json:"content,string"` // The file content
+	Path    string      `json:"path"`                  // The path on the filesystem where the file should be written
+	Mode    os.FileMode `json:"mode,string"`           // The file mode for this file
+	Content []byte      `json:"content_base64,string"` // The file content
 	// Owner? Group? Other?
 }
 
@@ -27,6 +27,10 @@ func Files(program Program, platform Platform) ([]File, error) {
 		outfile := File{}
 		outfile.Mode = pf.Mode
 		outbuf := bytes.Buffer{}
+
+		if outfile.Mode == 0 {
+			outfile.Mode = 0644
+		}
 
 		fd, err := os.Open(pf.Template)
 		if err != nil {

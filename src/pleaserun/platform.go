@@ -14,10 +14,10 @@ type Platform struct {
 } /* type Platform */
 
 func DefaultSearchPath() string {
-	return filepath.Join(filepath.Dir(os.Args[0]), "templates")
+	return filepath.Join(filepath.Dir(os.Args[0]), "platforms")
 } /* DefaultSearchPath */
 
-func Search(name string, search_paths []string) (platform *Platform, err error) {
+func FindPlatform(name string, search_paths []string) (platform *Platform, err error) {
 	for _, sp := range search_paths {
 		path := filepath.Join(sp, name, "platform.json")
 		platform, err = loadPlatformJSON(name, path)
