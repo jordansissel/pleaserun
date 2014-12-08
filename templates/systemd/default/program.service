@@ -2,7 +2,7 @@
 {{#description}}
 Description={{{ description }}}
 {{/description}}
- 
+
 [Service]
 Type=simple
 User={{{ user }}}
@@ -11,6 +11,9 @@ ExecStart={{{program}}} {{{shell_args}}}
 {{#prestart}}
 ExecStartPre=/lib/systemd/system/{{{name}}}-prestart.sh
 {{/prestart}}
+{{#stop}}
+ExecStop={{{stop}}}
+{{/stop}}
 Restart=always
 
 [Install]

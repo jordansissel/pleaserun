@@ -130,8 +130,9 @@ class PleaseRun::Platform::Base
     validate { |v| v == "ulimited" || v.to_i > 0 }
   end
 
-
   attribute :prestart, "A command to execute before starting and restarting. A failure of this command will cause the start/restart to abort. This is useful for health checks, config tests, or similar operations."
+
+  attribute :stop, "A command to execute to stop the service. A failure of this command will cause the stop to abort. Useful when killing process is not enough."
 
   def initialize(target_version)
     configurable_setup
