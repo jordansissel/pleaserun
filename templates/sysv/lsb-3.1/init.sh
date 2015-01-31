@@ -71,7 +71,7 @@ start() {
 stop() {
   # Try a few times to kill TERM the program
   if status ; then
-    pid=`cat "$pidfile"`
+    pid=$(cat "$pidfile")
     trace "Killing $name (pid $pid) with SIGTERM"
     kill -TERM $pid
     # Wait for it to exit.
@@ -90,7 +90,7 @@ stop() {
 
 status() {
   if [ -f "$pidfile" ] ; then
-    pid=`cat "$pidfile"`
+    pid=$(cat "$pidfile")
     if ps -p $pid > /dev/null 2> /dev/null ; then
       # process by this pid is running.
       # It may not be our pid, but that's what you get with just pidfiles.
@@ -109,7 +109,7 @@ status() {
 force_stop() {
   if status ; then
     stop
-    status && kill -KILL `cat "$pidfile"`
+    status && kill -KILL $(cat "$pidfile")
   fi
 }
 
