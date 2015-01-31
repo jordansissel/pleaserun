@@ -7,11 +7,17 @@ describe PleaseRun::Platform::SYSV do
   let(:version) { PleaseRun::Detector.detect[1] }
 
   context "deployment", :sysv => true do
-    it_behaves_like PleaseRun::Platform do
-      let(:start) { "/etc/init.d/#{subject.name} start" }
-      let(:stop) { "/etc/init.d/#{subject.name} stop" }
-      let(:status) { "/etc/init.d/#{subject.name} status" }
-      let(:restart) { "/etc/init.d/#{subject.name} restart" }
+    etc_initd_writable = File.lstat("/etc/init.d").writable? rescue false
+    if !etc_initd_writable
+      it "cannot write to /etc/init.d, so there's no deployment test to do. You'll need to run this as root, probably. Be careful."
+    else
+      it_behaves_like PleaseRun::Platform do
+        let(:skip) { "Cannot write to /etc/init.d" } unless etc_initd_writable
+        let(:start) { "/etc/init.d/#{subject.name} start" }
+        let(:stop) { "/etc/init.d/#{subject.name} stop" }
+        let(:status) { "/etc/init.d/#{subject.name} status" }
+        let(:restart) { "/etc/init.d/#{subject.name} restart" }
+      end
     end
   end
 
