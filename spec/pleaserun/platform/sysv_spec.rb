@@ -22,7 +22,7 @@ describe PleaseRun::Platform::SYSV do
       next runner
     end
 
-    let(:files) { subject.files.collect { |path, content| path } }
+    let(:files) { subject.files.collect { |path, _| path } }
 
     it "emits a file in /etc/init.d/" do
       insist { files }.include?("/etc/init.d/fancypants")

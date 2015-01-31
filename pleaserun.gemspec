@@ -1,5 +1,5 @@
 Gem::Specification.new do |spec|
-  files = %x{git ls-files}.split("\n")
+  files = `git ls-files`.split("\n")
 
   spec.name = "pleaserun"
   spec.version = "0.0.7"
@@ -23,6 +23,5 @@ Gem::Specification.new do |spec|
 
   spec.authors = ["Jordan Sissel"]
   spec.email = ["jls@semicomplete.com"]
-  #spec.homepage = "..."
+  spec.homepage = "https://github.com/jordansissel/pleaserun"
 end
-

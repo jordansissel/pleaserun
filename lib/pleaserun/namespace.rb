@@ -1,5 +1,2 @@
-# :nodoc:
-module PleaseRun
-  # :nodoc:
-  module Platform; end
-end
+PleaseRun = Module.new
+PleaseRun::Platform = Module.new

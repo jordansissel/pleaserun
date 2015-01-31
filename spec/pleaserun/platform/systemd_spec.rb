@@ -22,7 +22,7 @@ describe PleaseRun::Platform::Systemd do
       next runner
     end
 
-    let(:files) { subject.files.collect { |path, content| path } }
+    let(:files) { subject.files.collect { |path, _| path } }
 
     it "emits a file in /lib/systemd/system" do
       insist { files }.include?("/lib/systemd/system/fancypants.service")

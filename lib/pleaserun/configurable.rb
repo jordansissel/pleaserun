@@ -59,17 +59,19 @@ module PleaseRun::Configurable
       facet = Facet.new(name, description, options, &validator)
       attributes << facet
 
-      # define '<name>' and '<name>=' methods
+      # define accessor method
       define_method(name.to_sym) do
         # object instance, not class ivar
         @attributes[name.to_sym].value
       end
 
+      # define mutator
       define_method("#{name}=".to_sym) do |value|
         # object instance, not class ivar
         @attributes[name.to_sym].value = value
       end
 
+      # define presence check method
       define_method("#{name}?".to_sym) do
         return @attributes[name.to_sym].set?
       end
@@ -80,7 +82,7 @@ module PleaseRun::Configurable
     end
 
     def all_attributes
-      return ancestors.select { |a| a.respond_to?(:attributes) }.collect { |a| a.attributes }.flatten
+      return ancestors.select { |a| a.respond_to?(:attributes) }.collect(&:attributes).flatten
     end # def attributes
   end # def ClassMixin
 

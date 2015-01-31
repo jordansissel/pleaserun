@@ -6,7 +6,7 @@ require "pleaserun/namespace"
 # This will generate the familiar /etc/init.d/ scripts.
 class PleaseRun::Platform::SYSV < PleaseRun::Platform::Base
   def files
-    return Enumerator::Generator.new do |out|
+    Enumerator::Generator.new do |out|
       out.yield(safe_filename("/etc/init.d/{{ name }}"), render_template("init.sh"), 0755)
       out.yield(safe_filename("/etc/default/{{ name }}"), render_template("default"))
     end
@@ -23,10 +23,10 @@ class PleaseRun::Platform::SYSV < PleaseRun::Platform::Base
     ulimits << "-u ${limit_user_processes}" if limit_user_processes
     ulimits << "-m ${limit_physical_memory}" if limit_physical_memory
     ulimits << "-s ${limit_stack_size}" if limit_stack_size
-    return ulimits
+    ulimits
   end
 
   def ulimit_shell
-    return ulimit_setup.collect { |args| "ulimit #{args}" }.join("\n")
+    ulimit_setup.collect { |args| "ulimit #{args}" }.join("\n")
   end
 end

@@ -6,7 +6,7 @@ describe PleaseRun::Platform::Upstart do
   let(:platform) { PleaseRun::Detector.detect[0] }
   let(:version) { PleaseRun::Detector.detect[1] }
 
-  context "deployment", :upstart=> true do
+  context "deployment", :upstart => true do
     it_behaves_like PleaseRun::Platform do
       let(:start) { "initctl start #{subject.name}" }
       let(:stop) { "initctl stop #{subject.name}" }
@@ -22,17 +22,11 @@ describe PleaseRun::Platform::Upstart do
       next runner
     end
 
-    let(:files) { subject.files.collect { |path, content| path } }
+    let(:files) { subject.files.collect { |path, _| path } }
 
     it "emits a file in /etc/init/" do
       insist { files }.include?("/etc/init/fancypants.conf")
     end
-
-    # This was removed. I don't think we need to provide an /etc/init.d shim anymore.
-    # Please let me know if you disagree :)
-    #it "emits a file in /etc/init.d/" do
-      #insist { files }.include?("/etc/init.d/fancypants")
-    #end
   end
 
   context "#install_actions" do

@@ -12,7 +12,6 @@ require "pleaserun/errors"
 #
 # This is invoked by `bin/pleaserun`.
 class PleaseRun::CLI < Clamp::Command # rubocop:disable ClassLength
-
   option ["-p", "--platform"], "PLATFORM", "The name of the platform to target, such as sysv, upstart, etc"
   option ["-v", "--version"], "VERSION", "The version of the platform to target, such as 'lsb-3.1' for sysv or '1.5' for upstart",
          :default => "default", :attribute_name => :target_version
@@ -144,6 +143,8 @@ are made. If it fails, nagios will not start. Yay!
       self.name = File.basename(program)
       @logger.warn("No name given, setting reasonable default based on the executable", :name => name)
     end
+
+    nil
   end # def setup_defaults
 
   def run_json(runner)
@@ -162,7 +163,6 @@ are made. If it fails, nagios will not start. Yay!
     result["install_actions"] = runner.install_actions
 
     puts JSON.dump(result)
-    return 0
   end # def run_json
 
   def run_human(runner)

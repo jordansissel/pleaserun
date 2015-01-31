@@ -24,7 +24,7 @@ describe PleaseRun::Platform::Launchd do
       next runner
     end
 
-    let(:files) { subject.files.collect { |path, content| path } }
+    let(:files) { subject.files.collect { |path, _| path } }
 
     it "emits a file in /Library/LaunchDaemons" do
       insist { files }.include?("/Library/LaunchDaemons/fancypants.plist")

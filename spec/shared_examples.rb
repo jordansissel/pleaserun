@@ -38,7 +38,7 @@ shared_examples_for PleaseRun::Platform do
           system_quiet("launchctl unload #{subject.daemons_path}")
           system_quiet("launchctl remove #{subject.name}")
       end
-      subject.files.each do |path, content|
+      subject.files.each do |path, _|
         File.unlink(path) if File.exist?(path)
       end
     end

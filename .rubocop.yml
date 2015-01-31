@@ -47,3 +47,17 @@ RedundantReturn:
 # enable/disable.
 CaseIndentation:
   Enabled: false
+
+# module This::Module::Definition is good.
+Style/ClassAndModuleChildren:
+  Enabled: true
+  EnforcedStyle: compact
+
+# "in interpolation #{use.some("double quotes is ok")}"
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+# Long-block `if !something ... end` are more readable to me than `unless something ... end`
+Style/NegatedIf:
+  Enabled: false

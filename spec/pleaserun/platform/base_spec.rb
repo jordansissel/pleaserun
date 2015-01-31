@@ -26,4 +26,3 @@ describe PleaseRun::Platform::Base do
     end
   end
 end
-
