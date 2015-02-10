@@ -21,6 +21,8 @@ class PleaseRun::CLI < Clamp::Command # rubocop:disable ClassLength
   option "--json", :flag, "Output a result in JSON. Intended to be consumed by other programs. This will emit the file contents and install actions as a JSON object."
 
   option "--install", :flag, "Install the program on this system. This will write files to the correct location and execute any actions to make the program available to the system."
+  option "--[no-]install-actions", :flag, "Run installation actions after writing files", :default => true
+  option "--install-prefix", "DIRECTORY", "The path to prefix file paths with. This flag is generally intended for packagers, not for users installing directly on systems.", :default => "/"
 
   option "--verbose", :flag, "More verbose logging"
   option "--debug", :flag, "Debug-level logging"
@@ -167,8 +169,8 @@ are made. If it fails, nagios will not start. Yay!
 
   def run_human(runner)
     if install?
-      PleaseRun::Installer.install_files(runner, "/", overwrite?)
-      PleaseRun::Installer.install_actions(runner)
+      PleaseRun::Installer.install_files(runner, install_prefix, overwrite?)
+      PleaseRun::Installer.install_actions(runner) if install_actions?
     else
       tmp = Stud::Temporary.directory
       actions_script = File.join(tmp, "install_actions.sh")
