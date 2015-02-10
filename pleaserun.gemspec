@@ -2,15 +2,13 @@ Gem::Specification.new do |spec|
   files = `git ls-files`.split("\n")
 
   spec.name = "pleaserun"
-  spec.version = "0.0.7"
+  spec.version = "0.0.9"
   spec.summary = "pleaserun"
   spec.description = "pleaserun"
   spec.license = "Apache 2.0"
 
-  # Note: You should set the version explicitly.
   spec.add_dependency "cabin", ">0" # for logging. apache 2 license
   spec.add_dependency "clamp"
-  spec.add_dependency "cabin"
   spec.add_dependency "stud"
   spec.add_dependency "mustache", ">= 0.99.8"
   spec.add_dependency "insist"
