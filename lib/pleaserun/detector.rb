@@ -8,6 +8,7 @@ class PleaseRun::Detector
 
   # A mapping of of [os, version] => [runner, version]
   MAPPING = {
+    ["amazon", "2014.09"] => ["upstart", "0.6.5"],
     ["arch", "rolling"] => ["systemd", "default"],
     ["centos", "5"] => ["sysv", "lsb-3.1"],
     ["centos", "6"] => ["upstart", "0.6.5"],
