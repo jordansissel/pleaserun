@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "cabin", ">0" # for logging. apache 2 license
   spec.add_dependency "clamp"
   spec.add_dependency "stud"
-  spec.add_dependency "mustache", ">= 0.99.8"
+  spec.add_dependency "mustache", "0.99.8"
   spec.add_dependency "insist"
   #spec.add_dependency "ohai", "~> 6.20" # used for host detection
 
