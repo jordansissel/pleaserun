@@ -1,14 +1,10 @@
 source 'https://rubygems.org'
-gem "clamp"
-gem "cabin"
-gem "stud"
-gem "mustache"
-gem "insist"
-gem "ohai"
+gemspec
 
-# For testing
-gem "rspec"
-gem "guard"
-gem "guard-rspec"
-gem "net-ssh"
-gem "peach"
+group :development do
+  gem "rspec", "~> 3.0.0"
+  gem "guard"
+  gem "guard-rspec"
+  gem "net-ssh"
+  gem "peach"
+end

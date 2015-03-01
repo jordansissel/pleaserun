@@ -39,7 +39,7 @@ class PleaseRun::Detector
       begin
         platform, version = detect_facter
       rescue LoadError
-        raise UnknownSystem
+        raise UnknownSystem, "Could not detect because neither ohai nor facter libraries are found"
       end
     end
 
