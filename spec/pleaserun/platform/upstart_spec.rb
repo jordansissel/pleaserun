@@ -3,8 +3,8 @@ require "pleaserun/platform/upstart"
 require "pleaserun/detector"
 
 describe PleaseRun::Platform::Upstart do
-  let(:platform) { PleaseRun::Detector.detect[0] }
-  let(:version) { PleaseRun::Detector.detect[1] }
+  let(:platform) { "upstart" }
+  let(:version) { "1.5" }
 
   context "deployment", :upstart => true do
     it_behaves_like PleaseRun::Platform do

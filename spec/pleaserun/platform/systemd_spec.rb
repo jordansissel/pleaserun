@@ -2,8 +2,8 @@ require "testenv"
 require "pleaserun/platform/systemd"
 
 describe PleaseRun::Platform::Systemd do
-  let(:platform) { PleaseRun::Detector.detect[0] }
-  let(:version) { PleaseRun::Detector.detect[1] }
+  let(:platform) { "systemd" }
+  let(:version) { "default" }
 
   context "deployment", :systemd => true do
     it_behaves_like PleaseRun::Platform do
