@@ -2,7 +2,7 @@ Gem::Specification.new do |spec|
   files = `git ls-files`.split("\n")
 
   spec.name = "pleaserun"
-  spec.version = "0.0.10"
+  spec.version = "0.0.11"
   spec.summary = "pleaserun"
   spec.description = "pleaserun"
   spec.license = "Apache 2.0"
