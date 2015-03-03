@@ -130,6 +130,10 @@ class PleaseRun::Platform::Base
     validate { |v| v == "ulimited" || v.to_i > 0 }
   end
 
+  # TODO(sissel): Move this into the sysv platform
+  attribute :sysv_log_path, "The destination for log output. If ending with a trailing / is treated like a directory with path/<name>.log. This setting only currently works with the sysv platform. This flag may go away at any time because I'm not sure we can easily abstract the logging feature across different service managers. Upstart and systemd don't even have this concept.",
+    :default => "/var/log/"
+
 
   attribute :prestart, "A command to execute before starting and restarting. A failure of this command will cause the start/restart to abort. This is useful for health checks, config tests, or similar operations."
 
@@ -186,4 +190,12 @@ class PleaseRun::Platform::Base
   def install_actions
     return []
   end # def install_actions
+
+  def sysv_log
+    if sysv_log_path.end_with?("/")
+      File.join(sysv_log_path, name)
+    else
+      sysv_log_path
+    end
+  end
 end # class PleaseRun::Base

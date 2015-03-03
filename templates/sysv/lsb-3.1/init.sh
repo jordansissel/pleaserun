@@ -57,7 +57,7 @@ start() {
     {{{ulimit_shell}}}
     cd \"$chdir\"
     exec \"$program\" $args
-  " > /var/log/$name.log 2> /var/log/$name.err &
+  " > {{{ sysv_log }}}.log 2> {{{ sysv_log }}}.err &
 
   # Generate the pidfile from here. If we instead made the forked process
   # generate it there will be a race condition between the pidfile writing
