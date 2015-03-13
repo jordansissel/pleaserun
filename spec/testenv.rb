@@ -2,6 +2,7 @@ require "English" # for $CHILD_STATUS
 require "pleaserun/namespace"
 require "insist"
 require "shared_examples"
+require "flores/rspec"
 
 def superuser?
   return Process::UID.eid == 0
@@ -73,6 +74,7 @@ end
 
 RSpec.configure do |config|
   config.include Helpers
+  Flores::RSpec.configure(config)
 
   config.filter_run_excluding(
     :systemd => !(superuser? && platform?("linux") && program?("systemctl") && File.directory?("/lib/systemd")),

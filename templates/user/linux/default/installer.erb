@@ -1,0 +1,11 @@
+user_check() {
+  getent passwd "$1" > /dev/null 2>&1
+}
+
+user_create() {
+  useradd "$1"
+}
+
+if ! user_check "<%= user %>"
+  user_create "<%= user %>"
+end

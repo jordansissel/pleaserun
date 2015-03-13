@@ -35,6 +35,13 @@ module PleaseRun::Configurable
     end
   end # def self.included
 
+  def validate
+    # validate the value of each attribute
+    self.class.attributes.each do |attribute|
+      attribute.validate(send(attribute.name))
+    end
+  end
+
   def configurable_setup
     @attributes = {}
     self.class.ancestors.each do |ancestor|
