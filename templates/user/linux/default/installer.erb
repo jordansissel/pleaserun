@@ -3,7 +3,9 @@ user_check() {
 }
 
 user_create() {
-  useradd "$1"
+  # Create a system user. A system user is one within the system uid range and
+  # has no expiration
+  useradd -r "$1"
 }
 
 if ! user_check "<%= user %>"
