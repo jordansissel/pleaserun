@@ -1,9 +1,12 @@
 require "testenv"
 require "pleaserun/user/base"
+require "English"
+require "etc"
+require "stud/temporary"
 
 describe PleaseRun::User::Base do
   subject(:user) { PleaseRun::User::Base.new }
-  context "default" do
+  describe "defaults" do
     it "should fail validation because there is no name" do
       expect { user.validate }.to(raise_error(PleaseRun::Configurable::ValidationError))
     end
@@ -30,7 +33,7 @@ describe PleaseRun::User::Base do
     end
   end
 
-  context "rendering" do
+  describe "rendering" do
     let(:platform) { "linux" }
     let(:name) { "example" }
     before do
@@ -62,5 +65,52 @@ describe PleaseRun::User::Base do
         expect(render).to(be_a(String))
       end
     end
+  end
+
+  describe "integration" do
+    let(:platform) { "linux" }
+    let(:name) { "example" }
+    let(:installer) { Stud::Temporary.pathname }
+    let(:remover) { Stud::Temporary.pathname }
+    let(:userinfo) { Etc.getpwnam(name) }
+
+    before do
+      user.name = name
+      user.platform = platform
+      File.write(installer, user.render_installer)
+      File.write(remover, user.render_remover)
+    end
+
+    after do
+      File.unlink(remover)
+      File.unlink(installer)
+    end
+
+    context "installer" do
+      it "should create the user" do
+        expect(system("sh", installer)).to(be_truthy)
+
+        # Look up the user
+        expect { userinfo }.not_to(raise_error)
+        expect(userinfo.name).to(be == name)
+      end
+    end
+
+    context "remover" do
+      before do
+        system("sh", installer)
+      end
+      it "should remove the user" do
+        system("sh", remover)
+        # User lookup should fail because the user doesn't exist
+        expect { userinfo }.to(raise_error(ArgumentError))
+      end
+    end
+
+    after do
+      # Ensure the user is gone after the test.
+      system("userdel #{name} > /dev/null 2>&1")
+    end
+
   end
 end
