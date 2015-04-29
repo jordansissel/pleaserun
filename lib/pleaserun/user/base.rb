@@ -31,11 +31,11 @@ class PleaseRun::User::Base
   attribute :version, "The platform version", &STRING_OR_NIL
 
   def render_installer
-    render_template("installer.erb")
+    render_template("installer.sh")
   end
 
   def render_remover
-    render_template("remover.erb")
+    render_template("remover.sh")
   end
 
   # Get the template path for this platform.

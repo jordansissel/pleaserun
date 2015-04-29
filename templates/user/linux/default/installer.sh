@@ -8,6 +8,6 @@ user_create() {
   useradd -r "$1"
 }
 
-if ! user_check "<%= user %>"
-  user_create "<%= user %>"
-end
+if ! user_check "{{{ name }}}" ; then
+  user_create "{{{ name }}}"
+fi

@@ -6,6 +6,6 @@ user_remove() {
   userdel "$1"
 }
 
-if user_check "<%= user %>"
-  user_remove "<%= user %>"
-end
+if user_check "{{{ name }}}" ; then
+  user_remove "{{{ name }}}"
+fi
