@@ -9,7 +9,7 @@ describe PleaseRun::Platform::SYSV do
   context "deployment", :sysv => true do
     etc_initd_writable = File.lstat("/etc/init.d").writable? rescue false
     if !etc_initd_writable
-      it "cannot write to /etc/init.d, so there's no deployment test to do. You'll need to run this as root, probably. Be careful, if you do run this as root."
+      it "cannot write to /etc/init.d, so there's no deployment test to do. To run these tests, you'll need to run this as root, and preferrably in a vm or other temporary system"
     else
       it_behaves_like PleaseRun::Platform do
         let(:skip) { "Cannot write to /etc/init.d" } unless etc_initd_writable
