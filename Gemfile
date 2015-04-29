@@ -8,4 +8,5 @@ group :development do
   gem "net-ssh"
   gem "peach"
   gem "flores"
+  gem "ohai"
 end
