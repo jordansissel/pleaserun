@@ -24,9 +24,8 @@ Gem::Specification.new do |spec|
   spec.homepage = "https://github.com/jordansissel/pleaserun"
 end
 
-# Files list, populate it with `git ls-files`
+# Files list, populate it with `git ls-files | grep -v gitignore`
 __END__
-.gitignore
 .rubocop.yml
 CHANGELOG.asciidoc
 Gemfile
@@ -78,5 +77,5 @@ templates/upstart/1.10
 templates/upstart/1.5/init.conf
 templates/upstart/1.5/init.d.sh
 templates/upstart/default
-templates/user/linux/default/installer.erb
-templates/user/linux/default/remover.erb
+templates/user/linux/default/installer.sh
+templates/user/linux/default/remover.sh
