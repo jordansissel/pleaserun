@@ -7,4 +7,6 @@ group :development do
   gem "guard-rspec"
   gem "net-ssh"
   gem "peach"
+  gem "flores"
+  gem "ohai"
 end
