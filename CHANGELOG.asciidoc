@@ -1,6 +1,6 @@
 = Pleaserun Changes and Releases
 
-== 0.0.13  (????)
+== 0.0.13  (April 30, 2015)
   * Now supports MRI 1.9.3 (Vincent Janelle)
   * cli: New flag --install-prefix. This lets you tell pleaserun what directory to write things.
   * cli: New flag --[no-]install-actions. If enabled, will run any required installation actions in order to signal the local system to load your newly created service.
