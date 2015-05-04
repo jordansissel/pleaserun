@@ -2,7 +2,7 @@ Gem::Specification.new do |spec|
   files = File.read(__FILE__)[/^__END__$.*/m].split("\n")[1..-1]
 
   spec.name = "pleaserun"
-  spec.version = "0.0.15"
+  spec.version = "0.0.16"
   spec.summary = "pleaserun"
   spec.description = "pleaserun"
   spec.license = "Apache 2.0"
@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.files = files
   spec.require_paths << "lib"
   spec.bindir = "bin"
-  spec.executables = "pleaserun"
+  spec.executables = [ "pleaserun", "please-manage-user" ]
 
   spec.authors = ["Jordan Sissel"]
   spec.email = ["jls@semicomplete.com"]
