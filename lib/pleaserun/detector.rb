@@ -15,6 +15,7 @@ class PleaseRun::Detector
     ["centos", "7"] => ["systemd", "default"],
     ["debian", "6"] => ["sysv", "lsb-3.1"],
     ["debian", "7"] => ["sysv", "lsb-3.1"],
+    ["debian", "8"] => ["systemd", "default"],
     ["fedora", "18"] => ["systemd", "default"],
     ["fedora", "19"] => ["systemd", "default"],
     ["fedora", "20"] => ["systemd", "default"],
