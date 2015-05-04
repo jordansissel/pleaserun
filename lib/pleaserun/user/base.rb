@@ -1,4 +1,6 @@
 require "pleaserun/namespace"
+require "pleaserun/configurable"
+require "pleaserun/mustache_methods"
 
 class PleaseRun::User::Base
   include PleaseRun::Configurable
