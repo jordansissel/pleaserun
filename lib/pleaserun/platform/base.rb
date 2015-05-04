@@ -192,10 +192,14 @@ class PleaseRun::Platform::Base
   end # def install_actions
 
   def sysv_log
-    if sysv_log_path.end_with?("/")
+    if sysv_log_directory?
       File.join(sysv_log_path, name)
     else
       sysv_log_path
     end
+  end
+
+  def sysv_log_directory?
+    return sysv_log_path.end_with?("/")
   end
 end # class PleaseRun::Base

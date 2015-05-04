@@ -41,6 +41,13 @@ start() {
       program we intended to run. Luckily, the 'chroot' program on OSX, FreeBSD, and Linux
       all support switching users and it invokes execve immediately after chrooting. }}
 
+  {{#sysv_log_directory?}}
+  # Ensure the log directory is setup correctly.
+  [ ! -d "{{{sysv_log_path}}}" ] && mkdir "{{{sysv_log_path}}}"
+  chown "$user":"$group" "{{{sysv_log_path}}}"
+  chmod 755 "{{{sysv_log_path}}}"
+  {{/sysv_log_directory?}}
+
   {{#prestart}}
   if [ "$PRESTART" != "no" ] ; then
     # If prestart fails, abort start.
