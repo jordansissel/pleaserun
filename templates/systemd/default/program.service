@@ -12,6 +12,7 @@ ExecStart={{{program}}} {{{shell_args}}}
 ExecStartPre=/lib/systemd/system/{{{name}}}-prestart.sh
 {{/prestart}}
 Restart=always
+WorkingDirectory={{{chdir}}}
 
 [Install]
 WantedBy=multi-user.target
