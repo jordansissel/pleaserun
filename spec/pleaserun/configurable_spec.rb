@@ -101,7 +101,7 @@ describe PleaseRun::Configurable::Facet do
       reject { facet }.set?
     end
     it "returns false if value isn't set and we have a default" do
-      facet = subject.new(:name, "description", default: 100)
+      facet = subject.new(:name, "description", :default => 100)
       reject { facet }.set?
       insist { facet.value } == 100
     end
@@ -115,7 +115,7 @@ describe PleaseRun::Configurable::Facet do
 
   context "with default: ..." do
     it "uses default when no value is set" do
-      facet = subject.new(:name, "description", default: 4)
+      facet = subject.new(:name, "description", :default => 4)
       insist { facet.value } == 4
       facet.value = 5
       insist { facet.value } == 5
@@ -123,7 +123,7 @@ describe PleaseRun::Configurable::Facet do
 
     it "fails if default is invalid" do
       insist do
-        subject.new(:name, "description", default: 4) do
+        subject.new(:name, "description", :default => 4) do
           validate do |v|
             insist { v } != 4
           end
@@ -132,7 +132,7 @@ describe PleaseRun::Configurable::Facet do
     end
     
     it "succeeds if default is valid" do
-      subject.new(:name, "description", default: 4) do
+      subject.new(:name, "description", :default => 4) do
         validate do |v|
           insist { v } == 4
         end
@@ -178,7 +178,7 @@ describe PleaseRun::Configurable::Facet do
       subject do
         next Class.new do
           include PleaseRun::Configurable
-          attribute :whatever, "whatever", default: "Hello"
+          attribute :whatever, "whatever", :default => "Hello"
 
           def initialize(something)
             @something = something

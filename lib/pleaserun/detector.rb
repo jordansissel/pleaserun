@@ -38,7 +38,7 @@ class PleaseRun::Detector
     begin
       platform, version = detect_ohai
     rescue LoadError => e
-      @logger.debug("Failed to load ohai", exception: e)
+      @logger.debug("Failed to load ohai", :exception => e)
       begin
         platform, version = detect_facter
       rescue LoadError

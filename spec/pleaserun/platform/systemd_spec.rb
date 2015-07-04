@@ -5,7 +5,7 @@ describe PleaseRun::Platform::Systemd do
   let(:platform) { "systemd" }
   let(:version) { "default" }
 
-  context "deployment", systemd: true do
+  context "deployment", :systemd => true do
     it_behaves_like PleaseRun::Platform do
       let(:start) { "systemctl start #{subject.name}.service" }
       let(:stop) { "systemctl stop #{subject.name}.service" }

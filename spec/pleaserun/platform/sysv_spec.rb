@@ -6,7 +6,7 @@ describe PleaseRun::Platform::SYSV do
   let(:platform) { PleaseRun::Detector.detect[0] }
   let(:version) { PleaseRun::Detector.detect[1] }
 
-  context "deployment", sysv: true do
+  context "deployment", :sysv => true do
     etc_initd_writable = File.lstat("/etc/init.d").writable? rescue false
     if !etc_initd_writable
       it "cannot write to /etc/init.d, so there's no deployment test to do. To run these tests, you'll need to run this as root, and preferrably in a vm or other temporary system"
