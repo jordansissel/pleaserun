@@ -189,9 +189,22 @@ case "$1" in
     ;;
   restart) 
     {{#prestart}}if [ "$PRESTART" != "no" ] ; then
-      prestart || exit $?
+      prestart || exit 2
     fi{{/prestart}}
-    stop && start 
+    stop
+    case $? in
+      0|1)
+        start
+        case $? in
+          0) exit 0 ;;
+          *) exit 1 ;;
+        esac
+        ;;
+      *)
+        # Failed to stop
+        exit 1
+        ;;
+    esac
     ;;
   *)
     echo "Usage: $SCRIPTNAME {start|force-start|stop|force-start|force-stop|status|restart}" >&2
