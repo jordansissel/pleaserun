@@ -23,6 +23,8 @@ program={{#escaped}}{{{ program }}}{{/escaped}}
 args={{{ escaped_args }}}
 pidfile="/var/run/$name.pid"
 
+[ -x "$program" ] || exit 0
+
 [ -r /etc/default/$name ] && . /etc/default/$name
 [ -r /etc/sysconfig/$name ] && . /etc/sysconfig/$name
 
