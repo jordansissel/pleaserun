@@ -7,8 +7,8 @@
 #
 ### BEGIN INIT INFO
 # Provides:          {{{ name }}}
-# Required-Start:    $remote_fs $syslog
-# Required-Stop:     $remote_fs $syslog
+# Required-Start:    $remote_fs $syslog $network $named
+# Required-Stop:     $remote_fs $syslog $network $named
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: {{{ one_line_description }}}
