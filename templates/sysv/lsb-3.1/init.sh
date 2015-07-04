@@ -38,6 +38,17 @@ emit() {
 }
 
 start() {
+  {{! Return
+       0 if daemon has been started
+       1 if daemon was already running
+       2 if daemon could not be started
+  }}
+
+  status && {
+    emit "$name is already running"
+    return 1
+  }
+
   {{! I don't use 'su' here to run as a different user because the process 'su'
       stays as the parent, causing our pidfile to contain the pid of 'su' not the
       program we intended to run. Luckily, the 'chroot' program on OSX, FreeBSD, and Linux
@@ -53,7 +64,7 @@ start() {
   {{#prestart}}
   if [ "$PRESTART" != "no" ] ; then
     # If prestart fails, abort start.
-    prestart || return $?
+    prestart || return 2
   fi
   {{/prestart}}
 
@@ -146,17 +157,7 @@ case "$1" in
     PRESTART=no
     exec "$0" start
     ;;
-  start)
-    status
-    code=$?
-    if [ $code -eq 0 ]; then
-      emit "$name is already running"
-      exit $code
-    else
-      start
-      exit $?
-    fi
-    ;;
+  start) start ;;
   stop) stop ;;
   force-stop) force_stop ;;
   status) 
