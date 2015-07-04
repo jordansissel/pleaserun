@@ -27,14 +27,14 @@ module PleaseRun::Installer
   end
 
   def write(fullpath, content, perms)
-    logger.log("Writing file", :destination => fullpath)
+    logger.log("Writing file", destination: fullpath)
     FileUtils.mkdir_p(File.dirname(fullpath))
     File.write(fullpath, content)
-    logger.debug("Setting permissions", :destination => fullpath, :perms => perms)
+    logger.debug("Setting permissions", destination: fullpath, perms: perms)
     File.chmod(perms, fullpath) if perms
     return true
   rescue Errno::EACCES
-    logger.error("Access denied in writing a file. Maybe we need to be root?", :path => fullpath)
+    logger.error("Access denied in writing a file. Maybe we need to be root?", path: fullpath)
     return false
   end
 
@@ -42,15 +42,15 @@ module PleaseRun::Installer
     return if runner.install_actions.empty?
     # TODO(sissel): Refactor this to be less lines of code or put into methods.
     runner.install_actions.each do |action|
-      logger.info("Running install action", :action => action)
+      logger.info("Running install action", action: action)
       system(action)
-      logger.warn("Install action failed", :action => action, :code => $CHILD_STATUS.exitstatus) unless $CHILD_STATUS.success?
+      logger.warn("Install action failed", action: action, code: $CHILD_STATUS.exitstatus) unless $CHILD_STATUS.success?
     end # each install action
   end
 
   def write_actions(runner, path)
     return if runner.install_actions.empty?
-    logger.log("Writing install actions. You will want to run this script to properly activate your service on the target host", :path => path)
+    logger.log("Writing install actions. You will want to run this script to properly activate your service on the target host", path: path)
     File.open(path, "w") do |fd|
       runner.install_actions.each do |action|
         fd.puts(action)

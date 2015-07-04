@@ -39,14 +39,14 @@ class PleaseRun::Platform::Base
   end
 
   attribute :user, "The user to use for executing this program.",
-            :default => "root" do
+            default: "root" do
     validate do |user|
       insist { user }.is_a?(String)
     end
   end
 
   attribute :group, "The group to use for executing this program.",
-            :default => "root" do
+            default: "root" do
     validate do |group|
       insist { group }.is_a?(String)
     end
@@ -59,7 +59,7 @@ class PleaseRun::Platform::Base
   end
   
   attribute :description, "The human-readable description of your program",
-            :default => "no description given" do
+            default: "no description given" do
     validate do |description|
       insist { description }.is_a?(String)
     end
@@ -67,19 +67,19 @@ class PleaseRun::Platform::Base
 
   # TODO(sissel): Should this be a numeric, not a string?
   attribute :umask, "The umask to apply to this program",
-            :default => "022" do
+            default: "022" do
     validate do |umask|
       insist { umask }.is_a?(String)
     end
   end
 
-  attribute :chroot, "The directory to chroot to", :default => "/" do
+  attribute :chroot, "The directory to chroot to", default: "/" do
     validate do |chroot|
       insist { chroot }.is_a?(String)
     end
   end
 
-  attribute :chdir, "The directory to chdir to before running", :default => "/" do
+  attribute :chdir, "The directory to chdir to before running", default: "/" do
     validate do |chdir|
       insist { chdir }.is_a?(String)
     end
@@ -132,7 +132,7 @@ class PleaseRun::Platform::Base
 
   # TODO(sissel): Move this into the sysv platform
   attribute :sysv_log_path, "The destination for log output. If ending with a trailing / is treated like a directory with path/<name>.log. This setting only currently works with the sysv platform. This flag may go away at any time because I'm not sure we can easily abstract the logging feature across different service managers. Upstart and systemd don't even have this concept.",
-    :default => "/var/log/"
+    default: "/var/log/"
 
 
   attribute :prestart, "A command to execute before starting and restarting. A failure of this command will cause the start/restart to abort. This is useful for health checks, config tests, or similar operations."

@@ -6,7 +6,7 @@ describe PleaseRun::Platform::Upstart do
   let(:platform) { "upstart" }
   let(:version) { "1.5" }
 
-  context "deployment", :upstart => true do
+  context "deployment", upstart: true do
     it_behaves_like PleaseRun::Platform do
       let(:start) { "initctl start #{subject.name}" }
       let(:stop) { "initctl stop #{subject.name}" }

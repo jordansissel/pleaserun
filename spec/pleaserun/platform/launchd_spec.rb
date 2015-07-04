@@ -7,7 +7,7 @@ describe PleaseRun::Platform::Launchd do
   let(:platform) { PleaseRun::Detector.detect[0] }
   let(:version) { PleaseRun::Detector.detect[1] }
 
-  context "deployment", :launchd => true do
+  context "deployment", launchd: true do
     it_behaves_like PleaseRun::Platform do
       let(:start) { "launchctl start #{subject.name}" }
       let(:stop) { "launchctl stop #{subject.name}" }

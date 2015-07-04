@@ -14,15 +14,15 @@ require "pleaserun/errors"
 class PleaseRun::CLI < Clamp::Command # rubocop:disable ClassLength
   option ["-p", "--platform"], "PLATFORM", "The name of the platform to target, such as sysv, upstart, etc"
   option ["-v", "--version"], "VERSION", "The version of the platform to target, such as 'lsb-3.1' for sysv or '1.5' for upstart",
-         :default => "default", :attribute_name => :target_version
+         default: "default", attribute_name: :target_version
 
   option "--overwrite", :flag, "Overwrite any files that already exist when installing."
   option "--log", "LOGFILE", "The path to use for writing pleaserun logs."
   option "--json", :flag, "Output a result in JSON. Intended to be consumed by other programs. This will emit the file contents and install actions as a JSON object."
 
   option "--install", :flag, "Install the program on this system. This will write files to the correct location and execute any actions to make the program available to the system."
-  option "--[no-]install-actions", :flag, "Run installation actions after writing files", :default => true
-  option "--install-prefix", "DIRECTORY", "The path to prefix file paths with. This flag is generally intended for packagers, not for users installing directly on systems.", :default => "/"
+  option "--[no-]install-actions", :flag, "Run installation actions after writing files", default: true
+  option "--install-prefix", "DIRECTORY", "The path to prefix file paths with. This flag is generally intended for packagers, not for users installing directly on systems.", default: "/"
 
   option "--verbose", :flag, "More verbose logging"
   option "--debug", :flag, "Debug-level logging"
@@ -44,21 +44,21 @@ class PleaseRun::CLI < Clamp::Command # rubocop:disable ClassLength
 
     # Turn the attribute name into a flag.
     option "--#{facet.name.to_s.gsub("_", "-")}", facet.name.to_s.upcase, facet.description,
-           :attribute_name => facet.name
+           attribute_name: facet.name
   end
   
   # Load the 'program' attribute from the Base class and use it as the first
   # cli parameter.
   program = base.attributes.find { |f| f.name == :program }
   raise "Something is wrong; Base missing 'program' attribute" if program.nil?
-  parameter "PROGRAM", program.description, :attribute_name => program.name
+  parameter "PROGRAM", program.description, attribute_name: program.name
 
   # Load the 'args' attribute from the Base class
   # and use it as the remaining arguments setting
   args = base.attributes.find { |f| f.name == :args }
   raise "Something is wrong; Base missing 'args' attribute" if program.nil?
 
-  parameter "[ARGS] ...", args.description, :attribute_name => args.name
+  parameter "[ARGS] ...", args.description, attribute_name: args.name
 
   def help # rubocop:disable MethodLength
     return <<-HELP
@@ -115,7 +115,7 @@ are made. If it fails, nagios will not start. Yay!
       # The idea here is to translate CLI options to runner settings
       value = send(facet.name)
       next if value.nil?
-      @logger.debug("Setting runner attribute", :name => facet.name, :value => value)
+      @logger.debug("Setting runner attribute", name: facet.name, value: value)
 
       # Set the value in the runner we've selected
       # This is akin to `obj.someattribute = value`
@@ -138,12 +138,12 @@ are made. If it fails, nagios will not start. Yay!
     if platform.nil?
       require "pleaserun/detector"
       self.platform, self.target_version = PleaseRun::Detector.detect
-      @logger.warn("No platform selected. Autodetecting...", :platform => platform, :version => target_version)
+      @logger.warn("No platform selected. Autodetecting...", platform: platform, version: target_version)
     end
 
     if name.nil?
       self.name = File.basename(program)
-      @logger.warn("No name given, setting reasonable default based on the executable", :name => name)
+      @logger.warn("No name given, setting reasonable default based on the executable", name: name)
     end
 
     nil
@@ -202,7 +202,7 @@ are made. If it fails, nagios will not start. Yay!
   end # def setup_logger
 
   def load_platform(v)
-    @logger.debug("Loading platform", :platform => v)
+    @logger.debug("Loading platform", platform: v)
     platform_lib = "pleaserun/platform/#{v}"
     require(platform_lib)
 

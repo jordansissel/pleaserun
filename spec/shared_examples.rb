@@ -53,14 +53,14 @@ shared_examples_for PleaseRun::Platform do
       stops
     end
 
-    it "should start and stop", :flapper => true do
+    it "should start and stop", flapper: true do
       5.times do
         starts
         stops
       end
     end
 
-    context "with prestart", :prestart => true do
+    context "with prestart", prestart: true do
       context "that is failing" do
         before do
           subject.prestart = "#!/bin/sh\nfalse\n"
