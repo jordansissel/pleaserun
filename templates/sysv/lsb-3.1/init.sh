@@ -108,7 +108,7 @@ status() {
       # so it makes it quite awkward to use in this case.
       return 0
     else
-      return 2 # program is dead but pid file exists
+      return 1 # program is dead but pid file exists
     fi
   else
     return 3 # program is not running
