@@ -14,7 +14,6 @@ describe PleaseRun::Platform::Launchd do
       let(:status) { "launchctl list | awk '$3 == \"#{subject.name}\" { exit($1 == \"-\") }'" }
       let(:restart) { "launchctl restart #{subject.name}" }
     end
-
   end
 
   context "#files" do

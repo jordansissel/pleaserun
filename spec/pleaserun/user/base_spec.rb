@@ -111,6 +111,5 @@ describe PleaseRun::User::Base do
       # Ensure the user is gone after the test.
       system("userdel #{name} > /dev/null 2>&1")
     end
-
   end
 end

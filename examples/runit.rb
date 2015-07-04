@@ -13,4 +13,3 @@ pr.files.each do |path, content|
   puts "#{path}:"
   puts content.gsub(/^/, '  ')
 end
-

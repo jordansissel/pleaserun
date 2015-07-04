@@ -12,12 +12,12 @@ Gem::Specification.new do |spec|
   spec.add_dependency "stud"
   spec.add_dependency "mustache", "0.99.8"
   spec.add_dependency "insist"
-  #spec.add_dependency "ohai", "~> 6.20" # used for host detection
+  # spec.add_dependency "ohai", "~> 6.20" # used for host detection
 
   spec.files = files
   spec.require_paths << "lib"
   spec.bindir = "bin"
-  spec.executables = [ "pleaserun", "please-manage-user" ]
+  spec.executables = ["pleaserun", "please-manage-user"]
 
   spec.authors = ["Jordan Sissel"]
   spec.email = ["jls@semicomplete.com"]

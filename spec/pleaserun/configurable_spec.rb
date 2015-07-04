@@ -113,7 +113,7 @@ describe PleaseRun::Configurable::Facet do
     end
   end
 
-  context "with :default => ..." do
+  context "with default: ..." do
     it "uses default when no value is set" do
       facet = subject.new(:name, "description", :default => 4)
       insist { facet.value } == 4
