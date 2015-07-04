@@ -89,6 +89,12 @@ start() {
 }
 
 stop() {
+  {{! Return
+       0 if daemon has been stopped
+       1 if daemon was already stopped
+       2 if daemon could not be stopped
+  }}
+
   # Try a few times to kill TERM the program
   if status ; then
     pid=$(cat "$pidfile")
@@ -96,15 +102,19 @@ stop() {
     kill -TERM $pid
     # Wait for it to exit.
     for i in 1 2 3 4 5 ; do
-      trace "Waiting $name (pid $pid) to die..."
       status || break
+      trace "Waiting $name (pid $pid) to die..."
       sleep 1
     done
     if status ; then
       emit "$name stop failed; still running."
+      return 2
     else
       emit "$name stopped."
+      return 0
     fi
+  else
+    return 1
   fi
 }
 
@@ -128,8 +138,15 @@ status() {
 
 force_stop() {
   if status ; then
-    stop
-    status && kill -KILL $(cat "$pidfile")
+      stop
+      ret=$?
+      if [ $ret -eq 2 ]; then
+          kill -KILL $(cat "$pidfile")
+          return 0              # Assume this always succeed
+      fi
+      return $ret
+  else
+      return 1
   fi
 }
 
