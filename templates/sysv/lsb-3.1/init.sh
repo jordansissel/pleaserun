@@ -7,8 +7,8 @@
 #
 ### BEGIN INIT INFO
 # Provides:          {{{ name }}}
-# Required-Start:    $remote_fs $syslog
-# Required-Stop:     $remote_fs $syslog
+# Required-Start:    $remote_fs $syslog $network $named
+# Required-Stop:     $remote_fs $syslog $network $named
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: {{{ one_line_description }}}
@@ -23,6 +23,8 @@ program={{#escaped}}{{{ program }}}{{/escaped}}
 args={{{ escaped_args }}}
 pidfile="/var/run/$name.pid"
 
+[ -x "$program" ] || exit 0
+
 [ -r /etc/default/$name ] && . /etc/default/$name
 [ -r /etc/sysconfig/$name ] && . /etc/sysconfig/$name
 
@@ -36,6 +38,17 @@ emit() {
 }
 
 start() {
+  {{! Return
+       0 if daemon has been started
+       1 if daemon was already running
+       2 if daemon could not be started
+  }}
+
+  status && {
+    emit "$name is already running"
+    return 1
+  }
+
   {{! I don't use 'su' here to run as a different user because the process 'su'
       stays as the parent, causing our pidfile to contain the pid of 'su' not the
       program we intended to run. Luckily, the 'chroot' program on OSX, FreeBSD, and Linux
@@ -51,7 +64,7 @@ start() {
   {{#prestart}}
   if [ "$PRESTART" != "no" ] ; then
     # If prestart fails, abort start.
-    prestart || return $?
+    prestart || return 2
   fi
   {{/prestart}}
 
@@ -76,6 +89,12 @@ start() {
 }
 
 stop() {
+  {{! Return
+       0 if daemon has been stopped
+       1 if daemon was already stopped
+       2 if daemon could not be stopped
+  }}
+
   # Try a few times to kill TERM the program
   if status ; then
     pid=$(cat "$pidfile")
@@ -83,15 +102,19 @@ stop() {
     kill -TERM $pid
     # Wait for it to exit.
     for i in 1 2 3 4 5 ; do
-      trace "Waiting $name (pid $pid) to die..."
       status || break
+      trace "Waiting $name (pid $pid) to die..."
       sleep 1
     done
     if status ; then
       emit "$name stop failed; still running."
+      return 2
     else
       emit "$name stopped."
+      return 0
     fi
+  else
+    return 1
   fi
 }
 
@@ -106,7 +129,7 @@ status() {
       # so it makes it quite awkward to use in this case.
       return 0
     else
-      return 2 # program is dead but pid file exists
+      return 1 # program is dead but pid file exists
     fi
   else
     return 3 # program is not running
@@ -115,8 +138,15 @@ status() {
 
 force_stop() {
   if status ; then
-    stop
-    status && kill -KILL $(cat "$pidfile")
+      stop
+      ret=$?
+      if [ $ret -eq 2 ]; then
+          kill -KILL $(cat "$pidfile")
+          return 0              # Assume this always succeed
+      fi
+      return $ret
+  else
+      return 1
   fi
 }
 
@@ -144,17 +174,7 @@ case "$1" in
     PRESTART=no
     exec "$0" start
     ;;
-  start)
-    status
-    code=$?
-    if [ $code -eq 0 ]; then
-      emit "$name is already running"
-      exit $code
-    else
-      start
-      exit $?
-    fi
-    ;;
+  start) start ;;
   stop) stop ;;
   force-stop) force_stop ;;
   status) 
@@ -169,9 +189,22 @@ case "$1" in
     ;;
   restart) 
     {{#prestart}}if [ "$PRESTART" != "no" ] ; then
-      prestart || exit $?
+      prestart || exit 2
     fi{{/prestart}}
-    stop && start 
+    stop
+    case $? in
+      0|1)
+        start
+        case $? in
+          0) exit 0 ;;
+          *) exit 1 ;;
+        esac
+        ;;
+      *)
+        # Failed to stop
+        exit 1
+        ;;
+    esac
     ;;
   *)
     echo "Usage: $SCRIPTNAME {start|force-start|stop|force-start|force-stop|status|restart}" >&2
