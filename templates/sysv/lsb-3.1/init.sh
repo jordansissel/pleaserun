@@ -88,7 +88,13 @@ stop() {
       sleep 1
     done
     if status ; then
-      emit "$name stop failed; still running."
+      emit "$name stop failed; still running.  Killing with SIGKILL"
+      trace "Killing $name (pid $pid) with SIGKILL"
+      kill -KILL $pid
+      sleep 1
+    fi
+    if status ; then
+      emit "$name stop failed; still running after SIGKILL."
     else
       emit "$name stopped."
     fi
@@ -157,7 +163,7 @@ case "$1" in
     ;;
   stop) stop ;;
   force-stop) force_stop ;;
-  status) 
+  status)
     status
     code=$?
     if [ $code -eq 0 ] ; then
@@ -167,11 +173,11 @@ case "$1" in
     fi
     exit $code
     ;;
-  restart) 
+  restart)
     {{#prestart}}if [ "$PRESTART" != "no" ] ; then
       prestart || exit $?
     fi{{/prestart}}
-    stop && start 
+    stop && start
     ;;
   *)
     echo "Usage: $SCRIPTNAME {start|force-start|stop|force-start|force-stop|status|restart}" >&2
