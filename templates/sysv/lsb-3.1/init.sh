@@ -89,7 +89,7 @@ stop() {
     done
     if status ; then
       if [ "$KILL_ON_STOP_TIMEOUT" -eq 1 ] ; then
-        trace "Timeout reached. Killing $name (pid $pid) with SIGKILL"
+        trace "Timeout reached. Killing $name (pid $pid) with SIGKILL.  This may result in data loss."
         kill -KILL $pid
         emit "$name killed with SIGKILL."
       else
