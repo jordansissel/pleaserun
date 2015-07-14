@@ -88,13 +88,13 @@ stop() {
       sleep 1
     done
     if status ; then
-      emit "$name stop failed; still running.  Killing with SIGKILL"
-      trace "Killing $name (pid $pid) with SIGKILL"
-      kill -KILL $pid
-      sleep 1
-    fi
-    if status ; then
-      emit "$name stop failed; still running after SIGKILL."
+      if [ "$KILL_ON_STOP_TIMEOUT" = 1 ] ; then
+        trace "Timeout reached. Killing $name (pid $pid) with SIGKILL"
+        kill -KILL $pid
+        emit "$name killed with SIGKILL."
+      else
+        emit "$name stop failed; still running."
+      fi
     else
       emit "$name stopped."
     fi

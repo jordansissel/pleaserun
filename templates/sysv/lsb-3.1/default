@@ -12,3 +12,8 @@ nice="{{{nice}}}"
 {{/limit_open_files}}{{#limit_user_processes}}limit_user_processes="{{{limit_user_processes}}}"
 {{/limit_user_processes}}{{#limit_physical_memory}}limit_physical_memory="{{{limit_physical_memory}}}"
 {{/limit_physical_memory}}{{#limit_stack_size}}limit_stack_size="{{{limit_stack_size}}}"{{/limit_stack_size}}
+
+# If this is set to 1, then when `stop` is called, if the process has
+# not exited within a reasonable time, SIGKILL will be sent next.
+# The default behavior is to simply log a message "program stop failed; still running"
+KILL_ON_STOP_TIMEOUT=0
