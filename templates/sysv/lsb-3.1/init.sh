@@ -88,7 +88,7 @@ stop() {
       sleep 1
     done
     if status ; then
-      if [ "$KILL_ON_STOP_TIMEOUT" = 1 ] ; then
+      if [ "$KILL_ON_STOP_TIMEOUT" -eq 1 ] ; then
         trace "Timeout reached. Killing $name (pid $pid) with SIGKILL"
         kill -KILL $pid
         emit "$name killed with SIGKILL."
