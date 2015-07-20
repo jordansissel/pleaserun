@@ -60,7 +60,7 @@ start() {
 
   # Run the program!
   {{#nice}}nice -n "$nice" \{{/nice}}
-  chroot --userspec "$user":"$group" "$chroot" sh -c "
+  sh -c "
     {{{ulimit_shell}}}
     cd \"$chdir\"
     exec \"$program\" $args
