@@ -19,6 +19,7 @@ class PleaseRun::Detector
     ["fedora", "18"] => ["systemd", "default"],
     ["fedora", "19"] => ["systemd", "default"],
     ["fedora", "20"] => ["systemd", "default"],
+    ["fedora", "21"] => ["systemd", "default"],
     ["mac_os_x", "10.10"] => ["launchd", "10.9"],
     ["mac_os_x", "10.8"] => ["launchd", "10.9"],
     ["mac_os_x", "10.9"] => ["launchd", "10.9"],
