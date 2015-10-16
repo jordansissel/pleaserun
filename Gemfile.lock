@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pleaserun (0.0.12)
+    pleaserun (0.0.16)
       cabin (> 0)
       clamp
       insist
@@ -14,7 +14,7 @@ GEM
     cabin (0.7.1)
     celluloid (0.16.0)
       timers (~> 4.0.0)
-    clamp (0.6.4)
+    clamp (1.0.0)
     coderay (1.1.0)
     diff-lcs (1.2.5)
     ffi (1.9.6)
@@ -104,7 +104,7 @@ GEM
     slop (3.6.0)
     spoon (0.0.4)
       ffi
-    stud (0.0.19)
+    stud (0.0.22)
     systemu (2.6.5)
     thor (0.19.1)
     timers (4.0.1)
