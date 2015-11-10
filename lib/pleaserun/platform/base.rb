@@ -130,6 +130,13 @@ class PleaseRun::Platform::Base
     validate { |v| v == "ulimited" || v.to_i > 0 }
   end
 
+  attribute :envs, "Env key/value pairs to insert into init script (Upstart only)" do
+    validate do |envs|
+      insist { envs }.is_a?(Array)
+      envs.each { |e| insist { e }.is_a?(Hash) }
+    end
+  end
+  
   # TODO(sissel): Move this into the sysv platform
   attribute :sysv_log_path, "The destination for log output. If ending with a trailing / is treated like a directory with path/<name>.log. This setting only currently works with the sysv platform. This flag may go away at any time because I'm not sure we can easily abstract the logging feature across different service managers. Upstart and systemd don't even have this concept.",
     :default => "/var/log/"
