@@ -134,7 +134,6 @@ class PleaseRun::Platform::Base
     validate do |envs|
       insist { envs }.is_a?(Array)
       envs.each { |e| insist { e }.is_a?(Hash) }
-      envs.each { |e| insist {e.keys.sort == %w(key value) }
     end
   end
   
