@@ -66,7 +66,7 @@ class PleaseRun::Detector
   def self.detect_ohai
     require "ohai/system"
     ohai = Ohai::System.new
-    # TODO(sissel): Loading all plugins takes a long time (seconds). 
+    # TODO(sissel): Loading all plugins takes a long time (seconds).
     # TODO(sissel): Figure out how to load just the platform plugin correctly.
     ohai.all_plugins
 
@@ -79,8 +79,8 @@ class PleaseRun::Detector
   def self.detect_facter
     require "facter"
 
-    platform = Facter.fact["operatingsystem"]
-    version = Facter.fact["operatingsystemrelease"]
+    platform = Facter.value(:operatingsystem)
+    version = Facter.value(:operatingsystemrelease)
     return platform, normalize_version(platform, version)
   end # def detect_facter
 
@@ -99,7 +99,4 @@ class PleaseRun::Detector
     return version
   end
 
-  def self.detect_facter
-    require "facter"
-  end
 end
