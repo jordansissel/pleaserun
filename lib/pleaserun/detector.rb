@@ -20,6 +20,9 @@ class PleaseRun::Detector
     ["fedora", "19"] => ["systemd", "default"],
     ["fedora", "20"] => ["systemd", "default"],
     ["fedora", "21"] => ["systemd", "default"],
+    ["fedora", "22"] => ["systemd", "default"],
+    ["fedora", "23"] => ["systemd", "default"],
+    ["mac_os_x", "10.11"] => ["launchd", "10.9"],
     ["mac_os_x", "10.10"] => ["launchd", "10.9"],
     ["mac_os_x", "10.8"] => ["launchd", "10.9"],
     ["mac_os_x", "10.9"] => ["launchd", "10.9"],
@@ -29,7 +32,11 @@ class PleaseRun::Detector
     ["ubuntu", "12.10"] => ["upstart", "1.5"],
     ["ubuntu", "13.04"] => ["upstart", "1.5"],
     ["ubuntu", "13.10"] => ["upstart", "1.5"],
-    ["ubuntu", "14.04"] => ["upstart", "1.5"]
+    ["ubuntu", "14.04"] => ["upstart", "1.5"],
+    ["ubuntu", "14.10"] => ["upstart", "1.5"],
+    ["ubuntu", "15.04"] => ["systemd", "default"],
+    ["ubuntu", "15.10"] => ["systemd", "default"],
+    ["ubuntu", "16.04"] => ["systemd", "default"]
   }
 
   def self.detect
