@@ -79,7 +79,7 @@ class PleaseRun::Detector
   def self.detect_facter
     require "facter"
 
-    platform = Facter.value(:operatingsystem)
+    platform = Facter.value(:operatingsystem).downcase
     version = Facter.value(:operatingsystemrelease)
     return platform, normalize_version(platform, version)
   end # def detect_facter
