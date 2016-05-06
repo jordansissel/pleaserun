@@ -2,7 +2,7 @@ Gem::Specification.new do |spec|
   files = File.read(__FILE__)[/^__END__$.*/m].split("\n")[1..-1]
 
   spec.name = "pleaserun"
-  spec.version = "0.0.18"
+  spec.version = "0.0.19"
   spec.summary = "pleaserun"
   spec.description = "pleaserun"
   spec.license = "Apache 2.0"

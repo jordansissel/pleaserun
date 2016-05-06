@@ -1,5 +1,8 @@
 = Pleaserun Changes and Releases
 
+== 0.0.19 (May 6, 2016)
+  * Fix bug in OS detection
+  
 == 0.0.18 (May 6, 2016)
   * Support newer Facter api (Aaron Mildtenstein)
 
