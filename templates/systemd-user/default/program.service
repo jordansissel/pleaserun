@@ -1,0 +1,14 @@
+[Unit]
+{{#description}}
+Description={{{ description }}}
+{{/description}}
+ 
+[Service]
+Type=simple
+ExecStart={{{program}}} {{{shell_args}}}
+Restart=always
+WorkingDirectory={{{chdir}}}
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target
