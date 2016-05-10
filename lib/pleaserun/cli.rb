@@ -206,11 +206,12 @@ are made. If it fails, nagios will not start. Yay!
     platform_lib = "pleaserun/platform/#{v}"
     require(platform_lib)
 
-    const = PleaseRun::Platform.constants.find { |c| c.to_s.downcase == v.downcase }
-    raise PlatformLoadError, "Could not find platform named '#{v}' after loading library '#{platform_lib}'. This is probably a bug." if const.nil?
+    const_name = v.downcase.gsub(/-([a-z])/) { |s| s[1] }
+    const = PleaseRun::Platform.constants.find { |c| c.to_s.downcase == const_name.downcase }
+    raise PleaseRun::PlatformLoadError, "Could not find platform named '#{v}' after loading library '#{platform_lib}' (#{const_name}). This is probably a bug." if const.nil?
 
     return PleaseRun::Platform.const_get(const)
   rescue LoadError => e
-    raise PlatformLoadError, "Failed to find or load platform '#{v}'. This could be a typo or a bug. If it helps, the error is: #{e}"
+    raise PleaseRun::PlatformLoadError, "Failed to find or load platform '#{v}'. This could be a typo or a bug. If it helps, the error is: #{e}"
   end # def load_platform
 end # class PleaseRun::CLI

@@ -145,7 +145,7 @@ class PleaseRun::Platform::Base
   # Get the platform name for this class.
   # The platform name is simply the lowercased class name, but this can be overridden by subclasses (but don't, because that makes things confusing!)
   def platform
-    return self.class.name.split(/::/)[-1].downcase
+    self.class.name.split("::").last.gsub(/(?<=.)[A-Z]/, "-\\0").downcase
   end # def platform
 
   # Get the template path for this platform.
