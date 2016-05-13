@@ -172,9 +172,9 @@ are made. If it fails, nagios will not start. Yay!
       PleaseRun::Installer.install_files(runner, install_prefix, overwrite?)
       PleaseRun::Installer.install_actions(runner) if install_actions?
     else
-      tmp = Stud::Temporary.directory
-      actions_script = File.join(tmp, "install_actions.sh")
-      PleaseRun::Installer.install_files(runner, tmp)
+      target = install_prefix || Stud::Temporary.directory
+      actions_script = File.join(target, "install_actions.sh")
+      PleaseRun::Installer.install_files(runner, target, overwrite?)
       PleaseRun::Installer.write_actions(runner, actions_script)
     end
     return 0
