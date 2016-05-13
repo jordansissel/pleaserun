@@ -1,5 +1,8 @@
 = Pleaserun Changes and Releases
 
+== 0.0.20 (May 13, 2016)
+  * The --install-prefix flag now sets the write path for both --install and --no-install (default) modes
+
 == 0.0.19 (May 6, 2016)
   * Fix bug in OS detection
   
