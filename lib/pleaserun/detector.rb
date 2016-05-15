@@ -1,102 +1,84 @@
 require "cabin"
+require "open3"
 
-# Detect the operating system and version, and based on that information,
-# choose the most appropriate runner platform.
-# TODO(sissel): Make this a module, not a class.
-class PleaseRun::Detector
+# Detect the service platform that's most likely to be successful on the
+# running machine.
+#
+# See the `detect` method.
+module PleaseRun::Detector
   class UnknownSystem < StandardError; end
 
-  # A mapping of of [os, version] => [runner, version]
-  MAPPING = {
-    ["amazon", "2014.09"] => ["upstart", "0.6.5"],
-    ["arch", "rolling"] => ["systemd", "default"],
-    ["centos", "5"] => ["sysv", "lsb-3.1"],
-    ["centos", "6"] => ["upstart", "0.6.5"],
-    ["centos", "7"] => ["systemd", "default"],
-    ["debian", "6"] => ["sysv", "lsb-3.1"],
-    ["debian", "7"] => ["sysv", "lsb-3.1"],
-    ["debian", "8"] => ["systemd", "default"],
-    ["fedora", "18"] => ["systemd", "default"],
-    ["fedora", "19"] => ["systemd", "default"],
-    ["fedora", "20"] => ["systemd", "default"],
-    ["fedora", "21"] => ["systemd", "default"],
-    ["fedora", "22"] => ["systemd", "default"],
-    ["fedora", "23"] => ["systemd", "default"],
-    ["mac_os_x", "10.11"] => ["launchd", "10.9"],
-    ["mac_os_x", "10.10"] => ["launchd", "10.9"],
-    ["mac_os_x", "10.8"] => ["launchd", "10.9"],
-    ["mac_os_x", "10.9"] => ["launchd", "10.9"],
-    ["opensuse", "12"] => ["sysv", "lsb-3.1"],
-    ["opensuse", "13"] => ["systemd", "default"],
-    ["ubuntu", "12.04"] => ["upstart", "1.5"],
-    ["ubuntu", "12.10"] => ["upstart", "1.5"],
-    ["ubuntu", "13.04"] => ["upstart", "1.5"],
-    ["ubuntu", "13.10"] => ["upstart", "1.5"],
-    ["ubuntu", "14.04"] => ["upstart", "1.5"],
-    ["ubuntu", "14.10"] => ["upstart", "1.5"],
-    ["ubuntu", "15.04"] => ["systemd", "default"],
-    ["ubuntu", "15.10"] => ["systemd", "default"],
-    ["ubuntu", "16.04"] => ["systemd", "default"]
-  }
+  module_function
 
-  def self.detect
+  def detect
     return @system unless @system.nil?
 
     @logger ||= Cabin::Channel.get
-    begin
-      platform, version = detect_ohai
-    rescue LoadError => e
-      @logger.debug("Failed to load ohai", :exception => e)
-      begin
-        platform, version = detect_facter
-      rescue LoadError
-        raise UnknownSystem, "Could not detect because neither ohai nor facter libraries are found"
-      end
-    end
-
-    @system = lookup([platform, version])
-    raise UnknownSystem, "#{platform} #{version}" if @system.nil?
+    @system = detect_platform
+    raise UnknownSystem, "Unable to detect which service platform to use" if @system.nil?
     return @system
   end # def self.detect
 
-  def self.lookup(platform_and_version)
-    return MAPPING[platform_and_version]
-  end # def self.lookup
-
-  def self.detect_ohai
-    require "ohai/system"
-    ohai = Ohai::System.new
-    # TODO(sissel): Loading all plugins takes a long time (seconds).
-    # TODO(sissel): Figure out how to load just the platform plugin correctly.
-    ohai.all_plugins
-
-    platform = ohai["platform"]
-    version = ohai["platform_version"]
-
-    return platform, normalize_version(platform, version)
-  end # def detect_ohai
-
-  def self.detect_facter
-    require "facter"
-
-    platform = Facter.value(:operatingsystem).downcase
-    version = Facter.value(:operatingsystemrelease)
-    return platform, normalize_version(platform, version)
-  end # def detect_facter
-
-  def self.normalize_version(platform, version)
-    case platform
-      # Take '6.0.8' and make it just '6' since debian never makes major
-      # changes in a minor release
-      when "debian", "centos"
-        return version[/^[0-9]+/] # First digit is the 'major' version
-      when "mac_os_x"
-        return version[/^[0-9]+\.[0-9]+/] # 10.x
-      when "arch"
-        return "rolling"
-      # TODO(sissel): Any other edge cases?
-    end
-    return version
+  def detect_platform
+    detect_systemd || detect_upstart || detect_launchd || detect_runit || detect_sysv
   end
 
+  def detect_systemd
+    # Expect a certain directory
+    return false unless File.directory?("/lib/systemd/system")
+
+    # Check the version. If `systemctl` fails, systemd isn't available.
+    out, status = execute([ "systemctl", "--version" ])
+    return false unless status.success?
+
+    # version is the last word on the first line of the --version output
+    version = out.split("\n").first.split(/\s+/).last 
+    ["systemd", version]
+  end
+
+  def detect_upstart
+    # Expect a certain directory
+    return false unless File.directory?("/etc/init")
+
+    # Check the version. If `initctl` fails, upstart isn't available.
+    out, status = execute(["initctl", "--version"])
+    return false unless status.success?
+
+    version = out.split("\n").first.tr("()", "").split(/\s+/).last
+    ["upstart", version]
+  end
+
+  def detect_sysv
+    return false unless File.directory?("/etc/init.d")
+    
+    # TODO(sissel): Do more specific testing.
+    ["sysv", "lsb-3.1"]
+  end
+
+  def detect_launchd
+    return false unless File.directory?("/Library/LaunchDaemons")
+
+    out, status = execute(["launchctl", "version"])
+    return false unless status.success?
+
+    # TODO(sissel): Version?
+    version = out.split("\n").first.split(":").first.split(/\s+/).last
+    ["launchd", version]
+  end
+
+  def detect_runit
+    return false unless File.directory?("/service")
+
+    # TODO(sissel): Do more tests for runit
+  end
+
+  def execute(command)
+    Open3.popen3(*command) do |stdin, stdout, stderr, wait_thr|
+      stdin.close
+      out = stdout.read
+      stderr.close
+      exit_status = wait_thr.value
+      return out, exit_status
+    end
+  end
 end
