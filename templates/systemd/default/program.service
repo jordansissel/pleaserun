@@ -7,8 +7,11 @@ Description={{{ description }}}
 Type=simple
 User={{{ user }}}
 Group={{{ group }}}
-EnvironmentFile=/etc/default/{{{name}}}
-EnvironmentFile=/etc/sysconfig/{{{name}}}
+# Load env vars from /etc/default/ and /etc/sysconfig/ if they exist.
+# Prefixing the path with '-' makes it try to load, but if the file doesn't
+# exist, it continues onward.
+EnvironmentFile=-/etc/default/{{{name}}}
+EnvironmentFile=-/etc/sysconfig/{{{name}}}
 ExecStart={{{program}}} {{{shell_args}}}
 {{#prestart}}
 ExecStartPre=/lib/systemd/system/{{{name}}}-prestart.sh
