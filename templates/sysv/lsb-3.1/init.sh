@@ -26,6 +26,8 @@ pidfile="/var/run/$name.pid"
 [ -r /etc/default/$name ] && . /etc/default/$name
 [ -r /etc/sysconfig/$name ] && . /etc/sysconfig/$name
 
+[ -z "$nice" ] && nice=0
+
 trace() {
   logger -t "/etc/init.d/{{{name}}}" "$@"
 }
