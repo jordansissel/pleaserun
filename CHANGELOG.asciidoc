@@ -1,5 +1,8 @@
 = Pleaserun Changes and Releases
 
+== 0.0.23 (May 19, 2016)
+  * Catch JRuby IOError when execution of a missing file fails.
+ 
 == 0.0.22 (May 18, 2016)
   * systemd platform now defaults to targeting /etc/systemd/system for writing
     unit files. This was chosen based on research across across 7 different
