@@ -1,9 +1,9 @@
 = Pleaserun Changes and Releases
 
 == 0.0.22 (May 16, 2016)
-  * Platform detection mechanisms now look for systemd in both /lib/systemd and
-    /usr/lib/systemd in order to accommodate SuSE linux variants.
-  * Fix an edge case where systemd path exists in Ubuntu 12.04, but no systemd
+  * Platform detection mechanisms now look for systemd in /usr/lib/systemd in
+    order to accommodate more linux variants.
+  * Fix an edge case where systemd path exists in Ubuntu, but no systemd
     binary exists, causing an error
 
 == 0.0.21 (May 16, 2016)

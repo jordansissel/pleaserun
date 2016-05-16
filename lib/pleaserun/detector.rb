@@ -25,12 +25,7 @@ module PleaseRun::Detector
 
   def detect_systemd
     # Expect a certain directory
-    return false unless File.directory?("/lib/systemd/system") || File.directory?("/usr/lib/systemd/system")
-
-    # Verify presence of systemctl before proceeding.  This catches an edge
-    # case in ubuntu 12.04 where the systemctl path exists, but no binary
-    out, status = execute([ "which", "systemctl" ])
-    return false unless status.success?
+    return false unless File.directory?("/usr/lib/systemd")
 
     # Check the version. If `systemctl` fails, systemd isn't available.
     out, status = execute([ "systemctl", "--version" ])
