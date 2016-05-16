@@ -24,8 +24,10 @@ describe PleaseRun::Platform::Systemd do
 
     let(:files) { subject.files.collect { |path, _| path } }
 
-    it "emits a file in /lib/systemd/system" do
-      insist { files }.include?("/lib/systemd/system/fancypants.service")
+    context "by default" do
+      it "emits a file in /etc/systemd/system" do
+        insist { files }.include?("/etc/systemd/system/fancypants.service")
+      end
     end
   end
 

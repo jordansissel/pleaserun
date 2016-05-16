@@ -5,6 +5,13 @@ require "pleaserun/platform/base"
 #
 # If you use Fedora 18+ or CentOS/RHEL 7+, this is for you.
 class PleaseRun::Platform::Systemd < PleaseRun::Platform::Base
+  attribute :unit_path, "The path to put systemd unit files",
+            :default => "/etc/systemd/system" do
+    validate do |path|
+      insist { path }.is_a?(String)
+    end
+  end
+
   def files
     begin
       # TODO(sissel): Make it easy for subclasses to extend validation on attributes.
@@ -14,8 +21,10 @@ class PleaseRun::Platform::Systemd < PleaseRun::Platform::Base
     end
 
     return Enumerator::Generator.new do |enum|
-      enum.yield(safe_filename("/lib/systemd/system/{{{ name }}}.service"), render_template("program.service"))
-      enum.yield(safe_filename("/lib/systemd/system/{{{ name }}}-prestart.sh"), render_template("prestart.sh"), 0755) if prestart
+      enum.yield(safe_filename("{{{ unit_path }}}/{{{ name }}}.service"), render_template("program.service"))
+
+      # TODO(sissel): This is probably not the best place to put this. Ahh well :)
+      enum.yield(safe_filename("{{{ unit_path }}}/{{{ name }}}-prestart.sh"), render_template("prestart.sh"), 0755) if prestart
     end
   end # def files
 

@@ -14,7 +14,7 @@ EnvironmentFile=-/etc/default/{{{name}}}
 EnvironmentFile=-/etc/sysconfig/{{{name}}}
 ExecStart={{{program}}} {{{shell_args}}}
 {{#prestart}}
-ExecStartPre=/lib/systemd/system/{{{name}}}-prestart.sh
+ExecStartPre={{{unit_path}}}/{{{name}}}-prestart.sh
 {{/prestart}}
 Restart=always
 WorkingDirectory={{{chdir}}}
