@@ -3,6 +3,8 @@
 == 0.0.22 (May 16, 2016)
   * Platform detection mechanisms now look for systemd in both /lib/systemd and
     /usr/lib/systemd in order to accommodate SuSE linux variants.
+  * Fix an edge case where systemd path exists in Ubuntu 12.04, but no systemd
+    binary exists, causing an error
 
 == 0.0.21 (May 16, 2016)
   * Platform detection mechanism now looks for evidence that a given platform
