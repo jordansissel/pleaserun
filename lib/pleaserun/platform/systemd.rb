@@ -13,9 +13,10 @@ class PleaseRun::Platform::Systemd < PleaseRun::Platform::Base
       raise PleaseRun::Configurable::ValidationError, "In systemd, the program must be a full path. You gave '#{program}'."
     end
 
+    File.directory?("/usr/lib/systemd/system") ? usr = "/usr" : usr = ""
     return Enumerator::Generator.new do |enum|
-      enum.yield(safe_filename("/lib/systemd/system/{{{ name }}}.service"), render_template("program.service"))
-      enum.yield(safe_filename("/lib/systemd/system/{{{ name }}}-prestart.sh"), render_template("prestart.sh"), 0755) if prestart
+      enum.yield(safe_filename("#{usr}/lib/systemd/system/{{{ name }}}.service"), render_template("program.service"))
+      enum.yield(safe_filename("#{usr}/lib/systemd/system/{{{ name }}}-prestart.sh"), render_template("prestart.sh"), 0755) if prestart
     end
   end # def files
 

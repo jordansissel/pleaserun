@@ -1,5 +1,9 @@
 = Pleaserun Changes and Releases
 
+== 0.0.22 (May 16, 2016)
+  * Platform detection mechanisms now look for systemd in both /lib/systemd and
+    /usr/lib/systemd in order to accommodate SuSE linux variants.
+
 == 0.0.21 (May 16, 2016)
   * Platform detection mechanism now looks for evidence that a given platform
     is available (files, executables, etc).  The previous mechanism used facter
@@ -11,7 +15,7 @@
 
 == 0.0.19 (May 6, 2016)
   * Fix bug in OS detection
-  
+
 == 0.0.18 (May 6, 2016)
   * Support newer Facter api (Aaron Mildtenstein)
 
@@ -30,7 +34,7 @@
   * cli: New flag --sysv-log-path. This lets you set the path for the sysv platform to log its output.
 
 == 0.0.4 (March 5, 2014)
-  * cli: Autodetect OSX and use launchd 
+  * cli: Autodetect OSX and use launchd
 
 == Prior versions?
 
