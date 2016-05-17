@@ -25,14 +25,14 @@ module PleaseRun::Detector
 
   def detect_systemd
     # Expect a certain directory
-    return false unless File.directory?("/lib/systemd/system")
+    return false unless File.directory?("/usr/lib/systemd")
 
     # Check the version. If `systemctl` fails, systemd isn't available.
     out, status = execute([ "systemctl", "--version" ])
     return false unless status.success?
 
     # version is the last word on the first line of the --version output
-    version = out.split("\n").first.split(/\s+/).last 
+    version = out.split("\n").first.split(/\s+/).last
     ["systemd", version]
   end
 
@@ -50,7 +50,7 @@ module PleaseRun::Detector
 
   def detect_sysv
     return false unless File.directory?("/etc/init.d")
-    
+
     # TODO(sissel): Do more specific testing.
     ["sysv", "lsb-3.1"]
   end
