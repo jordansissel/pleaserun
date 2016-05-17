@@ -3,8 +3,8 @@
 == 0.0.22 (May 16, 2016)
   * Platform detection mechanisms now look for systemd in /usr/lib/systemd in
     order to accommodate more linux variants.
-  * Fix an edge case where systemd path exists in Ubuntu, but no systemd
-    binary exists, causing an error
+  * Deploy systemd unit files to /etc/systemd/system as that seems to be the only
+    path searched by all systems using systemd.
 
 == 0.0.21 (May 16, 2016)
   * Platform detection mechanism now looks for evidence that a given platform

@@ -2,7 +2,7 @@
 {{#description}}
 Description={{{ description }}}
 {{/description}}
- 
+
 [Service]
 Type=simple
 User={{{ user }}}
@@ -14,7 +14,7 @@ EnvironmentFile=-/etc/default/{{{name}}}
 EnvironmentFile=-/etc/sysconfig/{{{name}}}
 ExecStart={{{program}}} {{{shell_args}}}
 {{#prestart}}
-ExecStartPre=/lib/systemd/system/{{{name}}}-prestart.sh
+ExecStartPre=/etc/systemd/system/{{{name}}}-prestart.sh
 {{/prestart}}
 Restart=always
 WorkingDirectory={{{chdir}}}
