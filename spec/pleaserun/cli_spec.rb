@@ -11,9 +11,11 @@ describe PleaseRun::CLI do
     before do
       subject.run(args)
     end
+
     after do
       FileUtils.rm_r(output) if File.directory?(output)
     end
+
     it "should write files there" do
       [ "/etc", "/etc/init.d", "/etc/init.d/#{name}" ].each do |path|
         expect(File).to be_exists(File.join(output, path))

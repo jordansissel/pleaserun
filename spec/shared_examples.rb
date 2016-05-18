@@ -22,7 +22,7 @@ shared_examples_for PleaseRun::Platform do
           # monkeypatch StartLimitInterval=0 into the .service file to avoid
           # being throttled by systemd during these tests.
           # Fixes https://github.com/jordansissel/pleaserun/issues/11
-          path = "/lib/systemd/system/#{subject.name}.service"
+          path = File.join(subject.unit_path, "#{subject.name}.service")
           File.write(path, File.read(path).sub(/^\[Service\]$/, "[Service]\nStartLimitInterval=0"))
         when "PleaseRun::Platform::Launchd"
           # Avoid being throttled during our tests.
