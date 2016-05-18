@@ -30,7 +30,7 @@ module PleaseRun::Detector
     return false unless success
 
     # version is the last word on the first line of the --version output
-    version = out.split("\n").first.split(/\s+/).last 
+    version = out.split("\n").first.split(/\s+/).last
     ["systemd", version]
   end
 
@@ -48,7 +48,7 @@ module PleaseRun::Detector
 
   def detect_sysv
     return false unless File.directory?("/etc/init.d")
-    
+
     # TODO(sissel): Do more specific testing.
     ["sysv", "lsb-3.1"]
   end
@@ -78,7 +78,7 @@ module PleaseRun::Detector
       exit_status = wait_thr.value
       return out, exit_status.success?
     end
-  rescue Errno::ENOENT, Errno::EACCES => e
+  rescue Errno::ENOENT, Errno::EACCES, IOError => e
     # If the path doesn't exist or we cannot execute it, return the exception
     # message as the output and indicate a failure to run.
     return e.message, false
