@@ -111,6 +111,7 @@ are made. If it fails, nagios will not start. Yay!
     runner = platform_klass.new(target_version)
 
     platform_klass.all_attributes.each do |facet|
+      next unless respond_to?(facet.name)
       # Get the value of this attribute
       # The idea here is to translate CLI options to runner settings
       value = send(facet.name)
