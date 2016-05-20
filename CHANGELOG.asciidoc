@@ -1,5 +1,12 @@
 = Pleaserun Changes and Releases
 
+
+== 0.0.24 (May 20, 2016)
+  * Fix bug where rubygem packages dont' seem to ship symlinks, so the
+    'default' target version for some platforms was not found. Now, instead of 
+    symlinking 'default' to whatever should be the default, we just have the 
+    default as a directory specifically. Hopefully this helps.
+
 == 0.0.23 (May 19, 2016)
   * Catch JRuby IOError when execution of a missing file fails.
  
