@@ -5,6 +5,7 @@ Description={{{ description }}}
  
 [Service]
 Type=simple
+EnvironmentFile={{{home}}}/.config/systemd/user/{{{name}}}.environment
 ExecStart={{{program}}} {{{shell_args}}}
 Restart=always
 WorkingDirectory={{{chdir}}}
