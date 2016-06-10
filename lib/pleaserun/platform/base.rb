@@ -130,10 +130,14 @@ class PleaseRun::Platform::Base
     validate { |v| v == "ulimited" || v.to_i > 0 }
   end
 
-  # TODO(sissel): Move this into the sysv platform
-  attribute :sysv_log_path, "The destination for log output. If ending with a trailing / is treated like a directory with path/<name>.log. This setting only currently works with the sysv platform. This flag may go away at any time because I'm not sure we can easily abstract the logging feature across different service managers. Upstart and systemd don't even have this concept.",
-    :default => "/var/log/"
+  attribute :log_directory, "The destination for log output",
+    :default => "/var/log"
 
+  attribute :log_file_stderr, "Name of log file for stderr. Will default to NAME-stderr.log",
+    :default => nil
+
+  attribute :log_file_stdout, "Name of log file for stdout. Will default to NAME-stderr.log",
+    :default => nil
 
   attribute :prestart, "A command to execute before starting and restarting. A failure of this command will cause the start/restart to abort. This is useful for health checks, config tests, or similar operations."
 
@@ -191,15 +195,19 @@ class PleaseRun::Platform::Base
     return []
   end # def install_actions
 
-  def sysv_log
-    if sysv_log_directory?
-      File.join(sysv_log_path, name)
-    else
-      sysv_log_path
-    end
+  def log_path
+    File.join(log_directory.chomp("/"), name)
   end
 
-  def sysv_log_directory?
-    return sysv_log_path.end_with?("/")
+  def log_path_stderr
+    filename = "#{name}-stderr.log"
+    filename = log_file_stderr unless log_file_stderr.nil?
+    File.join(log_directory.chomp("/"), filename)
+  end
+
+  def log_path_stdout
+    filename = "#{name}-stdout.log"
+    filename = log_file_stdout unless log_file_stdout.nil?
+    File.join(log_directory.chomp("/"), filename)
   end
 end # class PleaseRun::Base

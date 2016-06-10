@@ -10,8 +10,8 @@
       {{{xml_args}}}
     </array>
     <key>KeepAlive</key> <true/>
-    <key>StandardOutPath</key> <string>/var/log/{{name}}.out</string>
-    <key>StandardErrorPath</key> <string>/var/log/{{name}}.err</string>
+    <key>StandardOutPath</key> <string>{{ log_path_stdout }}</string>
+    <key>StandardErrorPath</key> <string>{{ log_path_stderr }}</string>
     <!-- Things to implement eventually.
     <key>UserName</key><string>{{{ user }}}</string>
     <key>GroupName</key><string>{{{ group }}}</string>
