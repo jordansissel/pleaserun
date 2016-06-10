@@ -22,6 +22,25 @@ name={{#escaped}}{{#safe_filename}}{{{ name }}}{{/safe_filename}}{{/escaped}}
 program={{#escaped}}{{{ program }}}{{/escaped}}
 args={{{ escaped_args }}}
 pidfile="/var/run/$name.pid"
+user="{{{user}}}"
+group="{{{group}}}"
+chroot="{{{chroot}}}"
+chdir="{{{chdir}}}"
+nice="{{{nice}}}"
+{{#limit_coredump}}limit_coredump="{{{limit_coredump}}}"
+{{/limit_coredump}}{{#limit_cputime}}limit_cputime="{{{limit_cputime}}}"
+{{/limit_cputime}}{{#limit_data}}limit_data="{{{limit_data}}}"
+{{/limit_data}}{{#limit_file_size}}limit_file_size="{{{limit_file_size}}}"
+{{/limit_file_size}}{{#limit_locked_memory}}limit_locked_memory="{{{limit_locked_memory}}}"
+{{/limit_locked_memory}}{{#limit_open_files}}limit_open_files="{{{limit_open_files}}}"
+{{/limit_open_files}}{{#limit_user_processes}}limit_user_processes="{{{limit_user_processes}}}"
+{{/limit_user_processes}}{{#limit_physical_memory}}limit_physical_memory="{{{limit_physical_memory}}}"
+{{/limit_physical_memory}}{{#limit_stack_size}}limit_stack_size="{{{limit_stack_size}}}"{{/limit_stack_size}}
+
+# If this is set to 1, then when `stop` is called, if the process has
+# not exited within a reasonable time, SIGKILL will be sent next.
+# The default behavior is to simply log a message "program stop failed; still running"
+KILL_ON_STOP_TIMEOUT=0
 
 [ -r /etc/default/$name ] && . /etc/default/$name
 [ -r /etc/sysconfig/$name ] && . /etc/sysconfig/$name
@@ -38,7 +57,7 @@ emit() {
 }
 
 start() {
-  {{! I don't use 'su' here to run as a different user because the process 'su'
+  {{! I do not use 'su' here to run as a different user because the process 'su'
       stays as the parent, causing our pidfile to contain the pid of 'su' not the
       program we intended to run. Luckily, the 'chroot' program on OSX, FreeBSD, and Linux
       all support switching users and it invokes execve immediately after chrooting. }}
