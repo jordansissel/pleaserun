@@ -42,8 +42,8 @@ nice="{{{nice}}}"
 # The default behavior is to simply log a message "program stop failed; still running"
 KILL_ON_STOP_TIMEOUT=0
 
-[ -r /etc/default/$name ] && . /etc/default/$name
-[ -r /etc/sysconfig/$name ] && . /etc/sysconfig/$name
+[ -r {{{default_file}}} ] && . {{{default_file}}}
+[ -r {{{sysconfig_file}}} ] && . {{{sysconfig_file}}}
 
 [ -z "$nice" ] && nice=0
 

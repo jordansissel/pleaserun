@@ -12,6 +12,13 @@
     <key>KeepAlive</key> <true/>
     <key>StandardOutPath</key> <string>{{ log_path_stdout }}</string>
     <key>StandardErrorPath</key> <string>{{ log_path_stderr }}</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+      {{#all_environment_variables}}
+      <key>{{key}}</key>
+      <string>{{#shell_quote}}{{value}}{{/shell_quote}}</string>
+      {{/all_environment_variables}}
+    </dict>
     <!-- Things to implement eventually.
     <key>UserName</key><string>{{{ user }}}</string>
     <key>GroupName</key><string>{{{ group }}}</string>
