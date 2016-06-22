@@ -22,7 +22,9 @@ module PleaseRun::MustacheMethods
     # interpreted from POSIX 1003.1 2004 section 2.2.3 (Double-Quotes)
 
     # $ is has meaning, escape it.
-    value = str.gsub(/(?<![\\])\$/, "\\$")
+    # string reversal gets around using lookbehind
+    value = str.reverse.gsub(/(?:\$(?![\\]))/, "$\\").reverse
+
     # ` is has meaning, escape it.
     value = value.gsub(/`/) { "\\`" }
 
