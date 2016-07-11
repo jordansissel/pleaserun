@@ -1,3 +1,4 @@
+require "dotenv/parser"
 require "pleaserun/namespace"
 require "pleaserun/configurable"
 require "pleaserun/mustache_methods"
@@ -27,7 +28,7 @@ class PleaseRun::Platform::Base
   attribute :program, "The program to execute. This can be a full path, like " \
     "/usr/bin/cat, or a shorter name like 'cat' if you wish to search $PATH." do
     validate do |program|
-      insist { program.is_a?(String) } 
+      insist { program.is_a?(String) }
     end
   end
 
@@ -57,7 +58,7 @@ class PleaseRun::Platform::Base
       insist { version.is_a?(String) }
     end
   end
-  
+
   attribute :description, "The human-readable description of your program",
             :default => "no description given" do
     validate do |description|
@@ -82,6 +83,27 @@ class PleaseRun::Platform::Base
   attribute :chdir, "The directory to chdir to before running", :default => "/" do
     validate do |chdir|
       insist { chdir }.is_a?(String)
+    end
+  end
+
+  attribute :environment_file, "A file containing environment variables to export for your application" do
+    validate do |env|
+      insist { env }.is_a?(File)
+    end
+  end
+
+  attribute :environment_variables, "Env key/value pairs to insert into your sourced_env_file", :multivalued => true do
+    munge do |environment_variables|
+      if environment_variables.is_a?(String)
+        environment_variables = [environment_variables]
+      end
+      if environment_variables.is_a?(Array)
+        environment_variables = Hash[environment_variables.map { |e| e.split('=', 2) }]
+      end
+      environment_variables
+    end
+    validate do |environment_variables|
+      insist { environment_variables }.is_a?(Hash)
     end
   end
 
@@ -158,7 +180,7 @@ class PleaseRun::Platform::Base
   end # def template_path
 
   def render_template(name)
-    possibilities = [ 
+    possibilities = [
       File.join(template_path, target_version, name),
       File.join(template_path, "default", name),
       File.join(template_path, name)
@@ -209,5 +231,24 @@ class PleaseRun::Platform::Base
     filename = "#{name}-stdout.log"
     filename = log_file_stdout unless log_file_stdout.nil?
     File.join(log_directory.chomp("/"), filename)
+  end
+
+  def parsed_environment_variables
+    return {} if environment_file.nil?
+    return {} unless File.exist?(environment_file)
+    Dotenv::Parser.call(File.open(environment_file, "rb:bom|utf-8", &:read))
+  end
+
+  def all_environment_variables
+    parsed_env_vars = {}
+    parsed_env_vars = parsed_environment_variables unless parsed_environment_variables.nil?
+    flag_env_vars = {}
+    flag_env_vars = environment_variables unless environment_variables.nil?
+
+    variables = parsed_env_vars.merge(flag_env_vars)
+    return nil if variables.empty?
+    result = []
+    variables.each {|k, v| result << {'key' => k, 'value' => v} }
+    result
   end
 end # class PleaseRun::Base

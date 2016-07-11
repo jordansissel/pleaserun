@@ -8,7 +8,8 @@ PROGRAM={{#quoted}}{{{PROGRAM}}}{{/quoted}}
 set -- {{{shell_args}}}
 
 {{#shell_continuation}}
-exec chpst
+exec env {{#all_environment_variables}}{{key}}={{#shell_quote}}{{value}}{{/shell_quote}}{{/all_environment_variables}} \
+  chpst \
   -u {{#quoted}}{{{user}}}:{{{group}}}{{/quoted}}
   {{#chroot}} -/ {{#quoted}}{{{chroot}}}{{/quoted}} {{/chroot}}
   {{#nice}} -n {{#quoted}}{{{nice}}}{{/quoted}} {{/nice}}

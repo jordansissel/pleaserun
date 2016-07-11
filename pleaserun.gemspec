@@ -10,8 +10,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency "cabin", ">0" # for logging. apache 2 license
   spec.add_dependency "clamp"
   spec.add_dependency "stud"
-  spec.add_dependency "mustache", "0.99.8"
+  spec.add_dependency "mustache", "1.0.3"
   spec.add_dependency "insist"
+  spec.add_dependency "dotenv"
   #spec.add_dependency "ohai", "~> 6.20" # used for host detection
 
   spec.files = files
@@ -70,12 +71,15 @@ templates/runit/log
 templates/runit/run
 templates/systemd-user/default/prestart.sh
 templates/systemd-user/default/program.service
+templates/systemd/default/default
 templates/systemd/default/prestart.sh
 templates/systemd/default/program.service
 templates/sysv/default/default
 templates/sysv/default/init.sh
+templates/upstart/0.6.5/default
 templates/upstart/0.6.5/init.conf
 templates/upstart/0.6.5/init.d.sh
+templates/upstart/default/default
 templates/upstart/default/init.conf
 templates/upstart/default/init.d.sh
 templates/user/linux/default/installer.sh

@@ -44,9 +44,10 @@ class PleaseRun::CLI < Clamp::Command # rubocop:disable ClassLength
 
     # Turn the attribute name into a flag.
     option "--#{facet.name.to_s.gsub("_", "-")}", facet.name.to_s.upcase, facet.description,
-           :attribute_name => facet.name
+           :attribute_name => facet.name,
+           :multivalued => facet.options.fetch(:multivalued, false)
   end
-  
+
   # Load the 'program' attribute from the Base class and use it as the first
   # cli parameter.
   program = base.attributes.find { |f| f.name == :program }
@@ -73,11 +74,11 @@ For example, let's run elasticsearch:
 The above will automatically detect what platform you are running on
 and try to use the most sensible init system. For Ubuntu, this means
 Upstart. For Debian, this means sysv init scripts. For Fedora, this
-means systemd. 
+means systemd.
 
 You can tune the running environment and settings for your runner with various
 flags. By way of example, let's make our elasticsearch service run as the
-'elasticsearch' user! 
+'elasticsearch' user!
 
     % pleaserun --user elasticsearch /opt/elasticsearch/bin/elasticsearch
 
@@ -196,7 +197,7 @@ are made. If it fails, nagios will not start. Yay!
     if log
       logfile = File.new(log, "a")
       @logger.subscribe(logfile)
-      #STDERR.puts "Sending all logs to #{log}" if STDERR.tty? 
+      #STDERR.puts "Sending all logs to #{log}" if STDERR.tty?
     else
       @logger.subscribe(STDERR)
     end

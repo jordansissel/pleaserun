@@ -94,7 +94,7 @@ module PleaseRun::Configurable
   end # def ClassMixin
 
   # A DSL for describing a facet.
-  # 
+  #
   # For example:
   #
   #     Facet.new(:temperature, "The temperature value") do
@@ -142,13 +142,14 @@ module PleaseRun::Configurable
   class Facet
     attr_reader :name
     attr_reader :description
+    attr_reader :options
     attr_writer :validator, :munger
 
     def initialize(name, description, options = {}, &facet_dsl)
       insist { name }.is_a?(Symbol)
       insist { description }.is_a?(String)
       insist { options }.is_a?(Hash)
-      
+
       @name = name
       @description = description
       @options = options

@@ -21,6 +21,8 @@ class PleaseRun::Platform::Systemd < PleaseRun::Platform::Base
     end
 
     return Enumerator::Generator.new do |enum|
+      out.yield(safe_filename("/etc/default/{{ name }}"), render_template("default"))
+
       enum.yield(safe_filename("{{{ unit_path }}}/{{{ name }}}.service"), render_template("program.service"))
 
       # TODO(sissel): This is probably not the best place to put this. Ahh well :)
