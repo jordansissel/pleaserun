@@ -240,7 +240,12 @@ class PleaseRun::Platform::Base
   end
 
   def all_environment_variables
-    variables = parsed_environment_variables.merge(environment_variables)
+    parsed_env_vars = {}
+    parsed_env_vars = parsed_environment_variables unless parsed_environment_variables.nil?
+    flag_env_vars = {}
+    flag_env_vars = environment_variables unless environment_variables.nil?
+
+    variables = parsed_env_vars.merge(flag_env_vars)
     return nil if variables.empty?
     result = []
     variables.each {|k, v| result << {'key' => k, 'value' => v} }
