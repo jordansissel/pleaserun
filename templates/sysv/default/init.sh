@@ -45,6 +45,10 @@ KILL_ON_STOP_TIMEOUT=0
 [ -r {{{default_file}}} ] && . {{{default_file}}}
 [ -r {{{sysconfig_file}}} ] && . {{{sysconfig_file}}}
 
+{{#export_variables}}
+export {{{.}}}
+{{/export_variables}}
+
 [ -z "$nice" ] && nice=0
 
 trace() {
