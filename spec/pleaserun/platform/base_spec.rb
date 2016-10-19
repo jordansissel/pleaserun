@@ -83,6 +83,7 @@ describe PleaseRun::Platform::Base do
       end
 
       context "when specified as an argument it should use the name" do
+        let(:path) { "/var/log" }
         let(:log_file_stderr) { "#{name}-stderr" }
         before { subject.log_file_stderr = log_file_stderr }
         it "should be <path>/<name>-stderr" do
@@ -118,6 +119,7 @@ describe PleaseRun::Platform::Base do
       end
 
       context "when specified as an argument it should use the name" do
+        let(:path) { "/var/log" }
         let(:log_file_stdout) { "#{name}-stdout" }
         before { subject.log_file_stdout = log_file_stdout }
         it "should be <path>/<name>-stdout" do

@@ -67,7 +67,7 @@ describe PleaseRun::User::Base do
     end
   end
 
-  describe "integration" do
+  describe "integration", :if => superuser? do
     let(:platform) { "linux" }
     let(:name) { "example" }
     let(:installer) { Stud::Temporary.pathname }
