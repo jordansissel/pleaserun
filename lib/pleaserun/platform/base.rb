@@ -251,4 +251,12 @@ class PleaseRun::Platform::Base
     variables.each {|k, v| result << {'key' => k, 'value' => v} }
     result
   end
+
+  def default_file
+    "/etc/default/#{name}"
+  end
+
+  def sysconfig_file
+    "/etc/sysconfig/#{name}"
+  end
 end # class PleaseRun::Base
