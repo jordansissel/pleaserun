@@ -18,6 +18,9 @@ ExecStartPre={{{unit_path}}}/{{{name}}}-prestart.sh
 {{/prestart}}
 Restart=always
 WorkingDirectory={{{chdir}}}
+{{#nice}}Nice={{{nice}}}
+{{/nice}}{{#limit_open_files}}LimitNOFILE={{{limit_open_files}}}
+{{/limit_open_files}}
 
 [Install]
 WantedBy=multi-user.target
