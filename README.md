@@ -133,6 +133,17 @@ A silly example:
     UID        PID  PPID  C STIME TTY          TIME CMD
     root     50473     1  0 22:36 pts/7    00:00:00 /bin/sleep 60
 
+# Hacking
+
+If you want to work on pleaserun, here's what you need to do:
+
+1. Get a decent version of Ruby.  [rvm](https://rvm.io/) is good for this.
+2. Install bundler: `gem install bundler`
+3. Install dependencies: `bundle install`
+4. Make your changes!
+5. Run tests: `bundle exec rspec`
+6. Make a pull request!
+
 # One last thing!
 
 Please enjoy running things! If you are not enjoying this program, then something is wrong, and we can fix it together :)
