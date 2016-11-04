@@ -1,9 +1,10 @@
 PATH
   remote: .
   specs:
-    pleaserun (0.0.21)
+    pleaserun (0.0.26)
       cabin (> 0)
       clamp
+      dotenv
       insist
       mustache (= 0.99.8)
       stud
@@ -11,19 +12,15 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    cabin (0.8.1)
+    cabin (0.9.0)
     celluloid (0.16.0)
       timers (~> 4.0.0)
-    clamp (1.0.0)
+    clamp (1.1.1)
     coderay (1.1.0)
     diff-lcs (1.2.5)
+    dotenv (2.1.1)
     ffi (1.9.6)
     ffi (1.9.6-java)
-    ffi-yajl (2.1.0)
-      libyajl2 (~> 1.2)
-    ffi-yajl (2.1.0-java)
-      ffi (~> 1.5)
-      libyajl2 (~> 1.2)
     flores (0.0.3)
     formatador (0.2.5)
     guard (2.12.4)
@@ -43,37 +40,18 @@ GEM
     hitimes (1.2.2)
     hitimes (1.2.2-java)
     insist (1.0.0)
-    ipaddress (0.8.0)
-    libyajl2 (1.2.0)
     listen (2.8.5)
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
     lumberjack (1.0.9)
     method_source (0.8.2)
-    mime-types (2.5)
-    mixlib-cli (1.5.0)
-    mixlib-config (2.1.0)
-    mixlib-log (1.6.0)
-    mixlib-shellout (2.0.1)
     mustache (0.99.8)
     nenv (0.2.0)
     net-ssh (2.9.2)
     notiffany (0.0.6)
       nenv (~> 0.1)
       shellany (~> 0.0)
-    ohai (8.3.0)
-      ffi (~> 1.9)
-      ffi-yajl (>= 1.1, < 3.0)
-      ipaddress
-      mime-types (~> 2.0)
-      mixlib-cli
-      mixlib-config (~> 2.0)
-      mixlib-log
-      mixlib-shellout (~> 2.0)
-      rake (~> 10.1)
-      systemu (~> 2.6.4)
-      wmi-lite (~> 1.0)
     peach (0.5.1)
     pry (0.10.1)
       coderay (~> 1.1.0)
@@ -84,7 +62,6 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
       spoon (~> 0.0)
-    rake (10.4.2)
     rb-fsevent (0.9.4)
     rb-inotify (0.9.5)
       ffi (>= 0.5.0)
@@ -105,11 +82,9 @@ GEM
     spoon (0.0.4)
       ffi
     stud (0.0.22)
-    systemu (2.6.5)
     thor (0.19.1)
     timers (4.0.1)
       hitimes
-    wmi-lite (1.0.0)
 
 PLATFORMS
   java
@@ -120,10 +95,9 @@ DEPENDENCIES
   guard
   guard-rspec
   net-ssh
-  ohai
   peach
   pleaserun!
   rspec (~> 3.0.0)
 
 BUNDLED WITH
-   1.11.2
+   1.13.5
