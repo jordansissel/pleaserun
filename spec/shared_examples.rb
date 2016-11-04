@@ -1,7 +1,23 @@
 require "pleaserun/platform/base"
+require "pleaserun/user/base"
+require "stud/temporary"
 require "insist"
 
-shared_examples_for PleaseRun::Platform do
+shared_examples_for PleaseRun::Platform do |username="root"|
+  if username != "root"
+    let(:user) { PleaseRun::User::Base.new.tap { |u| u.name = username; u.platform = "linux" } }
+    let(:install_user_file) { Stud::Temporary.file.tap { |f| f.write(user.render_installer) } }
+    let(:remove_user_file) { Stud::Temporary.file.tap { |f| f.write(user.render_remover) } }
+
+    before do
+      system("sh", install_user_file.path)
+    end
+
+    after do
+      system("sh", remove_user_file.path)
+    end
+  end
+
   it "inherits correctly" do
     insist { described_class.ancestors }.include?(PleaseRun::Platform::Base)
   end
@@ -11,7 +27,8 @@ shared_examples_for PleaseRun::Platform do
 
     before do
       subject.name = "hurray-#{rand(1000)}"
-      subject.user = "root"
+      subject.user = username
+      subject.group = username
       subject.program = "/bin/sh"
       subject.args = ["-c", "echo hello world; sleep 5"]
       activate(subject)

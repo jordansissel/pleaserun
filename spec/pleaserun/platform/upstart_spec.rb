@@ -13,6 +13,13 @@ describe PleaseRun::Platform::Upstart do
       let(:status) { "initctl status #{subject.name} | egrep -v '#{subject.name} stop/'" }
       let(:restart) { "initctl restart #{subject.name}" }
     end
+
+    it_behaves_like PleaseRun::Platform, "pleaserun-test" do
+      let(:start) { "initctl start #{subject.name}" }
+      let(:stop) { "initctl stop #{subject.name}" }
+      let(:status) { "initctl status #{subject.name} | egrep -v '#{subject.name} stop/'" }
+      let(:restart) { "initctl restart #{subject.name}" }
+    end
   end
 
   context "#files" do
