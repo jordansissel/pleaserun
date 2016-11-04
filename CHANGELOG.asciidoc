@@ -1,5 +1,12 @@
 = Pleaserun Changes and Releases
 
+== 0.0.27 (November 4, 2016)
+  * Fix a bug where upstart jobs would fail to run if the job's user was not root.
+  * upstart: Add nice and limit_open_files support for Upstart 0.6.5
+  * systemd: Add support for Nice and LimitNOFILE. Fixes #120
+  * upstart: Added support for environment variables in Upstart 0.6.5
+  * Environment variables for services can now be specified with
+    --environment-file and --environment-variable flags.
 
 == 0.0.24 (May 20, 2016)
   * Fix bug where rubygem packages dont' seem to ship symlinks, so the
