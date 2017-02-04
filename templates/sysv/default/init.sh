@@ -42,8 +42,12 @@ nice="{{{nice}}}"
 # The default behavior is to simply log a message "program stop failed; still running"
 KILL_ON_STOP_TIMEOUT=0
 
+# When loading default and sysconfig files, we use `set -a` to make
+# all variables automatically into environment variables.
+set -a
 [ -r {{{default_file}}} ] && . {{{default_file}}}
 [ -r {{{sysconfig_file}}} ] && . {{{sysconfig_file}}}
+set +a
 
 [ -z "$nice" ] && nice=0
 
