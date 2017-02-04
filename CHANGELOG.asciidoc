@@ -1,5 +1,10 @@
 = Pleaserun Changes and Releases
 
+== 0.0.28 (February 6, 2017)
+  * sysv and upstart will now `set -a` before loading /etc/default and
+    /etc/sysconfig files. This is to bring them in line with what users are
+    asking me as well as with what systemd does with these files. (#121)
+
 == 0.0.27 (November 4, 2016)
   * Fix a bug where upstart jobs would fail to run if the job's user was not root.
   * upstart: Add nice and limit_open_files support for Upstart 0.6.5
