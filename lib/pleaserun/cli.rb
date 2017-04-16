@@ -4,6 +4,7 @@ require "clamp"
 require "cabin"
 require "stud/temporary"
 
+require "pleaserun/version"
 require "pleaserun/platform/base"
 require "pleaserun/installer"
 require "pleaserun/errors"
@@ -63,7 +64,7 @@ class PleaseRun::CLI < Clamp::Command # rubocop:disable ClassLength
 
   def help # rubocop:disable MethodLength
     return <<-HELP
-Welcome to pleaserun!
+Welcome to pleaserun version #{PleaseRun::VERSION}!
 
 This program aims to help you generate 'init' scripts/configs for various
 platforms. The simplest example takes only the command you wish to run.
@@ -101,6 +102,16 @@ are made. If it fails, nagios will not start. Yay!
 #{super}
     HELP
     # rubocop:enable MethodLength
+  end
+
+  def run(args)
+    # Short circuit for a `fpm --version` or `fpm -v` short invocation that 
+    # is the user asking us for the version of fpm.
+    if args == [ "-v" ] || args == [ "--version" ]
+      puts PleaseRun::VERSION
+      return 0
+    end
+    super
   end
 
   def execute

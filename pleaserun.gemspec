@@ -1,8 +1,9 @@
+require File.join(File.dirname(__FILE__), "lib/pleaserun/version")
 Gem::Specification.new do |spec|
   files = File.read(__FILE__)[/^__END__$.*/m].split("\n")[1..-1]
 
   spec.name = "pleaserun"
-  spec.version = "0.0.28"
+  spec.version = PleaseRun::VERSION
   spec.summary = "pleaserun"
   spec.description = "pleaserun"
   spec.license = "Apache 2.0"
@@ -53,6 +54,7 @@ lib/pleaserun/platform/systemd.rb
 lib/pleaserun/platform/sysv.rb
 lib/pleaserun/platform/upstart.rb
 lib/pleaserun/user/base.rb
+lib/pleaserun/version.rb
 pleaserun.gemspec
 spec/pleaserun/cli_spec.rb
 spec/pleaserun/configurable_spec.rb
