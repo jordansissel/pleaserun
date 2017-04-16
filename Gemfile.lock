@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pleaserun (0.0.27)
+    pleaserun (0.0.29)
       cabin (> 0)
       clamp
       dotenv
@@ -15,10 +15,10 @@ GEM
     cabin (0.9.0)
     celluloid (0.16.0)
       timers (~> 4.0.0)
-    clamp (1.1.1)
+    clamp (1.1.2)
     coderay (1.1.0)
     diff-lcs (1.2.5)
-    dotenv (2.1.1)
+    dotenv (2.2.0)
     ffi (1.9.6)
     ffi (1.9.6-java)
     flores (0.0.3)
