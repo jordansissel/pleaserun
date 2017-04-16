@@ -1,5 +1,8 @@
 = Pleaserun Changes and Releases
 
+== 0.0.29 (April 17, 2017)
+  * `pleaserun --version` will now write the version of pleaserun and exit. (#125)
+
 == 0.0.28 (February 6, 2017)
   * sysv and upstart will now `set -a` before loading /etc/default and
     /etc/sysconfig files. This is to bring them in line with what users are
