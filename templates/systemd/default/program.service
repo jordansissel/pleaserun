@@ -22,5 +22,9 @@ WorkingDirectory={{{chdir}}}
 {{/nice}}{{#limit_open_files}}LimitNOFILE={{{limit_open_files}}}
 {{/limit_open_files}}
 
+# When stopping, how long to wait before giving up and sending SIGKILL?
+# Keep in mind that SIGKILL on a process can cause data loss.
+TimeoutStopSec=infinity
+
 [Install]
 WantedBy=multi-user.target
