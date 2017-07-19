@@ -67,9 +67,11 @@ start() {
       all support switching users and it invokes execve immediately after chrooting. }}
 
   # Ensure the log directory is setup correctly.
-  [ ! -d "{{{ log_directory }}}" ] && mkdir "{{{ log_directory }}}"
-  chown "$user":"$group" "{{{ log_directory }}}"
-  chmod 755 "{{{ log_directory }}}"
+  if [ ! -d "{{{ log_directory }}}" ]; then 
+    mkdir "{{{ log_directory }}}"
+    chown "$user":"$group" "{{{ log_directory }}}"
+    chmod 755 "{{{ log_directory }}}"
+  fi
 
   {{#prestart}}
   if [ "$PRESTART" != "no" ] ; then
