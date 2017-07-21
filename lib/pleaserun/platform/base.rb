@@ -88,7 +88,7 @@ class PleaseRun::Platform::Base
 
   attribute :environment_file, "A file containing environment variables to export for your application" do
     validate do |env|
-      insist { env }.is_a?(File)
+      insist { env }.is_a?(String)
     end
   end
 
