@@ -23,7 +23,7 @@ With pleaserun, you can generate the following launchers/scripts/whatever:
 * runit
 * sysv init
 
-Want more? It's easy to add things. [File an issue](../../issues/) and ask away!
+Want more? I want it to be easy to add things and invite you to [file an issue](../../issues/) with your ideas.
 
 ## Installation
 
@@ -157,3 +157,7 @@ Please enjoy running things! If you are not enjoying this program, then somethin
 If you are having a bad time, it is a bug!
 
 All contributions welcome (bug reports, feature requests, bug fixes, new features, etc!)
+
+# Code of Conduct
+
+This project has a code of conduct and uses the [Contributor Covenant](CODE_OF_CONDUCT.md).
