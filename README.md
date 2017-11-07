@@ -1,11 +1,17 @@
 # Please, Run!
 
-Pleaserun is a tool to generate startup scripts for the wasteland of sorrow
-that is process launchers.
+Pleaserun is a tool to generate startup scripts and service definitions. It targets
+service managers such as systemd, Upstart, launchd, sysv init, and runit.
 
 Ideally, you should be able to specify a configuration of how to run a given
 service command (like apache, syslog-ng, whatever), and this tool should
 be able to spit out a script or config file for your target platform.
+
+## Project Principles
+
+* Community: If a newbie has a bad time, it's a bug.
+* Engineering: Make it work, then make it right, then make it fast.
+* Capabilities: If it doesn't do a thing today, we can make it do it tomorrow.
 
 ## What's going on here?
 
