@@ -45,7 +45,7 @@
   * Fix bug in OS detection
   
 == 0.0.18 (May 6, 2016)
-  * Support newer Facter api (Aaron Mildtenstein)
+  * Support newer Facter api (Aaron Mildenstein)
 
 == 0.0.17 (May 4, 2016)
   * Added detection for Fedora 22 and 23, OS X 10.11, and Ubuntu 14.10, 15.04, 15.50, and 16.04. (#98, Aaron Mildenstein)
