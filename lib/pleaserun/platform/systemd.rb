@@ -12,6 +12,15 @@ class PleaseRun::Platform::Systemd < PleaseRun::Platform::Base
     end
   end
 
+  attribute :prestart_path, "The path to put systemd unit prestart files",
+            :default =>
+(:unit_path == "/lib/systemd/system" || :unit_path == "/usr/lib/systemd/system") ? "/usr/lib/pleaserun" :
+(:unit_path == "/etc/systemd/system" ? "/usr/local/lib/pleaserun" : "{{{home}}}/lib/pleaserun") do
+    validate do |path|
+      insist { path }.is_a?(String)
+    end
+  end
+
   def files
     begin
       # TODO(sissel): Make it easy for subclasses to extend validation on attributes.
@@ -25,7 +34,7 @@ class PleaseRun::Platform::Systemd < PleaseRun::Platform::Base
       enum.yield(safe_filename("{{{ unit_path }}}/{{{ name }}}.service"), render_template("program.service"))
 
       # TODO(sissel): This is probably not the best place to put this. Ahh well :)
-      enum.yield(safe_filename("{{{ unit_path }}}/{{{ name }}}-prestart.sh"), render_template("prestart.sh"), 0755) if prestart
+      enum.yield(safe_filename("{{{ prestart_path }}}/{{{ name }}}-prestart.sh"), render_template("prestart.sh"), 0755) if prestart
     end
   end # def files
 

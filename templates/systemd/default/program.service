@@ -14,7 +14,7 @@ EnvironmentFile=-{{{default_file}}}
 EnvironmentFile=-{{{sysconfig_file}}}
 ExecStart={{{program}}} {{{shell_args}}}
 {{#prestart}}
-ExecStartPre={{{unit_path}}}/{{{name}}}-prestart.sh
+ExecStartPre={{{prestart_path}}}/{{{name}}}-prestart.sh
 {{/prestart}}
 Restart=always
 WorkingDirectory={{{chdir}}}
