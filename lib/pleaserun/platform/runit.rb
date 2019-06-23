@@ -6,8 +6,8 @@ require "pleaserun/platform/base"
 # Learn what runit is here: http://smarden.org/runit/
 class PleaseRun::Platform::Runit < PleaseRun::Platform::Base
   attribute :service_path, "The path runit service directory",
-            :default => "/service" do |path|
-    validate do
+            :default => "/service"
+    validate do do |path|
       insist { path }.is_a?(String)
     end
   end
