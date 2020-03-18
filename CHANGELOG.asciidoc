@@ -1,7 +1,10 @@
 = Pleaserun Changes and Releases
 
-== 0.0.30 (March 17, 2020)
+== 0.0.31 (March 17, 2020)
   * Fixed a code error preventing `runit` in pleaserun from working (#143, #145)
+
+== 0.0.30 (August 7, 2017)
+  * Released without changelog ???
 
 == 0.0.29 (April 17, 2017)
   * `pleaserun --version` will now write the version of pleaserun and exit. (#125)
