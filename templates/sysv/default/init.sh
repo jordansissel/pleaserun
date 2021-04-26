@@ -49,6 +49,10 @@ set -a
 [ -r {{{sysconfig_file}}} ] && . {{{sysconfig_file}}}
 set +a
 
+{{#export_variables}}
+export {{{.}}}
+{{/export_variables}}
+
 [ -z "$nice" ] && nice=0
 
 trace() {

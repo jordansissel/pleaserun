@@ -107,6 +107,18 @@ class PleaseRun::Platform::Base
     end
   end
 
+  attribute :export_variables, "Env variable names to export to the daemon", :multivalued => true do
+    munge do |export_variables|
+      if export_variables.is_a?(String)
+        export_variables = [export_variables]
+      end
+      export_variables
+    end
+    validate do |export_variables|
+      insist { export_variables }.is_a?(Array)
+    end
+  end
+
   attribute :nice, "The nice level to add to this program before running" do
     validate do |nice|
       insist { nice }.is_a?(Fixnum)
