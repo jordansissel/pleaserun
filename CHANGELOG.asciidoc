@@ -35,7 +35,7 @@
   * systemd platform now defaults to targeting /etc/systemd/system for writing
     unit files. This was chosen based on research across across 7 different
     Linux distributions.
-  * fix a bug where attempting to detect systemd would crash becuase
+  * fix a bug where attempting to detect systemd would crash because
     `systemctl` was not available.
 
 == 0.0.21 (May 16, 2016)
@@ -51,7 +51,7 @@
   * Fix bug in OS detection
   
 == 0.0.18 (May 6, 2016)
-  * Support newer Facter api (Aaron Mildtenstein)
+  * Support newer Facter api (Aaron Mildenstein)
 
 == 0.0.17 (May 4, 2016)
   * Added detection for Fedora 22 and 23, OS X 10.11, and Ubuntu 14.10, 15.04, 15.50, and 16.04. (#98, Aaron Mildenstein)

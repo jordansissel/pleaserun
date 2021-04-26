@@ -108,7 +108,7 @@ module PleaseRun::Configurable
   #
   # Both validation and munge blocks are optional.
   #
-  # The 'validate' block is expcted to fail if the value given to the
+  # The 'validate' block is expected to fail if the value given to the
   # facet is not valid.
   #
   # The 'munge' block is intended to help you coerce a value.  For example, if
