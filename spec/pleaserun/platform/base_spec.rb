@@ -29,6 +29,11 @@ describe PleaseRun::Platform::Base do
       insist { subject.log_directory } == "/var/log"
     end
 
+    it "#nice should accept integer values" do
+      subject.nice = 19
+      insist { subject.nice } == 19
+    end
+
     context "#log_path" do
       let(:name) { "fancy" }
       before { subject.name = name }
