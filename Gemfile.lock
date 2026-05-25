@@ -1,10 +1,10 @@
 PATH
   remote: .
   specs:
-    pleaserun (0.0.29)
+    pleaserun (0.0.33)
       cabin (> 0)
       clamp
-      dotenv
+      dotenv (~> 2)
       insist
       mustache (= 0.99.8)
       stud
@@ -12,59 +12,65 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    cabin (0.9.0)
-    celluloid (0.16.0)
-      timers (~> 4.0.0)
-    clamp (1.1.2)
-    coderay (1.1.0)
-    diff-lcs (1.2.5)
-    dotenv (2.2.0)
-    ffi (1.9.6)
-    ffi (1.9.6-java)
-    flores (0.0.3)
-    formatador (0.2.5)
-    guard (2.12.4)
+    cabin (0.9.1)
+    clamp (1.5.2)
+    coderay (1.1.3)
+    diff-lcs (1.6.2)
+    dotenv (2.8.1)
+    ffi (1.17.4)
+    ffi (1.17.4-aarch64-linux-gnu)
+    ffi (1.17.4-aarch64-linux-musl)
+    ffi (1.17.4-arm-linux-gnu)
+    ffi (1.17.4-arm-linux-musl)
+    ffi (1.17.4-arm64-darwin)
+    ffi (1.17.4-x86-linux-gnu)
+    ffi (1.17.4-x86-linux-musl)
+    ffi (1.17.4-x86_64-darwin)
+    ffi (1.17.4-x86_64-linux-gnu)
+    ffi (1.17.4-x86_64-linux-musl)
+    flores (0.0.8)
+    formatador (1.2.3)
+      reline
+    guard (2.20.1)
       formatador (>= 0.2.4)
-      listen (~> 2.7)
-      lumberjack (~> 1.0)
+      listen (>= 2.7, < 4.0)
+      logger (~> 1.6)
+      lumberjack (>= 1.0.12, < 2.0)
       nenv (~> 0.1)
       notiffany (~> 0.0)
-      pry (>= 0.9.12)
+      pry (>= 0.13.0)
       shellany (~> 0.0)
       thor (>= 0.18.1)
     guard-compat (1.2.1)
-    guard-rspec (4.5.0)
+    guard-rspec (4.7.3)
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
-    hitimes (1.2.2)
-    hitimes (1.2.2-java)
     insist (1.0.0)
-    listen (2.8.5)
-      celluloid (>= 0.15.2)
-      rb-fsevent (>= 0.9.3)
-      rb-inotify (>= 0.9)
-    lumberjack (1.0.9)
-    method_source (0.8.2)
+    io-console (0.8.2)
+    listen (3.10.0)
+      logger
+      rb-fsevent (~> 0.10, >= 0.10.3)
+      rb-inotify (~> 0.9, >= 0.9.10)
+    logger (1.7.0)
+    lumberjack (1.4.2)
+    method_source (1.1.0)
     mustache (0.99.8)
-    nenv (0.2.0)
-    net-ssh (2.9.2)
-    notiffany (0.0.6)
+    nenv (0.3.0)
+    net-ssh (7.3.2)
+    notiffany (0.1.3)
       nenv (~> 0.1)
       shellany (~> 0.0)
     peach (0.5.1)
-    pry (0.10.1)
-      coderay (~> 1.1.0)
-      method_source (~> 0.8.1)
-      slop (~> 3.4)
-    pry (0.10.1-java)
-      coderay (~> 1.1.0)
-      method_source (~> 0.8.1)
-      slop (~> 3.4)
-      spoon (~> 0.0)
-    rb-fsevent (0.9.4)
-    rb-inotify (0.9.5)
-      ffi (>= 0.5.0)
+    pry (0.16.0)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
+      reline (>= 0.6.0)
+    rb-fsevent (0.11.2)
+    rb-inotify (0.11.1)
+      ffi (~> 1.0)
+    reline (0.6.3)
+      io-console (~> 0.5)
     rspec (3.0.0)
       rspec-core (~> 3.0.0)
       rspec-expectations (~> 3.0.0)
@@ -78,17 +84,21 @@ GEM
       rspec-support (~> 3.0.0)
     rspec-support (3.0.4)
     shellany (0.0.1)
-    slop (3.6.0)
-    spoon (0.0.4)
-      ffi
-    stud (0.0.22)
-    thor (0.19.1)
-    timers (4.0.1)
-      hitimes
+    stud (0.0.23)
+    thor (1.5.0)
 
 PLATFORMS
-  java
+  aarch64-linux-gnu
+  aarch64-linux-musl
+  arm-linux-gnu
+  arm-linux-musl
+  arm64-darwin
   ruby
+  x86-linux-gnu
+  x86-linux-musl
+  x86_64-darwin
+  x86_64-linux-gnu
+  x86_64-linux-musl
 
 DEPENDENCIES
   flores
@@ -99,5 +109,52 @@ DEPENDENCIES
   pleaserun!
   rspec (~> 3.0.0)
 
+CHECKSUMS
+  cabin (0.9.1) sha256=dcc9385af8039ba8fb6e33f0a9036e9e9fedec71c842343ce8e6101776e0322d
+  clamp (1.5.2) sha256=2fed212e5c9b60447eb5097af39d4c12c3c7e6788e8d791e9c436e0e755f4adc
+  coderay (1.1.3) sha256=dc530018a4684512f8f38143cd2a096c9f02a1fc2459edcfe534787a7fc77d4b
+  diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
+  dotenv (2.8.1) sha256=c5944793349ae03c432e1780a2ca929d60b88c7d14d52d630db0508c3a8a17d8
+  ffi (1.17.4) sha256=bcd1642e06f0d16fc9e09ac6d49c3a7298b9789bcb58127302f934e437d60acf
+  ffi (1.17.4-aarch64-linux-gnu) sha256=b208f06f91ffd8f5e1193da3cae3d2ccfc27fc36fba577baf698d26d91c080df
+  ffi (1.17.4-aarch64-linux-musl) sha256=9286b7a615f2676245283aef0a0a3b475ae3aae2bb5448baace630bb77b91f39
+  ffi (1.17.4-arm-linux-gnu) sha256=d6dbddf7cb77bf955411af5f187a65b8cd378cb003c15c05697f5feee1cb1564
+  ffi (1.17.4-arm-linux-musl) sha256=9d4838ded0465bef6e2426935f6bcc93134b6616785a84ffd2a3d82bc3cf6f95
+  ffi (1.17.4-arm64-darwin) sha256=19071aaf1419251b0a46852abf960e77330a3b334d13a4ab51d58b31a937001b
+  ffi (1.17.4-x86-linux-gnu) sha256=38e150df5f4ca555e25beca4090823ae09657bceded154e3c52f8631c1ed72cf
+  ffi (1.17.4-x86-linux-musl) sha256=fbeec0fc7c795bcf86f623bb18d31ea1820f7bd580e1703a3d3740d527437809
+  ffi (1.17.4-x86_64-darwin) sha256=aa70390523cf3235096cf64962b709b4cfbd5c082a2cb2ae714eb0fe2ccda496
+  ffi (1.17.4-x86_64-linux-gnu) sha256=9d3db14c2eae074b382fa9c083fe95aec6e0a1451da249eab096c34002bc752d
+  ffi (1.17.4-x86_64-linux-musl) sha256=3fdf9888483de005f8ef8d1cf2d3b20d86626af206cbf780f6a6a12439a9c49e
+  flores (0.0.8) sha256=51098e48d9d63fcb11c4b5418a67d95fa60c688df0e482d50a371fe31f7ea85d
+  formatador (1.2.3) sha256=19fa898133c2c26cdbb5d09f6998c1e137ad9427a046663e55adfe18b950d894
+  guard (2.20.1) sha256=ab9cd7873854e6b76080c0589f781ff3e390e441bdda20165804df54f977015a
+  guard-compat (1.2.1) sha256=3ad21ab0070107f92edfd82610b5cdc2fb8e368851e72362ada9703443d646fe
+  guard-rspec (4.7.3) sha256=a47ba03cbd1e3c71e6ae8645cea97e203098a248aede507461a43e906e2f75ca
+  insist (1.0.0) sha256=6f6759eee583dc4e00a6cc3f713cfa7c570572958ba1f5d65595046d795b832f
+  io-console (0.8.2) sha256=d6e3ae7a7cc7574f4b8893b4fca2162e57a825b223a177b7afa236c5ef9814cc
+  listen (3.10.0) sha256=c6e182db62143aeccc2e1960033bebe7445309c7272061979bb098d03760c9d2
+  logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
+  lumberjack (1.4.2) sha256=40de5ae46321380c835031bcc1370f13bba304d29f2b5f5bb152061a5a191b95
+  method_source (1.1.0) sha256=181301c9c45b731b4769bc81e8860e72f9161ad7d66dd99103c9ab84f560f5c5
+  mustache (0.99.8) sha256=826a96db895819c13fffa4fa3c20b85e80b60aaec1f28f79e7db80092abdb0bc
+  nenv (0.3.0) sha256=d9de6d8fb7072228463bf61843159419c969edb34b3cef51832b516ae7972765
+  net-ssh (7.3.2) sha256=65029e213c380e20e5fd92ece663934ab0a0fe888e0cd7cc6a5b664074362dd4
+  notiffany (0.1.3) sha256=d37669605b7f8dcb04e004e6373e2a780b98c776f8eb503ac9578557d7808738
+  peach (0.5.1) sha256=1016f4de6636e0065fe78d362c4a234a4f84201c067ff4169823fd185c98206d
+  pleaserun (0.0.33)
+  pry (0.16.0) sha256=d76c69065698ed1f85e717bd33d7942c38a50868f6b0673c636192b3d1b6054e
+  rb-fsevent (0.11.2) sha256=43900b972e7301d6570f64b850a5aa67833ee7d87b458ee92805d56b7318aefe
+  rb-inotify (0.11.1) sha256=a0a700441239b0ff18eb65e3866236cd78613d6b9f78fea1f9ac47a85e47be6e
+  reline (0.6.3) sha256=1198b04973565b36ec0f11542ab3f5cfeeec34823f4e54cebde90968092b1835
+  rspec (3.0.0) sha256=feebb25a2d1102007758d9f33002ba2d56bd8a0fe42c4f3165a74cdad0dc24f5
+  rspec-core (3.0.4) sha256=1f91e70e8d666ceeee8d3483e264337b6ae5bd387a795bf841581f5426c27ebf
+  rspec-expectations (3.0.4) sha256=2282c8289a6edec4ee8724ece3a0287c8ec2572413f2c663a2e1924bfb2123cd
+  rspec-mocks (3.0.4) sha256=d219c26621069464469cf2571eab9353a0d44bdf415ed2164287e5921a1a5053
+  rspec-support (3.0.4) sha256=ec2547c2ebbe2ddbd8722136939f9afe1c4fd24a0d3fd5f35877f6c22c4ff285
+  shellany (0.0.1) sha256=0e127a9132698766d7e752e82cdac8250b6adbd09e6c0a7fbbb6f61964fedee7
+  stud (0.0.23) sha256=6ba26fa28fc50a8d59229b296a733b48d50f1473b1e3e7f5e339d5bbd829eb62
+  thor (1.5.0) sha256=e3a9e55fe857e44859ce104a84675ab6e8cd59c650a49106a05f55f136425e73
+
 BUNDLED WITH
-   1.13.5
+  4.0.3
