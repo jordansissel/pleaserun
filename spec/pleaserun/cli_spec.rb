@@ -18,7 +18,7 @@ describe PleaseRun::CLI do
 
     it "should write files there" do
       [ "/etc", "/etc/init.d", "/etc/init.d/#{name}" ].each do |path|
-        expect(File).to be_exists(File.join(output, path))
+        expect(File).to exist(File.join(output, path))
       end
     end
   end

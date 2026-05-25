@@ -109,7 +109,7 @@ class PleaseRun::Platform::Base
 
   attribute :nice, "The nice level to add to this program before running" do
     validate do |nice|
-      insist { nice }.is_a?(Fixnum)
+      insist { nice }.is_a?(Integer)
     end
     munge do |nice|
       next nice.to_i
