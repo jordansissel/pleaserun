@@ -1,5 +1,8 @@
 = Pleaserun Changes and Releases
 
+== 0.0.34 (May 24, 2025)
+  * Fix bugs on Ruby 3.4+ caused by features newer Ruby versions have removed. (#161)
+
 == 0.0.31 (March 17, 2020)
   * Fixed a code error preventing `runit` in pleaserun from working (#143, #145)
 
