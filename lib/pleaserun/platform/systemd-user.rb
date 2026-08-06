@@ -26,7 +26,7 @@ class PleaseRun::Platform::SystemdUser < PleaseRun::Platform::Base
     return Enumerator::Generator.new do |enum|
       enum.yield(safe_filename("{{{home}}}/.config/systemd/user/{{{ name }}}.environment"), environment_data)
       enum.yield(safe_filename("{{{home}}}/.config/systemd/user/{{{ name }}}.service"), render_template("program.service"))
-      enum.yield(safe_filename("{{{home}}}/.config/systemd/user/{{{ name }}}-prestart.sh"), render_template("prestart.sh"), 0755) if prestart
+      enum.yield(safe_filename("{{{home}}}/lib/pleaserun/{{{ name }}}-prestart.sh"), render_template("prestart.sh"), 0755) if prestart
     end
   end # def files
 
