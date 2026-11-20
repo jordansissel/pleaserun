@@ -1,5 +1,8 @@
 = Pleaserun Changes and Releases
 
+== 0.0.35 (November 19, 2026)
+  * Upgrade mustache dependency to resolve a recent security vulnerability
+
 == 0.0.34 (May 24, 2025)
   * Fix bugs on Ruby 3.4+ caused by features newer Ruby versions have removed. (#161)
 
