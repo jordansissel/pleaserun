@@ -1,12 +1,12 @@
 PATH
   remote: .
   specs:
-    pleaserun (0.0.33)
+    pleaserun (0.0.34)
       cabin (> 0)
       clamp
       dotenv (~> 2)
       insist
-      mustache (= 0.99.8)
+      mustache (~> 1.1, >= 1.1.3)
       stud
 
 GEM
@@ -55,7 +55,7 @@ GEM
     logger (1.7.0)
     lumberjack (1.4.2)
     method_source (1.1.0)
-    mustache (0.99.8)
+    mustache (1.1.3)
     nenv (0.3.0)
     net-ssh (7.3.2)
     notiffany (0.1.3)
@@ -137,12 +137,12 @@ CHECKSUMS
   logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
   lumberjack (1.4.2) sha256=40de5ae46321380c835031bcc1370f13bba304d29f2b5f5bb152061a5a191b95
   method_source (1.1.0) sha256=181301c9c45b731b4769bc81e8860e72f9161ad7d66dd99103c9ab84f560f5c5
-  mustache (0.99.8) sha256=826a96db895819c13fffa4fa3c20b85e80b60aaec1f28f79e7db80092abdb0bc
+  mustache (1.1.3) sha256=75bdfeaa17e4af168fae2c262867b2992087aef39d8580965cb90d37a7d093c2
   nenv (0.3.0) sha256=d9de6d8fb7072228463bf61843159419c969edb34b3cef51832b516ae7972765
   net-ssh (7.3.2) sha256=65029e213c380e20e5fd92ece663934ab0a0fe888e0cd7cc6a5b664074362dd4
   notiffany (0.1.3) sha256=d37669605b7f8dcb04e004e6373e2a780b98c776f8eb503ac9578557d7808738
   peach (0.5.1) sha256=1016f4de6636e0065fe78d362c4a234a4f84201c067ff4169823fd185c98206d
-  pleaserun (0.0.33)
+  pleaserun (0.0.34)
   pry (0.16.0) sha256=d76c69065698ed1f85e717bd33d7942c38a50868f6b0673c636192b3d1b6054e
   rb-fsevent (0.11.2) sha256=43900b972e7301d6570f64b850a5aa67833ee7d87b458ee92805d56b7318aefe
   rb-inotify (0.11.1) sha256=a0a700441239b0ff18eb65e3866236cd78613d6b9f78fea1f9ac47a85e47be6e
